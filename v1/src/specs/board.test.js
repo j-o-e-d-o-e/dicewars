@@ -1,16 +1,19 @@
 import {CANVAS_WIDTH, CANVAS_HEIGHT} from '../js/info.js';
 import {createBoard} from '../js/board';
 
-test('create board default', () => {
-    const nodesTotal = 817;
-    let act = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
-    expect(act[0]).toHaveLength(nodesTotal);
-    expect(act[1]).toMatchObject({index: Math.floor(nodesTotal / 2)})
+let board, startNode;
+
+beforeAll(() => {
+    [board, startNode] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
 });
 
-test('create board 1280x720', () => {
+test('create board', () => {
     const nodesTotal = 817;
-    let act = createBoard(1280, 720);
-    expect(act[0]).toHaveLength(nodesTotal);
-    expect(act[1]).toMatchObject({index: Math.floor(nodesTotal / 2)})
+    expect(board).toHaveLength(nodesTotal);
+    expect(startNode).toMatchObject({id: Math.floor(nodesTotal / 2)});
 });
+
+test('get adjacent nodes from start-node', () => {
+    expect(startNode.getAdjacentNodesFromNode()).toHaveLength(6);
+});
+

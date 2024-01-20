@@ -14,7 +14,7 @@ function drawBoard(board) {
     ctxBg.fillStyle = "grey";
     ctxBg.strokeStyle = "grey";
     for (let node of board) {
-        ctxBg.fillText(String(node.index), node.hex.center.x - 2, node.hex.center.y + 4);
+        ctxBg.fillText(String(node.id), node.hex.center.x - 2, node.hex.center.y + 4);
         ctxBg.beginPath();
         for (let corner of node.hex.corners) ctxBg.lineTo(corner.x, corner.y);
         ctxBg.closePath();
@@ -50,16 +50,16 @@ export function drawUpdatedCluster(corners, playerId) {
 function drawText(cluster) {
     const xTextOffset = RADIUS_HEX / 2;
     const yTextOffset = RADIUS_HEX / 2 + 2;
-    let x = cluster.center.x - xTextOffset - 4 * Math.floor(cluster.id / 10);
-    let y = cluster.center.y + yTextOffset;
+    let x = cluster.centerPos.x - xTextOffset - 4 * Math.floor(cluster.id / 10);
+    let y = cluster.centerPos.y + yTextOffset;
     ctxFg[cluster.id].fillStyle = "black";
     ctxFg[cluster.id].font = "40px Standard";
     ctxFg[cluster.id].fillText(cluster.id, x, y);
 }
 
 function drawDices(cluster) {
-    let x = cluster.center.x - 30;
-    let y = cluster.center.y - 20;
+    let x = cluster.centerPos.x - 30;
+    let y = cluster.centerPos.y - 20;
     let size = 50;
     let xOffset = 16;
     let yOffset = 20;

@@ -37,7 +37,7 @@ function setup() {
             // ctx.arc(point.x, point.y, RADIUS_IN_HEX, 0, Math.PI * 2);
             // ctx.stroke();
             // for (let node of board) if (Math.pow(point.x - node.hex.center.x, 2) + Math.pow(point.y - node.hex.center.y, 2) < Math.pow(RADIUS_IN_HEX, 2)){
-            //     console.log(`hit ${node.index}: ${JSON.stringify(node.hex)}`);
+            //     console.log(`hit ${node.id}: ${JSON.stringify(node.hex)}`);
             //     console.log(node.hex)
             //     break;
             // }

@@ -1,5 +1,4 @@
 import {Player} from "./player.js";
-import {getCluster} from './clusters.js'
 import {drawUpdatedCluster, drawUpdatedDices} from "./draw.js";
 
 export class Human extends Player {
@@ -12,7 +11,7 @@ export class Human extends Player {
 
     turn(point, clusters) {
         if (this.clickedCluster === undefined) {
-            let clicked = getCluster(this.clickableClusters, point);
+            let clicked = this.clickableClusters.find(c => c.containsPoint(point));
             if (clicked === undefined) return;
             this.clickedCluster = clicked;
             console.log(`selected=${this.clickedCluster.id}`);
@@ -22,8 +21,8 @@ export class Human extends Player {
             drawUpdatedCluster(this.clickedCluster.corners, this.id);
             this.clickedCluster = undefined;
         } else {
-            let candidates = this.clickedCluster.getAdjacentClusterIds().map(id => clusters[id]).filter(c => c.playerId !== this.id);
-            let clickedCluster2 = getCluster(candidates, point);
+            let candidates = this.clickedCluster.getAdjacentClustersFromCluster().filter(c => c.playerId !== this.id);
+            let clickedCluster2 = candidates.find(c => c.containsPoint(point));
             if (clickedCluster2 === undefined) return;
             let sumPlayer = Player.roleDice(this.clickedCluster.dices);
             let sumOther = Player.roleDice(clickedCluster2.dices);
