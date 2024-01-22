@@ -6,7 +6,7 @@ export function createPlayers(clusters) {
     let players = [];
     let playerProb = 0.3, playerIndex;
     for (let i = 0; i < PLAYERS; i++) {
-        if (playerIndex === undefined && (Math.random() < playerProb || i === PLAYERS - 1)) {
+        if (playerIndex === undefined && players.length > 0 && (Math.random() < playerProb || i === PLAYERS - 1)) {
             players.push(new Human());
             playerIndex = i;
         } else {

@@ -5,6 +5,7 @@ export class Cluster {
 
     constructor(start) {
         this.id = Cluster.COUNT++;
+        this.playerId = undefined;
         this.dices = Math.floor(Math.random() * 6) + 1;
         this.nodes = [];
         this.addNodeAndItsNeighbours(start)
@@ -46,41 +47,14 @@ export class Cluster {
     cornersPos() {
         let lines = [];
         for (let node of this.nodes) {
-            if (node.upRight === undefined || node.upRight?.cluster?.id !== this.id) {
-                lines.push({
-                    start: {x: node.hex.corners[0].x, y: node.hex.corners[0].y},
-                    end: {x: node.hex.corners[5].x, y: node.hex.corners[5].y}
-                });
-            }
-            if (node.upLeft === undefined || node.upLeft?.cluster?.id !== this.id) {
-                lines.push({
-                    start: {x: node.hex.corners[5].x, y: node.hex.corners[5].y},
-                    end: {x: node.hex.corners[4].x, y: node.hex.corners[4].y}
-                });
-            }
-            if (node.left === undefined || node.left?.cluster?.id !== this.id) {
-                lines.push({
-                    start: {x: node.hex.corners[4].x, y: node.hex.corners[4].y},
-                    end: {x: node.hex.corners[3].x, y: node.hex.corners[3].y}
-                });
-            }
-            if (node.downLeft === undefined || node.downLeft?.cluster?.id !== this.id) {
-                lines.push({
-                    start: {x: node.hex.corners[3].x, y: node.hex.corners[3].y},
-                    end: {x: node.hex.corners[2].x, y: node.hex.corners[2].y}
-                });
-            }
-            if (node.downRight === undefined || node.downRight?.cluster?.id !== this.id) {
-                lines.push({
-                    start: {x: node.hex.corners[2].x, y: node.hex.corners[2].y},
-                    end: {x: node.hex.corners[1].x, y: node.hex.corners[1].y}
-                });
-            }
-            if (node.right === undefined || node.right?.cluster?.id !== this.id) {
-                lines.push({
-                    start: {x: node.hex.corners[1].x, y: node.hex.corners[1].y},
-                    end: {x: node.hex.corners[0].x, y: node.hex.corners[0].y}
-                });
+            for (let [i, neighbour] of ["upRight", "upLeft", "left", "downLeft", "downRight", "right"].entries()) {
+                if (node[neighbour] === undefined || node[neighbour]?.cluster?.id !== this.id) {
+                    let end = 5 - i, start = end === 5 ? 0 : end + 1;
+                    lines.push({
+                        start: {x: node.hex.corners[start].x, y: node.hex.corners[start].y},
+                        end: {x: node.hex.corners[end].x, y: node.hex.corners[end].y}
+                    });
+                }
             }
         }
         lines.sort((a, b) => a.start.x - b.start.x);
@@ -113,8 +87,19 @@ export class Cluster {
         )];
     }
 
-    containsPoint(point) {
-        for (let node of this.nodes) if (Math.pow(point.x - node.hex.center.x, 2) + Math.pow(point.y - node.hex.center.y, 2) < Math.pow(RADIUS_HEX, 2)) return true;
-        return false;
+    containsPoint(p) {
+        return this.nodes.some(n => Math.pow(p.x - n.hex.center.x, 2) + Math.pow(p.y - n.hex.center.y, 2) < Math.pow(RADIUS_HEX, 2));
+    }
+
+    getRegionSize() {
+        let cache = [this.id];
+        let neighbours = this.getAdjacentClustersFromCluster()
+            .filter(c => !cache.includes(c.id) && c.playerId === this.playerId);
+        while (neighbours.length > 0) {
+            cache = cache.concat(neighbours.map(n => n.id));
+            neighbours = [...new Set(neighbours.flatMap(n => n.getAdjacentClustersFromCluster()
+                .filter(c => !cache.includes(c.id) && c.playerId === this.playerId)))];
+        }
+        return cache.length;
     }
 }

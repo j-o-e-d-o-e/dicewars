@@ -9,7 +9,7 @@ export class Human extends Player {
         this.clickedCluster = undefined;
     }
 
-    turn(point, clusters) {
+    click(point) {
         if (this.clickedCluster === undefined) {
             let clicked = this.clickableClusters.find(c => c.containsPoint(point));
             if (clicked === undefined) return;
@@ -28,18 +28,20 @@ export class Human extends Player {
             let sumOther = Player.roleDice(clickedCluster2.dices);
             let dicesPlayerBefore = this.clickedCluster.dices;
             this.clickedCluster.dices = 1;
-            console.log(`attack=${clickedCluster2.id}`);
-            console.log(`thrown dices: ${sumPlayer} vs ${sumOther}`);
+            console.log(`attack=${clickedCluster2.id} -> thrown dices: ${sumPlayer} vs ${sumOther}`);
             drawUpdatedCluster(this.clickedCluster.corners, this.id);
             drawUpdatedDices(this.clickedCluster);
             if (sumPlayer > sumOther) {
                 clickedCluster2.playerId = this.id;
                 clickedCluster2.dices = dicesPlayerBefore - 1;
-                this.clickableClusters = clusters.filter(c => c.playerId === this.id && c.dices > 1);
                 drawUpdatedCluster(clickedCluster2.corners, this.id);
                 drawUpdatedDices(clickedCluster2);
             }
             this.clickedCluster = undefined;
         }
+    }
+
+    move() {
+        console.log(`Human's turn (id: ${this.id})...`);
     }
 }
