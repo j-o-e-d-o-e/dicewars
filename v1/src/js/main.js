@@ -8,7 +8,6 @@ let clusters, players, player;
 
 function main() {
     setup();
-    // TODO: 1. no infinite loop during setup 2. game-loop
     // for (let player of players) {
     //     if (player instanceof Human) {
     //         console.log(`Human's turn...`);
@@ -46,11 +45,6 @@ function setup() {
     }
     const [board, centerNode] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
     clusters = createClusters(centerNode);
-    console.log(`${clusters.length} clusters created with ${JSON.stringify(clusters.reduce((acc, current) => {
-        acc.nodes += current.nodes.length;
-        acc.dices += current.dices;
-        return acc;
-    }, {nodes: 0, dices: 0}))}`);
     [players, player] = createPlayers(clusters);
     player.clickableClusters = clusters.filter(c => c.playerId === player.id && c.dices > 1);
     drawInit(player.id);

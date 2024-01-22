@@ -1,47 +1,48 @@
 import {CLUSTERS_MAX} from "./info.js";
 import {Cluster} from "./cluster.js";
 
-let directions = [...Array(4).keys()]; // [0, 1, 2, 3]
-let count = 0, counter = 0;
+const MIN_NEIGHBOURS_NODE = 3;
+let tracks = 4, bigCount = 0, smallCount = 0;
 
 export function createClusters(startNode) {
     let clusters = [new Cluster(startNode)];
-    while (clusters.length <= directions.length) {
-        let node = getRandomAdjacentNodeFromCluster(clusters, 0);
+    while (clusters.length <= tracks) {
+        let node = getRandomAdjacentNodeFromCluster(clusters[0]);
         if (node === undefined) continue;
         clusters.push(new Cluster(node));
     }
-    while (clusters.length < CLUSTERS_MAX && directions.length > 0) {
-        let index = getNextClusterIndex(Math.floor(count));
-        let node = getRandomAdjacentNodeFromCluster(clusters, index);
+    while (clusters.length < CLUSTERS_MAX && tracks >= 0) {
+        let index = getNextClusterIndex();
+        let node = getRandomAdjacentNodeFromCluster(clusters[index]);
         if (node === undefined) continue;
         clusters.push(new Cluster(node));
-        count += 1 / directions.length;
+        if ((clusters.length - 1) % tracks === 0) bigCount += tracks;
     }
+    log(clusters);
     return clusters;
 }
 
-function getRandomAdjacentNodeFromCluster(clusters, index) {
-    let candidates = clusters[index].getAdjacentNodesFromCluster().filter(n => n.cluster === undefined);
+function getRandomAdjacentNodeFromCluster(cluster) {
+    let candidates = cluster.getAdjacentNodesFromCluster().filter(n => n.cluster === undefined
+        && n.getAdjacentNodesFromNode().filter(n => n.cluster === undefined).length >= MIN_NEIGHBOURS_NODE);
     if (candidates.length === 0) {
-        directions.splice(index % directions.length, 1);
-        count = Math.ceil(count);
+        tracks--;
+        if (++smallCount >= tracks) smallCount = 0;
         return;
     }
-    let candidate = candidates[Math.floor(Math.random() * candidates.length)];
-    let availableNeighbours = candidate.getAdjacentNodesFromNode().filter(n => n.cluster === undefined);
-    if (availableNeighbours.length < 3) return; // possibly infinity source!
-    return candidate;
+    return candidates[Math.floor(Math.random() * candidates.length)];
 }
 
-function getNextClusterIndex(count) {
-    let res = directions.length * count + counter + 1;
-    counter++;
-    if (counter === directions.length) counter = 0;
+function getNextClusterIndex() {
+    let res = bigCount + smallCount++ + 1;
+    if (smallCount === tracks) smallCount = 0;
     return res;
 }
 
-function getRandomClusterIndex(count) {
-    let rand = Math.floor(Math.random() * directions.length);
-    return directions.length * count + rand + 1;
+function log(clusters) {
+    console.log(`${clusters.length} clusters created with ${JSON.stringify(clusters.reduce((acc, current) => {
+        acc.nodes += current.nodes.length;
+        acc.dices += current.dices;
+        return acc;
+    }, {nodes: 0, dices: 0}))}`);
 }
