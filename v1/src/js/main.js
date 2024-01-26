@@ -3,7 +3,7 @@ import {createBoard} from './board.js';
 import {createClusters} from "./clusters.js";
 import {createPlayers} from "./players.js";
 import {Human} from "./player-human.js";
-import {draw, drawInit, drawUpdatedCluster, drawUpdatedDices, drawUpdatedDicesText} from "./draw.js";
+import {draw, drawInit, drawUpdatedCluster, drawUpdatedDices, drawUpdatedDicesText, drawDeletedPlayer} from "./draw.js";
 
 let canvas, btn;
 let clusters, players, player, playerIndex = -1;
@@ -13,14 +13,38 @@ function main() {
     nextMove();
 }
 
-export function nextMove() {
+function nextMove() {
     if (++playerIndex === players.length) playerIndex = 0;
     let current = players[playerIndex];
     if (current instanceof Human) {
         canvas.addEventListener("click", clickListener, false);
         btn.disabled = false;
     }
-    players[playerIndex].move(nextMove);
+    current.move(() => {
+        afterMove(current);
+    });
+}
+
+function afterMove(player) {
+    let dicesBefore = clusters.map(c => c.dices);
+    player.allocateNewDices(clusters);
+    clusters.filter((c, i) => c.playerId === player.id && c.dices !== dicesBefore[i]).forEach(c => drawUpdatedDices(c));
+    drawUpdatedDicesText(player.id, player.dices);
+    if (!isOver()) nextMove();
+}
+
+function isOver() {
+    for (let i = 0; i < players.length; i++) {
+        if (!clusters.some(c => c.playerId === i)) {
+            players.splice(i, 1);
+            drawDeletedPlayer(i++);
+            if (players.length === 1) {
+                console.log(`Player(id=${players[0].id}) has won.`);
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 function setup() {
@@ -29,11 +53,7 @@ function setup() {
         canvas.removeEventListener("click", clickListener);
         btn.disabled = true;
         if (player.clickedCluster !== undefined) drawUpdatedCluster(player.clickedCluster.corners, player.id);
-        let dicesBefore = clusters.map(c => c.dices);
-        player.allocateNewDices(clusters);
-        clusters.filter((c, i) => c.playerId === player.id && c.dices !== dicesBefore[i]).forEach(c => drawUpdatedDices(c));
-        drawUpdatedDicesText(player.id, player.dices);
-        nextMove();
+        afterMove(player);
     });
     let div = document.getElementById("stage");
     for (let i = 0; i <= CLUSTERS_MAX; i++) {

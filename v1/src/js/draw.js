@@ -85,6 +85,12 @@ export function drawUpdatedDicesText(playerId, dices) {
     dicesTxt[playerId].innerHTML = dices;
 }
 
+export function drawDeletedPlayer(playerId) {
+    COLORS.splice(playerId, 1);
+    let dices = document.getElementById("dices");
+    dices.removeChild(dices.children[playerId]);
+}
+
 export function draw(board, clusters) {
     drawBoard(board);
     drawClusters(clusters);
