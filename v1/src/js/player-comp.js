@@ -7,6 +7,7 @@ export class Comp extends Player {
     }
 
     moveComp() {
+        // TODO: valid moves, exit-condition, update state, draw, ...
     }
 
     move(cb) {
