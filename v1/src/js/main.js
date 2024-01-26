@@ -20,7 +20,7 @@ function nextMove() {
         canvas.addEventListener("click", clickListener, false);
         btn.disabled = false;
     }
-    current.move(() => {
+    current.move(clusters, () => {
         afterMove(current);
     });
 }
@@ -55,6 +55,7 @@ function setup() {
         if (player.clickedCluster !== undefined) drawUpdatedCluster(player.clickedCluster.corners, player.id);
         afterMove(player);
     });
+    btn.disabled = true;
     let div = document.getElementById("stage");
     for (let i = 0; i <= CLUSTERS_MAX; i++) {
         canvas = document.createElement("canvas");

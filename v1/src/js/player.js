@@ -1,4 +1,5 @@
 import {CLUSTERS_MAX} from "./info.js"
+import {Human} from "./player-human.js";
 
 export class Player {
     static count = 0;
@@ -6,6 +7,10 @@ export class Player {
     constructor() {
         this.id = Player.count++;
         this.dices = undefined;
+    }
+
+    move() {
+        console.log(`${this instanceof Human ? "Human" : "Comp"}'s turn (id: ${this.id})...`);
     }
 
     static roleDice(dices) {
