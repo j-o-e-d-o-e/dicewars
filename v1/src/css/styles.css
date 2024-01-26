@@ -12,3 +12,27 @@ canvas {
     top: 0;
     z-index: 1;
 }
+
+#dices {
+    position: fixed;
+    margin-left: 400px;
+    margin-top: 800px;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.dicesPlayer{
+    margin-right: 20px;
+}
+
+img{
+    width: 50px;
+    height: 50px;
+}
+
+button {
+    color: red;
+    position: fixed;
+    margin-left: 1200px;
+    margin-top: 800px;
+}

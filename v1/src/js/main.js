@@ -2,8 +2,8 @@ import {CANVAS_WIDTH, CANVAS_HEIGHT, CLUSTERS_MAX} from './info.js';
 import {createBoard} from './board.js';
 import {createClusters} from "./clusters.js";
 import {createPlayers} from "./players.js";
-import {draw, drawInit, drawUpdatedCluster, drawUpdatedDices} from "./draw.js";
 import {Human} from "./player-human.js";
+import {draw, drawInit, drawUpdatedCluster, drawUpdatedDices, drawUpdatedDicesText} from "./draw.js";
 
 let canvas, btn;
 let clusters, players, player, playerIndex = -1;
@@ -29,8 +29,10 @@ function setup() {
         canvas.removeEventListener("click", clickListener);
         btn.disabled = true;
         if (player.clickedCluster !== undefined) drawUpdatedCluster(player.clickedCluster.corners, player.id);
+        let dicesBefore = clusters.map(c => c.dices);
         player.allocateNewDices(clusters);
-        clusters.filter(c => c.playerId === player.id).forEach(c => drawUpdatedDices(c));
+        clusters.filter((c, i) => c.playerId === player.id && c.dices !== dicesBefore[i]).forEach(c => drawUpdatedDices(c));
+        drawUpdatedDicesText(player.id, player.dices);
         nextMove();
     });
     let div = document.getElementById("stage");
@@ -46,7 +48,7 @@ function setup() {
     clusters = createClusters(centerNode);
     [players, player] = createPlayers(clusters);
     player.clickableClusters = clusters.filter(c => c.playerId === player.id && c.dices > 1);
-    drawInit(player.id);
+    drawInit(players, player.id);
     draw(board, clusters);
 }
 

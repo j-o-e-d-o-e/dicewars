@@ -1,11 +1,11 @@
-import {CANVAS_WIDTH, CANVAS_HEIGHT, RADIUS_HEX} from "./info.js"
+import {CANVAS_WIDTH, CANVAS_HEIGHT, RADIUS_HEX, CLUSTERS_MAX} from "./info.js"
 
-let ctxBg, ctxFg = [];
+let ctxBg, ctxFg = [], dicesTxt = [];
 const COLORS = [
-    "#B37FFE", "#B3FF01",
-    "#009302", "#FF7FFE",
-    "#FF7F01", "#B3FFFE",
-    "#FFFF01", "#FF5858"
+    ["#B37FFE", 1], ["#B3FF01", 2],
+    ["#009302", 3], ["#FF7FFE", 4],
+    ["#FF7F01", 5], ["#B3FFFE", 6],
+    ["#FFFF01", 7], ["#FF5858", 8]
 ];
 const LINE_WIDTH = 9;
 
@@ -24,8 +24,8 @@ function drawBoard(board) {
 
 function drawClusters(clusters) {
     for (let cluster of clusters) {
-        drawCluster(cluster.corners, "black", COLORS[cluster.playerId]);
-        drawDices(cluster);
+        drawCluster(cluster.corners, "black", COLORS[cluster.playerId][0]);
+        drawDices(cluster, COLORS[cluster.playerId][1]);
         // drawText(cluster);
     }
 }
@@ -44,7 +44,7 @@ function drawCluster(corners, lineColor, fillColor) {
 
 export function drawUpdatedCluster(corners, playerId) {
     if (playerId === undefined) drawCluster(corners, "red", "white");
-    else drawCluster(corners, "black", COLORS[playerId]);
+    else drawCluster(corners, "black", COLORS[playerId][0]);
 }
 
 function drawText(cluster) {
@@ -57,7 +57,7 @@ function drawText(cluster) {
     ctxFg[cluster.id].fillText(cluster.id, x, y);
 }
 
-function drawDices(cluster) {
+function drawDices(cluster, cubeColorId) {
     let x = cluster.centerPos.x - 30;
     let y = cluster.centerPos.y - 20;
     let size = 50;
@@ -73,12 +73,16 @@ function drawDices(cluster) {
             ctxFg[cluster.id].drawImage(img, x, y - yOffset * (i % 4), size, size);
         }
     };
-    img.src = `assets/cube.svg`;
+    img.src = `assets/cube-${cubeColorId}.svg`;
 }
 
 export function drawUpdatedDices(cluster) {
     ctxFg[cluster.id].clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    drawDices(cluster);
+    drawDices(cluster, COLORS[cluster.playerId][1]);
+}
+
+export function drawUpdatedDicesText(playerId, dices) {
+    dicesTxt[playerId].innerHTML = dices;
 }
 
 export function draw(board, clusters) {
@@ -86,15 +90,27 @@ export function draw(board, clusters) {
     drawClusters(clusters);
 }
 
-export function drawInit(playerId) {
+export function drawInit(players, humanPlayerId) {
     ctxBg = document.getElementById("canvas-0").getContext("2d")
     ctxBg.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    for (let i = 1; i <= 32; i++) {
+    for (let i = 1; i <= CLUSTERS_MAX; i++) {
         let ctx = document.getElementById("canvas-" + i).getContext("2d")
         ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         ctxFg.push(ctx);
     }
-    let tmp = COLORS[playerId];
-    COLORS[playerId] = COLORS[0];
+    let tmp = COLORS[humanPlayerId];
+    COLORS[humanPlayerId] = COLORS[0];
     COLORS[0] = tmp;
+    let dices = document.getElementById("dices");
+    for (let player of players) {
+        let span  = document.createElement("span");
+        span.className = "dicesPlayer";
+        let img = document.createElement("img");
+        img.src = `assets/cube-${COLORS[player.id][1]}.svg`;
+        let txt  = document.createElement("span");
+        txt.innerHTML = player.dices;
+        span.append(img, txt);
+        dices.appendChild(span);
+        dicesTxt.push(txt);
+    }
 }

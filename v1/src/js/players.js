@@ -1,6 +1,6 @@
+import {PLAYERS} from "./info.js";
 import {Human} from "./player-human.js";
-import {PlayerComp} from "./player-comp.js";
-import{PLAYERS} from "./info.js";
+import {Comp} from "./player-comp.js";
 
 export function createPlayers(clusters) {
     let players = [];
@@ -10,7 +10,7 @@ export function createPlayers(clusters) {
             players.push(new Human());
             playerIndex = i;
         } else {
-            players.push(new PlayerComp());
+            players.push(new Comp());
             playerProb += 0.1;
         }
     }
@@ -19,5 +19,12 @@ export function createPlayers(clusters) {
         cluster.playerId = players[index++].id;
         if (index >= PLAYERS) index = 0;
     }
+    for (let player of players) player.dices = player.getNewDices(clusters)[0];
+    log(players)
     return [players, players[playerIndex]];
+}
+
+function log(players) {
+    console.log(`${players.length} players created:
+    ${players.map(p => "- " + `${p instanceof Human ? "Human" : "Comp"}` + JSON.stringify(p)).join("\n\t")}`);
 }

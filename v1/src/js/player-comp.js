@@ -1,13 +1,12 @@
 import {Player} from "./player.js";
 
-export class PlayerComp extends Player {
+export class Comp extends Player {
 
     constructor() {
         super();
     }
 
     moveComp() {
-
     }
 
     move(cb) {
