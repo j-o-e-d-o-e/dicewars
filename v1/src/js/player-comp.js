@@ -12,19 +12,19 @@ export class Comp extends Player {
         super.move();
         let compClusters = clusters.filter(c => c.playerId === this.id && c.dices > 1)
             .sort((a, b) => b.dices - a.dices);
-        // console.log(this.clusters.map(c => [c.id, c.dices]));
-        let attacks = 0;
-        for (let cluster of compClusters) {
+        let cluster = compClusters.shift()
+        while (cluster !== undefined) {
             let targetClusters = cluster.getAdjacentClustersFromCluster()
                 .filter(c => c.playerId !== this.id && c.dices + 2 < cluster.dices)
                 .sort((a, b) => a.dices - b.dices);
-            if (targetClusters.length === 0) continue;
-            // console.log(targetClusters.map(c => [c.id, c.dices]));
+            if (targetClusters.length === 0) {
+                cluster = compClusters.shift();
+                continue;
+            }
             let target = targetClusters[0];
-            attacks++;
-            await this.attack(cluster, target);
+            let succeeded = await this.attack(cluster, target);
+            cluster = succeeded ? target : compClusters.shift();
         }
-        console.log(`attacks: ${attacks}/${compClusters.length}`);
         cb();
     }
 
@@ -42,9 +42,9 @@ export class Comp extends Player {
                     target.dices = dicesCompBefore - 1;
                     drawUpdatedDices(target);
                     drawUpdatedCluster(target.corners, this.id);
-                }
-                resolve()
-            }, TIMEOUT*5);
+                    resolve(true);
+                } else resolve(false)
+            }, TIMEOUT);
         });
     }
 }

@@ -3,13 +3,12 @@ import {createBoard} from "../js/board.js";
 import {createClusters} from "../js/clusters.js";
 import {createPlayers} from "../js/players.js";
 
-let board, startNode, clusters, players, player;
+let clusters, player;
 
 beforeAll(() => {
-    [board, startNode] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
+    let [_, startNode] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
     clusters = createClusters(startNode);
-    [players, player] = createPlayers(clusters);
-
+    player = createPlayers(clusters)[1];
 });
 
 test('allocate new dices for all clusters', () => {
