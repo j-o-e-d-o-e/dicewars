@@ -1,4 +1,4 @@
-import {CANVAS_WIDTH, CANVAS_HEIGHT, CLUSTERS_MAX} from './info.js';
+import {CANVAS_WIDTH, CANVAS_HEIGHT, CLUSTERS_MAX, TIMEOUT} from './info.js';
 import {createBoard} from './board.js';
 import {createClusters} from "./clusters.js";
 import {createPlayers} from "./players.js";
@@ -20,17 +20,24 @@ function nextMove() {
         canvas.addEventListener("click", clickListener, false);
         btn.disabled = false;
     }
-    current.move(clusters, () => {
-        afterMove(current);
+    current.move(clusters, async () => {
+        await afterMove(current);
     });
 }
 
-function afterMove(player) {
-    let dicesBefore = clusters.map(c => c.dices);
-    player.allocateNewDices(clusters);
-    clusters.filter((c, i) => c.playerId === player.id && c.dices !== dicesBefore[i]).forEach(c => drawUpdatedDices(c));
-    drawUpdatedDicesText(player.id, player.dices);
-    if (!isOver()) nextMove();
+function afterMove(player, timeout = TIMEOUT) {
+    new Promise(resolve => {
+        let dicesBefore = clusters.map(c => c.dices);
+        player.allocateNewDices(clusters);
+        setTimeout(() => {
+            clusters.filter((c, i) => c.playerId === player.id && c.dices !== dicesBefore[i]).forEach(c => drawUpdatedDices(c));
+            drawUpdatedDicesText(player.id, player.dices);
+            console.log("...finished.");
+            resolve();
+        }, timeout);
+    }).then(() => {
+        if (!isOver()) nextMove();
+    });
 }
 
 function isOver() {
@@ -53,7 +60,7 @@ function setup() {
         canvas.removeEventListener("click", clickListener);
         btn.disabled = true;
         if (player.clickedCluster !== undefined) drawUpdatedCluster(player.clickedCluster.corners, player.id);
-        afterMove(player);
+        afterMove(player, 0);
     });
     btn.disabled = true;
     let div = document.getElementById("stage");

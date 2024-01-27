@@ -1,4 +1,4 @@
-import {CANVAS_WIDTH, CANVAS_HEIGHT, RADIUS_HEX, CLUSTERS_MAX} from "./info.js"
+import {CANVAS_WIDTH, CANVAS_HEIGHT, RADIUS_HEX, CLUSTERS_MAX, TIMEOUT_DICES} from "./info.js"
 
 let ctxBg, ctxFg = [], dicesTxt = [];
 const COLORS = [
@@ -25,7 +25,7 @@ function drawBoard(board) {
 function drawClusters(clusters) {
     for (let cluster of clusters) {
         drawCluster(cluster.corners, "black", COLORS[cluster.playerId][0]);
-        drawDices(cluster, COLORS[cluster.playerId][1]);
+        drawDices(cluster, COLORS[cluster.playerId][1], 0);
         // drawText(cluster);
     }
 }
@@ -54,23 +54,29 @@ function drawText(cluster) {
     let y = cluster.centerPos.y + yTextOffset;
     ctxFg[cluster.id].fillStyle = "black";
     ctxFg[cluster.id].font = "40px Standard";
-    ctxFg[cluster.id].fillText(cluster.id, x, y);
+    ctxFg[cluster.id].fillText(cluster.id, x + 20, y - 20);
 }
 
-function drawDices(cluster, cubeColorId) {
+function drawDices(cluster, cubeColorId, timeout = TIMEOUT_DICES) {
     let x = cluster.centerPos.x - 30;
     let y = cluster.centerPos.y - 20;
     let size = 50;
     let xOffset = 16;
     let yOffset = 20;
     let img = new Image();
-    img.onload = () => {
+    img.onload = async () => {
+        let ctx = ctxFg[cluster.id];
         for (let i = 0; i < cluster.dices; i++) {
             if (i === 4) {
                 x += xOffset;
                 y += 8;
             }
-            ctxFg[cluster.id].drawImage(img, x, y - yOffset * (i % 4), size, size);
+            await new Promise(resolve => {
+                setTimeout(() => {
+                    ctx.drawImage(img, x, y - yOffset * (i % 4), size, size)
+                    resolve();
+                }, timeout);
+            });
         }
     };
     img.src = `assets/cube-${cubeColorId}.svg`;
@@ -109,11 +115,11 @@ export function drawInit(players, humanPlayerId) {
     COLORS[0] = tmp;
     let dices = document.getElementById("dices");
     for (let player of players) {
-        let span  = document.createElement("span");
+        let span = document.createElement("span");
         span.className = "dicesPlayer";
         let img = document.createElement("img");
         img.src = `assets/cube-${COLORS[player.id][1]}.svg`;
-        let txt  = document.createElement("span");
+        let txt = document.createElement("span");
         txt.innerHTML = player.dices;
         span.append(img, txt);
         dices.appendChild(span);
