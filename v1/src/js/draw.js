@@ -1,4 +1,4 @@
-import {CANVAS_WIDTH, CANVAS_HEIGHT, RADIUS_HEX, CLUSTERS_MAX, TIMEOUT_DICES} from "./info.js"
+import {CANVAS_WIDTH, CANVAS_HEIGHT, RADIUS_HEX, CLUSTERS_MAX, PLAYERS, TIMEOUT_DICES} from "./info.js"
 
 let ctxBg, ctxFg = [], dicesTxt = [];
 const COLORS = [
@@ -89,6 +89,8 @@ export function drawUpdatedDices(cluster) {
 
 export function drawUpdatedDicesText(playerId, dices) {
     dicesTxt[playerId].innerHTML = dices;
+    dicesTxt[playerId].parentNode.style = "background-color:none";
+    dicesTxt[(playerId + 1) % PLAYERS].parentNode.style = "background-color:lightgrey";
 }
 
 export function drawDeletedPlayer(playerId) {
@@ -125,4 +127,5 @@ export function drawInit(players, humanPlayerId) {
         dices.appendChild(span);
         dicesTxt.push(txt);
     }
+    dicesTxt[0].parentNode.style = "background-color:lightgrey";
 }

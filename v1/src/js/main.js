@@ -30,12 +30,15 @@ function afterMove(player, timeout = TIMEOUT) {
         let dicesBefore = clusters.map(c => c.dices);
         player.allocateNewDices(clusters);
         setTimeout(() => {
-            clusters.filter((c, i) => c.playerId === player.id && c.dices !== dicesBefore[i]).forEach(c => drawUpdatedDices(c));
-            drawUpdatedDicesText(player.id, player.dices);
-            console.log("...finished.");
+            for (let [index, cluster] of clusters.entries()) {
+                if (cluster.playerId !== player.id || cluster.dices === dicesBefore[index]) continue;
+                drawUpdatedDices(cluster);
+            }
             resolve();
         }, timeout);
     }).then(() => {
+        drawUpdatedDicesText(player.id, player.dices);
+        console.log("...finished.");
         if (!isOver()) nextMove();
     });
 }
