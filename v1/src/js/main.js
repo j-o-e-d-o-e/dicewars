@@ -1,4 +1,4 @@
-import {CANVAS_WIDTH, CANVAS_HEIGHT, CLUSTERS_MAX, TIMEOUT} from './info.js';
+import {CANVAS_WIDTH, CANVAS_HEIGHT, CLUSTERS_MAX, TIMEOUT_BG} from './info.js';
 import {createBoard} from './board.js';
 import {createClusters} from "./clusters.js";
 import {createPlayers} from "./players.js";
@@ -10,40 +10,40 @@ let clusters, players, player, playerIndex = -1;
 
 function main() {
     setup();
-    nextMove();
+    nextTurn();
 }
 
-function nextMove() {
-    if (++playerIndex === players.length) playerIndex = 0;
+function nextTurn() {
+    if (++playerIndex >= players.length) playerIndex = 0;
     let current = players[playerIndex];
     if (current instanceof Human) {
         canvas.addEventListener("click", clickListener, false);
         btn.disabled = false;
     }
     current.move(clusters, async () => {
-        await afterMove(current);
+        await afterTurn(current);
     });
 }
 
-function afterMove(player, timeout = TIMEOUT) {
-    new Promise(resolve => {
+function afterTurn(player, timeout = TIMEOUT_BG) {
+    return new Promise(resolve => {
         let dicesBefore = clusters.map(c => c.dices);
         player.allocateNewDices(clusters);
+        for (let [index, cluster] of clusters.entries()) {
+            if (cluster.playerId !== player.id || cluster.dices === dicesBefore[index]) continue;
+            drawUpdatedDices(cluster);
+        }
         setTimeout(() => {
-            for (let [index, cluster] of clusters.entries()) {
-                if (cluster.playerId !== player.id || cluster.dices === dicesBefore[index]) continue;
-                drawUpdatedDices(cluster);
-            }
-            resolve();
+            drawUpdatedDicesText(player.id, player.dices);
+            console.log("...finished.");
+            resolve(gameEnd());
         }, timeout);
-    }).then(() => {
-        drawUpdatedDicesText(player.id, player.dices);
-        console.log("...finished.");
-        if (!isOver()) nextMove();
+    }).then(end => {
+        if (!end) nextTurn();
     });
 }
 
-function isOver() {
+function gameEnd() {
     for (let i = 0; i < players.length; i++) {
         if (!clusters.some(c => c.playerId === i)) {
             players.splice(i, 1);
@@ -59,11 +59,11 @@ function isOver() {
 
 function setup() {
     btn = document.getElementById("end-turn");
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", async () => {
         canvas.removeEventListener("click", clickListener);
         btn.disabled = true;
         if (player.clickedCluster !== undefined) drawUpdatedCluster(player.clickedCluster.corners, player.id);
-        afterMove(player, 0);
+        await afterTurn(player);
     });
     btn.disabled = true;
     let div = document.getElementById("stage");

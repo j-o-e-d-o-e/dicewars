@@ -15,7 +15,7 @@ export class Human extends Player {
             if (clicked === undefined) return;
             this.clickedCluster = clicked;
             console.log(`selected=${this.clickedCluster.id}`);
-            drawUpdatedCluster(this.clickedCluster.corners, undefined);
+            drawUpdatedCluster(this.clickedCluster.corners);
         } else if (this.clickedCluster.containsPoint(point)) {
             console.log(`undo=${this.clickedCluster.id}`);
             drawUpdatedCluster(this.clickedCluster.corners, this.id);

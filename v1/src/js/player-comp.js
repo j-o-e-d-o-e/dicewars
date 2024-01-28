@@ -1,4 +1,4 @@
-import {TIMEOUT} from "./info.js"
+import {TIMEOUT_BG, TIMEOUT_SM} from "./info.js"
 import {Player} from "./player.js";
 import {drawUpdatedCluster, drawUpdatedDices} from "./draw.js";
 
@@ -15,7 +15,7 @@ export class Comp extends Player {
         let cluster = compClusters.shift()
         while (cluster !== undefined) {
             let targetClusters = cluster.getAdjacentClustersFromCluster()
-                .filter(c => c.playerId !== this.id && c.dices + 2 < cluster.dices)
+                .filter(c => c.playerId !== this.id && cluster.dices > c.dices - (cluster.dices === 8))
                 .sort((a, b) => a.dices - b.dices);
             if (targetClusters.length === 0) {
                 cluster = compClusters.shift();
@@ -33,18 +33,26 @@ export class Comp extends Player {
             let sumComp = Player.roleDice(cluster.dices);
             let sumOther = Player.roleDice(target.dices);
             console.log(`${cluster.id} attacks ${target.id} -> thrown dices: ${sumComp} vs ${sumOther}`);
+            drawUpdatedCluster(cluster.corners);
             setTimeout(() => {
-                let dicesCompBefore = cluster.dices;
-                cluster.dices = 1;
-                drawUpdatedDices(cluster);
-                if (sumComp > sumOther) {
-                    target.playerId = this.id;
-                    target.dices = dicesCompBefore - 1;
-                    drawUpdatedDices(target);
-                    drawUpdatedCluster(target.corners, this.id);
-                    resolve(true);
-                } else resolve(false)
-            }, TIMEOUT);
+                drawUpdatedCluster(target.corners);
+                setTimeout(() => {
+                    let dicesCompBefore = cluster.dices;
+                    cluster.dices = 1;
+                    drawUpdatedDices(cluster);
+                    drawUpdatedCluster(cluster.corners, this.id);
+                    if (sumComp > sumOther) {
+                        target.playerId = this.id;
+                        target.dices = dicesCompBefore - 1;
+                        drawUpdatedDices(target);
+                        drawUpdatedCluster(target.corners, this.id);
+                        resolve(true);
+                    } else {
+                        drawUpdatedCluster(target.corners, target.playerId);
+                        resolve(false);
+                    }
+                }, TIMEOUT_BG);
+            }, TIMEOUT_SM);
         });
     }
 }

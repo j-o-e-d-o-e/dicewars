@@ -1,4 +1,4 @@
-import {CANVAS_WIDTH, CANVAS_HEIGHT, RADIUS_HEX, CLUSTERS_MAX, PLAYERS, TIMEOUT_DICES} from "./info.js"
+import {CANVAS_WIDTH, CANVAS_HEIGHT, RADIUS_HEX, CLUSTERS_MAX, PLAYERS, TIMEOUT_SM} from "./info.js"
 
 let ctxBg, ctxFg = [], dicesTxt = [];
 const COLORS = [
@@ -43,10 +43,11 @@ function drawCluster(corners, lineColor, fillColor) {
 }
 
 export function drawUpdatedCluster(corners, playerId) {
-    if (playerId === undefined) drawCluster(corners, "red", "white");
+    if (playerId === undefined) drawCluster(corners, "red", "ghostwhite");
     else drawCluster(corners, "black", COLORS[playerId][0]);
 }
 
+// noinspection JSUnusedLocalSymbols
 function drawText(cluster) {
     const xTextOffset = RADIUS_HEX / 2;
     const yTextOffset = RADIUS_HEX / 2 + 2;
@@ -57,7 +58,7 @@ function drawText(cluster) {
     ctxFg[cluster.id].fillText(cluster.id, x + 20, y - 20);
 }
 
-function drawDices(cluster, cubeColorId, timeout = TIMEOUT_DICES) {
+function drawDices(cluster, cubeColorId, timeout = TIMEOUT_SM) {
     let x = cluster.centerPos.x - 30;
     let y = cluster.centerPos.y - 20;
     let size = 50;
@@ -94,7 +95,6 @@ export function drawUpdatedDicesText(playerId, dices) {
 }
 
 export function drawDeletedPlayer(playerId) {
-    COLORS.splice(playerId, 1);
     let dices = document.getElementById("dices");
     dices.removeChild(dices.children[playerId]);
 }
