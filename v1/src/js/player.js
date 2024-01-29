@@ -1,5 +1,6 @@
 import {CLUSTERS_MAX} from "./info.js"
 import {Human} from "./player-human.js";
+import {drawUpdatedDicesText} from "./draw.js";
 
 export class Player {
     static count = 0;
@@ -13,9 +14,19 @@ export class Player {
         console.log(`${this instanceof Human ? "Human" : "Comp"}'s turn (id: ${this.id})...`);
     }
 
-    static roleDice(dices) {
+    afterSuccessfulAttack(clusters, other) {
+        console.log("afterSuccessfulAttack:", clusters.length, other.id);
+        this.dices = clusters.filter(c => c.playerId === this.id).every(c => c.dices === 8) ?
+            this.dices + this.getNewDices(clusters)[0] : this.getNewDices(clusters)[0];
+        drawUpdatedDicesText(this.id, this.dices);
+        other.dices = clusters.filter(c => c.playerId === other.id).every(c => c.dices === 8) ?
+            other.dices + other.getNewDices(clusters)[0] : other.getNewDices(clusters)[0];
+        drawUpdatedDicesText(other.id, other.dices);
+    }
+
+    static roleDice(dices, limit = 8) {
         let sum = 0;
-        for (let i = 0; i < dices; i++) sum += Math.floor(Math.random() * 5) + 1;
+        for (let i = 0; i < dices; i++) sum += Math.floor(Math.random() * 6) + 1;
         return sum;
     }
 

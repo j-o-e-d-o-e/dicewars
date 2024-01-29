@@ -90,6 +90,9 @@ export function drawUpdatedDices(cluster) {
 
 export function drawUpdatedDicesText(playerId, dices) {
     dicesTxt[playerId].innerHTML = dices;
+}
+
+export function drawUpdateHighlightedDices(playerId) {
     dicesTxt[playerId].parentNode.style = "background-color:none";
     dicesTxt[(playerId + 1) % PLAYERS].parentNode.style = "background-color:lightgrey";
 }

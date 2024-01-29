@@ -8,7 +8,7 @@ export class Comp extends Player {
         super();
     }
 
-    async move(clusters, cb) {
+    async move(clusters, getPlayer, cb) {
         super.move();
         let compClusters = clusters.filter(c => c.playerId === this.id && c.dices > 1)
             .sort((a, b) => b.dices - a.dices);
@@ -22,8 +22,12 @@ export class Comp extends Player {
                 continue;
             }
             let target = targetClusters[0];
-            let succeeded = await this.attack(cluster, target);
-            cluster = succeeded ? target : compClusters.shift();
+            await this.attack(cluster, target).then(otherPlayerId => {
+                if (otherPlayerId !== undefined) {
+                    cluster = target;
+                    this.afterSuccessfulAttack(clusters, getPlayer(otherPlayerId));
+                } else cluster = compClusters.shift();
+            });
         }
         cb();
     }
@@ -42,14 +46,15 @@ export class Comp extends Player {
                     drawUpdatedDices(cluster);
                     drawUpdatedCluster(cluster.corners, this.id);
                     if (sumComp > sumOther) {
+                        let otherPlayerId = target.playerId;
                         target.playerId = this.id;
                         target.dices = dicesCompBefore - 1;
                         drawUpdatedDices(target);
                         drawUpdatedCluster(target.corners, this.id);
-                        resolve(true);
+                        resolve(otherPlayerId);
                     } else {
                         drawUpdatedCluster(target.corners, target.playerId);
-                        resolve(false);
+                        resolve(undefined);
                     }
                 }, TIMEOUT_BG);
             }, TIMEOUT_SM);

@@ -3,7 +3,15 @@ import {createBoard} from './board.js';
 import {createClusters} from "./clusters.js";
 import {createPlayers} from "./players.js";
 import {Human} from "./player-human.js";
-import {draw, drawInit, drawUpdatedCluster, drawUpdatedDices, drawUpdatedDicesText, drawDeletedPlayer} from "./draw.js";
+import {
+    draw,
+    drawInit,
+    drawUpdatedCluster,
+    drawUpdatedDices,
+    drawUpdatedDicesText,
+    drawDeletedPlayer,
+    drawUpdateHighlightedDices
+} from "./draw.js";
 
 let canvas, btn;
 let clusters, players, player, playerIndex = -1;
@@ -20,7 +28,7 @@ function nextTurn() {
         canvas.addEventListener("click", clickListener, false);
         btn.disabled = false;
     }
-    current.move(clusters, async () => {
+    current.move(clusters, otherPlayerId => players[otherPlayerId], async () => {
         await afterTurn(current);
     });
 }
@@ -35,6 +43,7 @@ function afterTurn(player, timeout = TIMEOUT_BG) {
         }
         setTimeout(() => {
             drawUpdatedDicesText(player.id, player.dices);
+            drawUpdateHighlightedDices(player.id);
             console.log("...finished.");
             resolve(gameEnd());
         }, timeout);
@@ -84,7 +93,8 @@ function setup() {
 }
 
 function clickListener(event) {
-    player.click({x: event.clientX, y: event.clientY});
+    let otherPlayerId = player.click({x: event.clientX, y: event.clientY});
+    if (otherPlayerId !== undefined) player.afterSuccessfulAttack(clusters, players[otherPlayerId]);
     player.clickableClusters = clusters.filter(c => c.playerId === player.id && c.dices > 1);
 }
 

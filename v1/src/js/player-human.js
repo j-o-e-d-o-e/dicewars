@@ -32,10 +32,13 @@ export class Human extends Player {
             drawUpdatedCluster(this.clickedCluster.corners, this.id);
             drawUpdatedDices(this.clickedCluster);
             if (sumPlayer > sumOther) {
+                let otherPlayerId = clickedCluster2.playerId;
                 clickedCluster2.playerId = this.id;
                 clickedCluster2.dices = dicesPlayerBefore - 1;
                 drawUpdatedCluster(clickedCluster2.corners, this.id);
                 drawUpdatedDices(clickedCluster2);
+                this.clickedCluster = undefined;
+                return otherPlayerId;
             }
             this.clickedCluster = undefined;
         }
