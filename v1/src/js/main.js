@@ -9,7 +9,6 @@ import {
     drawUpdatedCluster,
     drawUpdatedDices,
     drawUpdatedDicesText,
-    drawDeletedPlayer,
     drawUpdateHighlightedDices
 } from "./draw.js";
 
@@ -28,7 +27,7 @@ function nextTurn() {
         canvas.addEventListener("click", clickListener, false);
         btn.disabled = false;
     }
-    current.move(clusters, otherPlayerId => players[otherPlayerId], async () => {
+    current.move(clusters, players, async () => {
         await afterTurn(current);
     });
 }
@@ -41,29 +40,27 @@ function afterTurn(player, timeout = TIMEOUT_BG) {
             if (cluster.playerId !== player.id || cluster.dices === dicesBefore[index]) continue;
             drawUpdatedDices(cluster);
         }
+        drawUpdatedDicesText(player);
         setTimeout(() => {
-            drawUpdatedDicesText(player.id, player.dices);
             drawUpdateHighlightedDices(player.id);
             console.log("...finished.");
-            resolve(gameEnd());
+            resolve();
         }, timeout);
-    }).then(end => {
-        if (!end) nextTurn();
-    });
+    }).then(() => nextTurn());
 }
 
-function gameEnd() {
-    for (let i = 0; i < players.length; i++) {
-        if (!clusters.some(c => c.playerId === i)) {
-            players.splice(i, 1);
-            drawDeletedPlayer(i++);
-            if (players.length === 1) {
-                console.log(`Player(id=${players[0].id}) has won.`);
-                return true;
-            }
+function clickListener(event) {
+    let otherId = player.click({x: event.clientX, y: event.clientY});
+    if (otherId !== undefined) {
+        let gameEnded = player.afterSuccessfulMove(clusters, players, otherId);
+        if (gameEnded) {
+            console.log(`Human player (id: ${player.id}) has won.`);
+            btn.disabled = true;
+            canvas.removeEventListener("click", clickListener);
+            return;
         }
     }
-    return false;
+    player.clickableClusters = clusters.filter(c => c.playerId === player.id && c.dices > 1);
 }
 
 function setup() {
@@ -90,12 +87,6 @@ function setup() {
     player.clickableClusters = clusters.filter(c => c.playerId === player.id && c.dices > 1);
     drawInit(players, player.id);
     draw(board, clusters);
-}
-
-function clickListener(event) {
-    let otherPlayerId = player.click({x: event.clientX, y: event.clientY});
-    if (otherPlayerId !== undefined) player.afterSuccessfulAttack(clusters, players[otherPlayerId]);
-    player.clickableClusters = clusters.filter(c => c.playerId === player.id && c.dices > 1);
 }
 
 main();

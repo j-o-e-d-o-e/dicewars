@@ -1,64 +1,65 @@
-import {CLUSTERS_MAX} from "./info.js"
 import {Human} from "./player-human.js";
-import {drawUpdatedDicesText} from "./draw.js";
+import {drawDeletedPlayer, drawUpdatedDicesText} from "./draw.js";
 
 export class Player {
     static count = 0;
 
     constructor() {
         this.id = Player.count++;
-        this.dices = undefined;
+        this.dices = 0;
+        this.additionalDices = 0;
     }
 
     move() {
         console.log(`${this instanceof Human ? "Human" : "Comp"}'s turn (id: ${this.id})...`);
     }
 
-    afterSuccessfulAttack(clusters, other) {
-        console.log("afterSuccessfulAttack:", clusters.length, other.id);
-        this.dices = clusters.filter(c => c.playerId === this.id).every(c => c.dices === 8) ?
-            this.dices + this.getNewDices(clusters)[0] : this.getNewDices(clusters)[0];
-        drawUpdatedDicesText(this.id, this.dices);
-        other.dices = clusters.filter(c => c.playerId === other.id).every(c => c.dices === 8) ?
-            other.dices + other.getNewDices(clusters)[0] : other.getNewDices(clusters)[0];
-        drawUpdatedDicesText(other.id, other.dices);
-    }
-
-    static roleDice(dices, limit = 8) {
+    static roleDice(dices) {
         let sum = 0;
         for (let i = 0; i < dices; i++) sum += Math.floor(Math.random() * 6) + 1;
         return sum;
     }
 
-    allocateNewDices(clusters) {
-        let [newDices, indicesAndClusters] = this.getNewDices(clusters);
-        let oldDices = this.dices;
-        this.dices = newDices;
-        indicesAndClusters = indicesAndClusters.filter(([_, c]) => c.dices < 8);
-        if (indicesAndClusters.length === 0) this.dices += oldDices;
-        else {
-            while (newDices > 0 && indicesAndClusters.length > 0) {
-                let rand = Math.floor(Math.random() * indicesAndClusters.length)
-                let [i, _] = indicesAndClusters[rand];
-                clusters[i].dices++;
-                if (clusters[i].dices === 8) indicesAndClusters.splice(rand, 1);
-                newDices--;
-            }
-            this.dices += newDices;
-        }
-        if (this.dices > CLUSTERS_MAX * 2) this.dices = CLUSTERS_MAX * 2;
+    afterSuccessfulMove(clusters, players, otherId) {
+        this.setDices(clusters);
+        drawUpdatedDicesText(this);
+        let other = players.find(p => p.id === otherId)
+        other.setDices(clusters);
+        if (!clusters.some(c => c.playerId === other.id)) return Player.deletePlayer(players, other.id);
+        else drawUpdatedDicesText(other);
     }
 
-    getNewDices(clusters) {
+    static deletePlayer(players, playerId) {
+        players.splice(playerId, 1);
+        drawDeletedPlayer(playerId);
+        return players.length === 1 || players.filter(p => p instanceof Human).length !== 1;
+    }
+
+    allocateNewDices(clusters) {
         let indicesAndClusters = [];
-        for (let [index, cluster] of clusters.entries()) {
-            if (cluster.playerId === this.id) indicesAndClusters.push([index, cluster])
+        for (let [index, cluster] of clusters.entries())
+            if (cluster.playerId === this.id && cluster.dices < 8)
+                indicesAndClusters.push(index);
+        let dices = this.dices;
+        while (dices > 0 && indicesAndClusters.length > 0) {
+            let rand = Math.floor(Math.random() * indicesAndClusters.length)
+            let i = indicesAndClusters[rand];
+            clusters[i].dices++;
+            if (clusters[i].dices === 8) indicesAndClusters.splice(rand, 1);
+            if (this.additionalDices > 0) this.additionalDices--;
+            else dices--;
         }
-        let newDices = 0;
-        for (let [_, cluster] of indicesAndClusters) {
+        if (dices > 0) {
+            this.additionalDices += dices;
+            if (this.additionalDices > clusters.length) this.additionalDices = clusters.length;
+        }
+    }
+
+    setDices(clusters) {
+        this.dices = 0;
+        for (let cluster of clusters.filter(c => c.playerId === this.id)) {
             let size = cluster.getRegionSize();
-            if (size > newDices) newDices = size;
+            if (size > this.dices) this.dices = size;
         }
-        return [newDices, indicesAndClusters];
     }
 }

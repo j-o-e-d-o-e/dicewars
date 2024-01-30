@@ -19,7 +19,7 @@ export function createPlayers(clusters) {
         cluster.playerId = players[index++].id;
         if (index >= PLAYERS) index = 0;
     }
-    for (let player of players) player.dices = player.getNewDices(clusters)[0];
+    for (let player of players) player.setDices(clusters);
     log(players)
     return [players, players[playerIndex]];
 }

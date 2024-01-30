@@ -4,15 +4,14 @@ import {createClusters} from "../js/clusters.js";
 import {createPlayers} from "../js/players.js";
 import {Comp} from "../js/player-comp.js";
 
-let clusters, player;
+let clusters, players;
 
 beforeAll(() => {
     let [_, startNode] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
     clusters = createClusters(startNode);
-    player = createPlayers(clusters)[0][0];
+    players = createPlayers(clusters)[0];
 });
 
 test('test', () => {
-    player.move(clusters);
-    expect(player instanceof Comp).toBeTruthy();
+    expect(players[0] instanceof Comp).toBeTruthy();
 });

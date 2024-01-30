@@ -1,6 +1,6 @@
 import {CANVAS_WIDTH, CANVAS_HEIGHT, RADIUS_HEX, CLUSTERS_MAX, PLAYERS, TIMEOUT_SM} from "./info.js"
 
-let ctxBg, ctxFg = [], dicesTxt = [];
+let ctxBg, ctxFg = [], divs = [];
 const COLORS = [
     ["#B37FFE", 1], ["#B3FF01", 2],
     ["#009302", 3], ["#FF7FFE", 4],
@@ -88,13 +88,15 @@ export function drawUpdatedDices(cluster) {
     drawDices(cluster, COLORS[cluster.playerId][1]);
 }
 
-export function drawUpdatedDicesText(playerId, dices) {
-    dicesTxt[playerId].innerHTML = dices;
+export function drawUpdatedDicesText(player) {
+    divs[player.id].children[0].children[1].innerHTML = player.dices;
+    if (player.additionalDices > 0) divs[player.id].children[1].innerHTML = `+${player.additionalDices}`;
+    else divs[player.id].children[1].innerHTML = "";
 }
 
 export function drawUpdateHighlightedDices(playerId) {
-    dicesTxt[playerId].parentNode.style = "background-color:none";
-    dicesTxt[(playerId + 1) % PLAYERS].parentNode.style = "background-color:lightgrey";
+    divs[playerId].style = "background-color:none";
+    divs[(playerId + 1) % PLAYERS].style = "background-color:lightgrey";
 }
 
 export function drawDeletedPlayer(playerId) {
@@ -118,17 +120,20 @@ export function drawInit(players, humanPlayerId) {
     let tmp = COLORS[humanPlayerId];
     COLORS[humanPlayerId] = COLORS[0];
     COLORS[0] = tmp;
-    let dices = document.getElementById("dices");
+    let dices = document.getElementById("dices-bar");
     for (let player of players) {
-        let span = document.createElement("span");
-        span.className = "dicesPlayer";
+        let parentDiv = document.createElement("div");
+        parentDiv.className = "dices-player";
+        let childDiv = document.createElement("div");
         let img = document.createElement("img");
         img.src = `assets/cube-${COLORS[player.id][1]}.svg`;
-        let txt = document.createElement("span");
-        txt.innerHTML = player.dices;
-        span.append(img, txt);
-        dices.appendChild(span);
-        dicesTxt.push(txt);
+        let span = document.createElement("span");
+        span.innerHTML = player.dices;
+        let p = document.createElement("p");
+        childDiv.append(img, span);
+        parentDiv.append(childDiv, p);
+        dices.appendChild(parentDiv);
+        divs.push(parentDiv);
     }
-    dicesTxt[0].parentNode.style = "background-color:lightgrey";
+    divs[0].style = "background-color:lightgrey";
 }

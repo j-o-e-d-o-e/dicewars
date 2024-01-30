@@ -16,6 +16,7 @@ test('allocate new dices for all clusters', () => {
     let dicesBefore = clusters.filter(c => c.playerId === player.id)
         .reduce((acc, c) => acc + c.dices, 0);
 
+    player.setDices(clusters);
     player.allocateNewDices(clusters);
 
     let dicesAfter = clusters.filter(c => c.playerId === player.id)
@@ -32,6 +33,7 @@ test('allocate new dices for first 5 clusters', () => {
     let dicesBefore = clusters.filter(c => c.playerId === player.id)
         .reduce((acc, c) => acc + c.dices, 0);
 
+    player.setDices(clusters);
     player.allocateNewDices(clusters);
 
     let dicesAfter = clusters.filter(c => c.playerId === player.id)
