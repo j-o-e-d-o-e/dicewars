@@ -1,5 +1,5 @@
 import {Player} from "./player.js";
-import {drawUpdatedCluster, drawUpdatedDices} from "./draw.js";
+import {drawCluster, drawDices} from "./draw.js";
 
 export class Human extends Player {
 
@@ -14,29 +14,29 @@ export class Human extends Player {
             let clicked = this.clickableClusters.find(c => c.containsPoint(point));
             if (clicked === undefined) return;
             this.clickedCluster = clicked;
-            console.log(`selected=${this.clickedCluster.id}`);
-            drawUpdatedCluster(this.clickedCluster.corners);
+            // console.log(`selected=${this.clickedCluster.id}`);
+            drawCluster(this.clickedCluster.corners);
         } else if (this.clickedCluster.containsPoint(point)) {
-            console.log(`undo=${this.clickedCluster.id}`);
-            drawUpdatedCluster(this.clickedCluster.corners, this.id);
+            // console.log(`undo=${this.clickedCluster.id}`);
+            drawCluster(this.clickedCluster.corners, this.id);
             this.clickedCluster = undefined;
         } else {
             let candidates = this.clickedCluster.getAdjacentClustersFromCluster().filter(c => c.playerId !== this.id);
-            let clickedCluster2 = candidates.find(c => c.containsPoint(point));
-            if (clickedCluster2 === undefined) return;
+            let target = candidates.find(c => c.containsPoint(point));
+            if (target === undefined) return;
             let sumPlayer = Player.roleDice(this.clickedCluster.dices);
-            let sumOther = Player.roleDice(clickedCluster2.dices);
-            console.log(`attack=${clickedCluster2.id} -> thrown dices: ${sumPlayer} vs ${sumOther}`);
+            let sumOther = Player.roleDice(target.dices);
+            console.log(`attacks ${target.playerId} -> thrown dices: ${sumPlayer} vs ${sumOther}`);
             let dicesPlayerBefore = this.clickedCluster.dices;
             this.clickedCluster.dices = 1;
-            drawUpdatedCluster(this.clickedCluster.corners, this.id);
-            drawUpdatedDices(this.clickedCluster);
+            drawCluster(this.clickedCluster.corners, this.id);
+            drawDices(this.clickedCluster);
             if (sumPlayer > sumOther) {
-                let otherPlayerId = clickedCluster2.playerId;
-                clickedCluster2.playerId = this.id;
-                clickedCluster2.dices = dicesPlayerBefore - 1;
-                drawUpdatedCluster(clickedCluster2.corners, this.id);
-                drawUpdatedDices(clickedCluster2);
+                let otherPlayerId = target.playerId;
+                target.playerId = this.id;
+                target.dices = dicesPlayerBefore - 1;
+                drawCluster(target.corners, this.id);
+                drawDices(target);
                 this.clickedCluster = undefined;
                 return otherPlayerId;
             }

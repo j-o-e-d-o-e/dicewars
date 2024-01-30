@@ -20,11 +20,17 @@ export function createPlayers(clusters) {
         if (index >= PLAYERS) index = 0;
     }
     for (let player of players) player.setDices(clusters);
-    log(players)
-    return [players, players[playerIndex]];
+    let human = players[playerIndex];
+    human.clickableClusters = clusters.filter(c => c.playerId === human.id && c.dices > 1);
+    log(players, clusters);
+    return [players, human];
 }
 
-function log(players) {
+function log(players, clusters) {
     console.log(`${players.length} players created:
-    ${players.map(p => "- " + `${p instanceof Human ? "Human" : "Comp"}` + JSON.stringify(p)).join("\n\t")}`);
+    ${players.map(p => `- ${p instanceof Human ? "Human" : "Comp"} with ${JSON.stringify({
+        biggestRegion: p.dices,
+        clusters: clusters.reduce((acc, c) => c.playerId === p.id ? ++acc : acc, 0),
+        dices: clusters.reduce((acc, c) => c.playerId === p.id ? acc + c.dices : acc, 0)
+    })}`).join("\n\t")}`);
 }

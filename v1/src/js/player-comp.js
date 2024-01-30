@@ -1,6 +1,6 @@
 import {TIMEOUT_BG, TIMEOUT_SM} from "./info.js"
 import {Player} from "./player.js";
-import {drawUpdatedCluster, drawUpdatedDices} from "./draw.js";
+import {drawCluster, drawDices} from "./draw.js";
 
 export class Comp extends Player {
 
@@ -28,10 +28,9 @@ export class Comp extends Player {
                     cluster = target;
                     let gameEnded = this.afterSuccessfulMove(clusters, players, otherId);
                     if (gameEnded) {
-                        console.log(`Comp player (id: ${this.id}) has won.`);
+                        cluster = undefined;
                         cb = () => {
                         };
-                        cluster = undefined;
                     }
                 } else cluster = compClusters.shift();
             });
@@ -42,8 +41,8 @@ export class Comp extends Player {
     getPredForPlayerId(players, clustersLength) {
         let playerIdWithBiggestRegion = 0, max = 0;
         for (let [i, p] of players.entries()) {
-            if (p.biggestRegionSize > max) {
-                max = p.biggestRegionSize;
+            if (p.dices > max) {
+                max = p.dices;
                 playerIdWithBiggestRegion = i;
             }
         }
@@ -53,26 +52,26 @@ export class Comp extends Player {
 
     attack(cluster, target) {
         return new Promise(resolve => {
-            let sumComp = Player.roleDice(cluster.dices);
+            let sumPlayer = Player.roleDice(cluster.dices);
             let sumOther = Player.roleDice(target.dices);
-            console.log(`${cluster.id} attacks ${target.id} -> thrown dices: ${sumComp} vs ${sumOther}`);
-            drawUpdatedCluster(cluster.corners);
+            console.log(`attacks ${target.playerId} -> thrown dices: ${sumPlayer} vs ${sumOther}`);
+            drawCluster(cluster.corners);
             setTimeout(() => {
-                drawUpdatedCluster(target.corners);
+                drawCluster(target.corners);
                 setTimeout(() => {
-                    let dicesCompBefore = cluster.dices;
+                    let dicesPlayerBefore = cluster.dices;
                     cluster.dices = 1;
-                    drawUpdatedDices(cluster);
-                    drawUpdatedCluster(cluster.corners, this.id);
-                    if (sumComp > sumOther) {
+                    drawDices(cluster);
+                    drawCluster(cluster.corners, this.id);
+                    if (sumPlayer > sumOther) {
                         let otherPlayerId = target.playerId;
                         target.playerId = this.id;
-                        target.dices = dicesCompBefore - 1;
-                        drawUpdatedDices(target);
-                        drawUpdatedCluster(target.corners, this.id);
+                        target.dices = dicesPlayerBefore - 1;
+                        drawDices(target);
+                        drawCluster(target.corners, this.id);
                         resolve(otherPlayerId);
                     } else {
-                        drawUpdatedCluster(target.corners, target.playerId);
+                        drawCluster(target.corners, target.playerId);
                         resolve(undefined);
                     }
                 }, TIMEOUT_BG);

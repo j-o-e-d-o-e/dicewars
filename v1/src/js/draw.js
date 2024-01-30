@@ -1,6 +1,6 @@
-import {CANVAS_WIDTH, CANVAS_HEIGHT, RADIUS_HEX, CLUSTERS_MAX, PLAYERS, TIMEOUT_SM} from "./info.js"
+import {CANVAS_WIDTH, CANVAS_HEIGHT, RADIUS_HEX, CLUSTERS_MAX, TIMEOUT_SM} from "./info.js"
 
-let ctxBg, ctxFg = [], divs = [];
+let ctxBg, ctxFg = [], dicesBar;
 const COLORS = [
     ["#B37FFE", 1], ["#B3FF01", 2],
     ["#009302", 3], ["#FF7FFE", 4],
@@ -9,8 +9,43 @@ const COLORS = [
 ];
 const LINE_WIDTH = 9;
 
+export function drawInit(board, clusters, players, playerId) {
+    setup(players, playerId)
+    // _drawBoard(board);
+    _drawClusters(clusters);
+}
 
-function drawBoard(board) {
+function setup(players, playerId) {
+    ctxBg = document.getElementById("canvas-0").getContext("2d")
+    ctxBg.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    for (let i = 1; i <= CLUSTERS_MAX; i++) {
+        let ctx = document.getElementById("canvas-" + i).getContext("2d")
+        ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        ctxFg.push(ctx);
+    }
+    let tmp = COLORS[playerId];
+    COLORS[playerId] = COLORS[0];
+    COLORS[0] = tmp;
+    dicesBar = document.getElementById("dices-bar");
+    for (let player of players) {
+        let parentDiv = document.createElement("div");
+        parentDiv.className = "dices-player";
+        parentDiv.id = player.id;
+        let childDiv = document.createElement("div");
+        let img = document.createElement("img");
+        img.src = `assets/cube-${COLORS[player.id][1]}.svg`;
+        let span = document.createElement("span");
+        span.innerHTML = player.dices;
+        let p = document.createElement("p");
+        childDiv.append(img, span);
+        parentDiv.append(childDiv, p);
+        dicesBar.appendChild(parentDiv);
+    }
+    dicesBar.children[0].style = "background-color:lightgrey";
+}
+
+// noinspection JSUnusedLocalSymbols
+function _drawBoard(board) {
     ctxBg.fillStyle = "grey";
     ctxBg.strokeStyle = "grey";
     for (let node of board) {
@@ -22,15 +57,15 @@ function drawBoard(board) {
     }
 }
 
-function drawClusters(clusters) {
+function _drawClusters(clusters) {
     for (let cluster of clusters) {
-        drawCluster(cluster.corners, "black", COLORS[cluster.playerId][0]);
-        drawDices(cluster, COLORS[cluster.playerId][1], 0);
-        // drawText(cluster);
+        _drawCluster(cluster.corners, "black", COLORS[cluster.playerId][0]);
+        _drawDices(cluster, COLORS[cluster.playerId][1], 0);
+        // _drawText(cluster);
     }
 }
 
-function drawCluster(corners, lineColor, fillColor) {
+function _drawCluster(corners, lineColor, fillColor) {
     ctxBg.beginPath();
     for (let corner of corners) ctxBg.lineTo(corner.x, corner.y);
     ctxBg.lineTo(corners[0].x, corners[0].y)
@@ -42,23 +77,7 @@ function drawCluster(corners, lineColor, fillColor) {
     ctxBg.fill();
 }
 
-export function drawUpdatedCluster(corners, playerId) {
-    if (playerId === undefined) drawCluster(corners, "red", "ghostwhite");
-    else drawCluster(corners, "black", COLORS[playerId][0]);
-}
-
-// noinspection JSUnusedLocalSymbols
-function drawText(cluster) {
-    const xTextOffset = RADIUS_HEX / 2;
-    const yTextOffset = RADIUS_HEX / 2 + 2;
-    let x = cluster.centerPos.x - xTextOffset - 4 * Math.floor(cluster.id / 10);
-    let y = cluster.centerPos.y + yTextOffset;
-    ctxFg[cluster.id].fillStyle = "black";
-    ctxFg[cluster.id].font = "40px Standard";
-    ctxFg[cluster.id].fillText(cluster.id, x + 20, y - 20);
-}
-
-function drawDices(cluster, cubeColorId, timeout = TIMEOUT_SM) {
+function _drawDices(cluster, cubeColorId, timeout = TIMEOUT_SM) {
     let x = cluster.centerPos.x - 30;
     let y = cluster.centerPos.y - 20;
     let size = 50;
@@ -83,57 +102,38 @@ function drawDices(cluster, cubeColorId, timeout = TIMEOUT_SM) {
     img.src = `assets/cube-${cubeColorId}.svg`;
 }
 
-export function drawUpdatedDices(cluster) {
+// noinspection JSUnusedLocalSymbols
+function _drawText(cluster) {
+    const xTextOffset = RADIUS_HEX / 2;
+    const yTextOffset = RADIUS_HEX / 2 + 2;
+    let x = cluster.centerPos.x - xTextOffset - 4 * Math.floor(cluster.id / 10);
+    let y = cluster.centerPos.y + yTextOffset;
+    ctxFg[cluster.id].fillStyle = "black";
+    ctxFg[cluster.id].font = "40px Standard";
+    ctxFg[cluster.id].fillText(cluster.id, x + 20, y - 20);
+}
+
+export function drawCluster(corners, playerId) {
+    if (playerId === undefined) _drawCluster(corners, "red", "ghostwhite");
+    else _drawCluster(corners, "black", COLORS[playerId][0]);
+}
+
+export function drawDices(cluster) {
     ctxFg[cluster.id].clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    drawDices(cluster, COLORS[cluster.playerId][1]);
+    _drawDices(cluster, COLORS[cluster.playerId][1]);
 }
 
-export function drawUpdatedDicesText(player) {
-    divs[player.id].children[0].children[1].innerHTML = player.dices;
-    if (player.additionalDices > 0) divs[player.id].children[1].innerHTML = `+${player.additionalDices}`;
-    else divs[player.id].children[1].innerHTML = "";
+export function drawDicesNums(player) {
+    dicesBar.children.namedItem(player.id).children[0].children[1].innerHTML = player.dices;
+    if (player.additionalDices > 0) dicesBar.children.namedItem(player.id).children[1].innerHTML = `+${player.additionalDices}`;
+    else dicesBar.children.namedItem(player.id).children[1].innerHTML = "";
 }
 
-export function drawUpdateHighlightedDices(playerId) {
-    divs[playerId].style = "background-color:none";
-    divs[(playerId + 1) % PLAYERS].style = "background-color:lightgrey";
+export function drawDicesBar(lastPlayerId, nextPlayerId) {
+    dicesBar.children.namedItem(lastPlayerId).style = "background-color:none";
+    dicesBar.children.namedItem(nextPlayerId).style = "background-color:lightgrey";
 }
 
-export function drawDeletedPlayer(playerId) {
-    let dices = document.getElementById("dices");
-    dices.removeChild(dices.children[playerId]);
-}
-
-export function draw(board, clusters) {
-    drawBoard(board);
-    drawClusters(clusters);
-}
-
-export function drawInit(players, humanPlayerId) {
-    ctxBg = document.getElementById("canvas-0").getContext("2d")
-    ctxBg.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    for (let i = 1; i <= CLUSTERS_MAX; i++) {
-        let ctx = document.getElementById("canvas-" + i).getContext("2d")
-        ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        ctxFg.push(ctx);
-    }
-    let tmp = COLORS[humanPlayerId];
-    COLORS[humanPlayerId] = COLORS[0];
-    COLORS[0] = tmp;
-    let dices = document.getElementById("dices-bar");
-    for (let player of players) {
-        let parentDiv = document.createElement("div");
-        parentDiv.className = "dices-player";
-        let childDiv = document.createElement("div");
-        let img = document.createElement("img");
-        img.src = `assets/cube-${COLORS[player.id][1]}.svg`;
-        let span = document.createElement("span");
-        span.innerHTML = player.dices;
-        let p = document.createElement("p");
-        childDiv.append(img, span);
-        parentDiv.append(childDiv, p);
-        dices.appendChild(parentDiv);
-        divs.push(parentDiv);
-    }
-    divs[0].style = "background-color:lightgrey";
+export function drawRemovePlayer(playerId) {
+    dicesBar.removeChild(dicesBar.children.namedItem(playerId));
 }

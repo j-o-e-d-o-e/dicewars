@@ -2,28 +2,44 @@ import {CANVAS_WIDTH, CANVAS_HEIGHT, CLUSTERS_MAX, TIMEOUT_BG} from './info.js';
 import {createBoard} from './board.js';
 import {createClusters} from "./clusters.js";
 import {createPlayers} from "./players.js";
-import {Human} from "./player-human.js";
-import {
-    draw,
-    drawInit,
-    drawUpdatedCluster,
-    drawUpdatedDices,
-    drawUpdatedDicesText,
-    drawUpdateHighlightedDices
-} from "./draw.js";
+import {drawInit, drawCluster, drawDices, drawDicesNums, drawDicesBar} from "./draw.js";
 
 let canvas, btn;
-let clusters, players, player, playerIndex = -1;
+let clusters, players, human, playerIndex = -1;
 
 function main() {
     setup();
     nextTurn();
 }
 
+function setup() {
+    btn = document.getElementById("end-turn");
+    btn.addEventListener("click", async () => {
+        canvas.removeEventListener("click", clickListener);
+        btn.disabled = true;
+        if (human.clickedCluster !== undefined) drawCluster(human.clickedCluster.corners, human.id);
+        await afterTurn(human);
+    });
+    btn.disabled = true;
+    let div = document.getElementById("stage");
+    for (let i = 0; i <= CLUSTERS_MAX; i++) {
+        canvas = document.createElement("canvas");
+        canvas.id = "canvas-" + i;
+        canvas.width = CANVAS_WIDTH;
+        canvas.height = CANVAS_HEIGHT;
+        if (i === 0) canvas.style.background = "#eee"; // background-canvas
+        div.appendChild(canvas);
+    }
+    const [board, centerNode] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
+    clusters = createClusters(centerNode);
+    [players, human] = createPlayers(clusters);
+    drawInit(board, clusters, players, human.id);
+}
+
 function nextTurn() {
     if (++playerIndex >= players.length) playerIndex = 0;
     let current = players[playerIndex];
-    if (current instanceof Human) {
+    if (current === human) {
         canvas.addEventListener("click", clickListener, false);
         btn.disabled = false;
     }
@@ -38,11 +54,11 @@ function afterTurn(player, timeout = TIMEOUT_BG) {
         player.allocateNewDices(clusters);
         for (let [index, cluster] of clusters.entries()) {
             if (cluster.playerId !== player.id || cluster.dices === dicesBefore[index]) continue;
-            drawUpdatedDices(cluster);
+            drawDices(cluster); // TODO: only draw additional dices
         }
-        drawUpdatedDicesText(player);
+        drawDicesNums(player);
         setTimeout(() => {
-            drawUpdateHighlightedDices(player.id);
+            drawDicesBar(player.id, players[playerIndex + 1 >= players.length ? 0 : playerIndex + 1].id);
             console.log("...finished.");
             resolve();
         }, timeout);
@@ -50,43 +66,16 @@ function afterTurn(player, timeout = TIMEOUT_BG) {
 }
 
 function clickListener(event) {
-    let otherId = player.click({x: event.clientX, y: event.clientY});
+    let otherId = human.click({x: event.clientX, y: event.clientY});
     if (otherId !== undefined) {
-        let gameEnded = player.afterSuccessfulMove(clusters, players, otherId);
+        let gameEnded = human.afterSuccessfulMove(clusters, players, otherId);
         if (gameEnded) {
-            console.log(`Human player (id: ${player.id}) has won.`);
             btn.disabled = true;
             canvas.removeEventListener("click", clickListener);
             return;
         }
     }
-    player.clickableClusters = clusters.filter(c => c.playerId === player.id && c.dices > 1);
-}
-
-function setup() {
-    btn = document.getElementById("end-turn");
-    btn.addEventListener("click", async () => {
-        canvas.removeEventListener("click", clickListener);
-        btn.disabled = true;
-        if (player.clickedCluster !== undefined) drawUpdatedCluster(player.clickedCluster.corners, player.id);
-        await afterTurn(player);
-    });
-    btn.disabled = true;
-    let div = document.getElementById("stage");
-    for (let i = 0; i <= CLUSTERS_MAX; i++) {
-        canvas = document.createElement("canvas");
-        canvas.id = "canvas-" + i;
-        canvas.width = CANVAS_WIDTH;
-        canvas.height = CANVAS_HEIGHT;
-        if (i === 0) canvas.style.background = "#eee"; // background
-        div.appendChild(canvas);
-    }
-    const [board, centerNode] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
-    clusters = createClusters(centerNode);
-    [players, player] = createPlayers(clusters);
-    player.clickableClusters = clusters.filter(c => c.playerId === player.id && c.dices > 1);
-    drawInit(players, player.id);
-    draw(board, clusters);
+    human.clickableClusters = clusters.filter(c => c.playerId === human.id && c.dices > 1);
 }
 
 main();

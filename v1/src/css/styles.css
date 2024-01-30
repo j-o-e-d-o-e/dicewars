@@ -22,7 +22,8 @@ canvas {
 
 .dices-player {
     display: inline-grid;
-    margin-right: 20px;
+    width: 80px;
+    margin-right: 10px;
     font-weight: bold;
 }
 
