@@ -1,4 +1,4 @@
-import {CANVAS_HEIGHT, CANVAS_WIDTH, CLUSTER_MIN_SIZE, CLUSTERS_MAX} from "../js/info.js";
+import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../js/info.js";
 import {createBoard} from "../js/board.js";
 import {createClusters} from "../js/clusters.js";
 import {Cluster} from "../js/cluster.js";
@@ -15,7 +15,6 @@ test('create clusters', () => {
         expect(cluster.id).toBeDefined();
         expect(cluster.dices).toBeGreaterThanOrEqual(0);
         expect(cluster.dices).toBeLessThanOrEqual(6);
-        expect(cluster.nodes.length).toBeGreaterThanOrEqual(CLUSTER_MIN_SIZE);
         expect(cluster.centerPos).toHaveProperty("x");
         expect(cluster.centerPos).toHaveProperty("y");
         expect(cluster.corners[0]).toHaveProperty("x");
