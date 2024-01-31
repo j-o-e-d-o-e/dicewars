@@ -60,7 +60,7 @@ function _drawBoard(board) {
 function _drawClusters(clusters) {
     for (let cluster of clusters) {
         _drawCluster(cluster.corners, "black", COLORS[cluster.playerId][0]);
-        _drawDices(cluster, COLORS[cluster.playerId][1], 0);
+        _drawDices(cluster, COLORS[cluster.playerId][1], {timeout: 0});
         // _drawText(cluster);
     }
 }
@@ -77,7 +77,7 @@ function _drawCluster(corners, lineColor, fillColor) {
     ctxBg.fill();
 }
 
-function _drawDices(cluster, cubeColorId, timeout = TIMEOUT_SM) {
+function _drawDices(cluster, colorId, {timeout = TIMEOUT_SM, startI = 0} = {}) {
     let x = cluster.centerPos.x - 30;
     let y = cluster.centerPos.y - 20;
     let size = 50;
@@ -91,6 +91,7 @@ function _drawDices(cluster, cubeColorId, timeout = TIMEOUT_SM) {
                 x += xOffset;
                 y += 8;
             }
+            if (i < startI) continue;
             await new Promise(resolve => {
                 setTimeout(() => {
                     ctx.drawImage(img, x, y - yOffset * (i % 4), size, size)
@@ -99,7 +100,7 @@ function _drawDices(cluster, cubeColorId, timeout = TIMEOUT_SM) {
             });
         }
     };
-    img.src = `assets/cube-${cubeColorId}.svg`;
+    img.src = `assets/cube-${colorId}.svg`;
 }
 
 // noinspection JSUnusedLocalSymbols
@@ -118,9 +119,10 @@ export function drawCluster(corners, playerId) {
     else _drawCluster(corners, "black", COLORS[playerId][0]);
 }
 
-export function drawDices(cluster) {
-    ctxFg[cluster.id].clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    _drawDices(cluster, COLORS[cluster.playerId][1]);
+// export function drawDices(cluster, dicesBefore, timeout = TIMEOUT_SM) {
+export function drawDices(cluster, dicesBefore) {
+    if (dicesBefore === undefined) ctxFg[cluster.id].clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    _drawDices(cluster, COLORS[cluster.playerId][1], {startI: dicesBefore});
 }
 
 export function drawDicesNums(player) {

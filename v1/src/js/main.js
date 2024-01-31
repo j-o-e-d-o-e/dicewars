@@ -54,7 +54,7 @@ function afterTurn(player, timeout = TIMEOUT_BG) {
         player.allocateNewDices(clusters);
         for (let [index, cluster] of clusters.entries()) {
             if (cluster.playerId !== player.id || cluster.dices === dicesBefore[index]) continue;
-            drawDices(cluster); // TODO: only draw additional dices
+            drawDices(cluster, dicesBefore[index]);
         }
         drawDicesNums(player);
         setTimeout(() => {
