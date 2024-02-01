@@ -48,7 +48,7 @@ function nextTurn() {
     });
 }
 
-function afterTurn(player, timeout = TIMEOUT_BG) {
+function afterTurn(player) {
     return new Promise(resolve => {
         let dicesBefore = clusters.map(c => c.dices);
         player.allocateNewDices(clusters);
@@ -61,7 +61,7 @@ function afterTurn(player, timeout = TIMEOUT_BG) {
             drawDicesBar(player.id, players[playerIndex + 1 >= players.length ? 0 : playerIndex + 1].id);
             console.log("...finished.");
             resolve();
-        }, timeout);
+        }, TIMEOUT_BG);
     }).then(() => nextTurn());
 }
 
