@@ -10,22 +10,19 @@ export class Comp extends Player {
 
     async turn(clusters, players, cb) {
         super.turn();
-        let mighty = this.mightiestOther(clusters, players);
         let compClusters = clusters.filter(c => c.playerId === this.id && c.dices > 1)
             .sort((a, b) => b.dices - a.dices);
         let cluster = compClusters.shift();
         while (cluster !== undefined) {
-            let targets = cluster.getAdjacentClustersFromCluster().filter(c => c.playerId !== this.id);
-            if (mighty !== undefined) targets = targets.filter(c => c.playerId === mighty.id);
-            targets = targets.filter(c => cluster.dices > c.dices - (cluster.dices === 8))
-                .sort((a, b) => a.dices - b.dices);
-            if (targets.length === 0) {
+            let mighty = this.mightyOther(clusters, players);
+            let target = this.target(cluster, mighty);
+            if (target === undefined) {
                 cluster = compClusters.shift();
                 continue;
             }
-            let target = targets[0];
             await this.attack(cluster, target).then(otherId => {
-                if (otherId !== undefined) {
+                if (otherId === undefined) cluster = compClusters.shift();
+                else {
                     cluster = target;
                     let gameEnded = this.afterSuccessfulMove(clusters, players, otherId);
                     if (gameEnded) {
@@ -33,23 +30,47 @@ export class Comp extends Player {
                         cb = () => {
                         };
                     }
-                } else cluster = compClusters.shift();
+                }
             });
         }
         cb();
     }
 
-    mightiestOther(clusters, players) {
+    mightyOther(clusters, players) {
         let _players = players.map(p => {
             return {id: p.id, dices: p.dices + p.additionalDices, clusters: 0, obj: p}
         });
-        let dices = 0;
+        let _dices = 0;
         for (let cluster of clusters) {
-            dices += cluster.dices;
+            _dices += cluster.dices;
             _players.find(p => p.id === cluster.playerId).clusters++;
         }
-        let mighty = _players.find(p => p.dices > dices / 2 || p.clusters > clusters.length / 2);
+        const THRESHOLD_FACTOR = 2.5;
+        let mighty = _players.find(p => p.dices >= Math.floor(_dices / players.length) * THRESHOLD_FACTOR
+            || p.clusters >= Math.floor(clusters.length / players.length) * THRESHOLD_FACTOR);
         if (mighty !== undefined && mighty.id !== this.id) return mighty.obj;
+    }
+
+    target(cluster, mighty) {
+        let targets = cluster.getAdjacentClustersFromCluster().filter(c => c.playerId !== this.id);
+        if (mighty !== undefined) targets = targets.filter(c => c.playerId === mighty.id);
+        targets = targets.filter(c => cluster.dices > c.dices - (cluster.dices === 8));
+        let grouped = targets.reduce((acc, current) => { // https://stackoverflow.com/a/34890276/9416041
+            (acc[current['dices']] = acc[current['dices']] || []).push(current);
+            return acc;
+        }, {});
+        let dices = [...Array(cluster.dices - 1).keys()]
+            .sort((a, b) => b - a)
+            .slice(0, cluster.dices - 2).concat([cluster.dices - 1]);
+        if (cluster.dices === 8) dices = dices.concat([8]);
+        for (let dice of dices) {
+            if (dice in grouped) return grouped[dice][0];
+        }
+    }
+
+    paths(clusters) {
+        if (clusters.length === this.dices) return;
+        return [];
     }
 
     attack(cluster, target) {

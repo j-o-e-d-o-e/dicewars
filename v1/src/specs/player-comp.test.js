@@ -13,11 +13,29 @@ beforeAll(() => {
     comp = players[0];
 });
 
-test('test', () => {
+test('mightyOther', () => {
+    const THRESHOLD_FACTOR = 1.8;
     let other = players.find(p => p instanceof Comp && p.id !== comp.id);
+    other.dices = clusters.reduce((acc, c) => acc + c.dices, 0)
+        / players.length * THRESHOLD_FACTOR;
     clusters.forEach((c, i) => {
-        if (i % 2 === 0) c.playerId = other.id
+        if (i < clusters.length / players.length * THRESHOLD_FACTOR)
+            c.playerId = other.id
     });
-    let res = comp.mightiestOther(clusters, players);
+    let res = comp.mightyOther(clusters, players);
     expect(res).toBe(other);
+});
+
+test('target', () => {
+    let cluster = clusters.find(c => c.playerId === comp.id);
+    cluster.dices = 8;
+    let res = comp.target(cluster);
+    expect(res.playerId).not.toBe(comp.id);
+    expect(res.dices).toBeLessThanOrEqual(cluster.dices);
+});
+
+test('paths', () => {
+    let compClusters = clusters.filter(c => c.playerId === comp.id);
+    // noinspection JSUnusedLocalSymbols
+    let res = comp.paths(compClusters);
 });
