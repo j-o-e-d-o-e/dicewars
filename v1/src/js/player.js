@@ -16,7 +16,7 @@ export class Player {
         return sum;
     }
 
-    move() {
+    turn() {
         console.log(`${this instanceof Human ? "Human" : "Comp"}'s turn (id: ${this.id})...`);
     }
 

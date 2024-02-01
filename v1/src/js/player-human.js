@@ -14,10 +14,10 @@ export class Human extends Player {
             let clicked = this.clickableClusters.find(c => c.containsPoint(point));
             if (clicked === undefined) return;
             this.clickedCluster = clicked;
-            // console.log(`selected=${this.clickedCluster.id}`);
+            console.log(`selected=${this.clickedCluster.id} (dices: ${this.clickedCluster.dices})`);
             drawCluster(this.clickedCluster.corners);
         } else if (this.clickedCluster.containsPoint(point)) {
-            // console.log(`undo=${this.clickedCluster.id}`);
+            // console.log(`undo=${this.clickedCluster.id} (dices: ${this.clickedCluster.dices})`);
             drawCluster(this.clickedCluster.corners, this.id);
             this.clickedCluster = undefined;
         } else {

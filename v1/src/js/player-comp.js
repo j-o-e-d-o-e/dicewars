@@ -8,8 +8,8 @@ export class Comp extends Player {
         super();
     }
 
-    async move(clusters, players, cb) {
-        super.move();
+    async turn(clusters, players, cb) {
+        super.turn();
         let mighty = this.mightiestOther(clusters, players);
         let compClusters = clusters.filter(c => c.playerId === this.id && c.dices > 1)
             .sort((a, b) => b.dices - a.dices);

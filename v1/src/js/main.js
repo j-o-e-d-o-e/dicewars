@@ -43,7 +43,7 @@ function nextTurn() {
         canvas.addEventListener("click", clickListener, false);
         btn.disabled = false;
     }
-    current.move(clusters, players, async () => {
+    current.turn(clusters, players, async () => {
         await afterTurn(current);
     });
 }
@@ -75,7 +75,8 @@ function clickListener(event) {
             return;
         }
     }
-    human.clickableClusters = clusters.filter(c => c.playerId === human.id && c.dices > 1);
+    human.clickableClusters = clusters.filter(c => c.playerId === human.id && c.dices > 1
+        && c.getAdjacentClustersFromCluster().some(c => c.playerId !== human.id));
 }
 
 main();
