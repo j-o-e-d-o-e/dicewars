@@ -91,15 +91,14 @@ export class Cluster {
         return this.nodes.some(n => Math.pow(p.x - n.hex.center.x, 2) + Math.pow(p.y - n.hex.center.y, 2) < Math.pow(RADIUS_HEX, 2));
     }
 
-    getRegionSize() {
-        let cache = [this.id];
-        let neighbours = this.getAdjacentClustersFromCluster()
-            .filter(c => !cache.includes(c.id) && c.playerId === this.playerId);
+    getRegion() {
+        let cache = [this];
+        let neighbours = this.getAdjacentClustersFromCluster().filter(c => c.playerId === this.playerId);
         while (neighbours.length > 0) {
-            cache = cache.concat(neighbours.map(n => n.id));
+            cache = cache.concat(neighbours);
             neighbours = [...new Set(neighbours.flatMap(n => n.getAdjacentClustersFromCluster()
-                .filter(c => !cache.includes(c.id) && c.playerId === this.playerId)))];
+                .filter(c => !cache.includes(c) && c.playerId === this.playerId)))];
         }
-        return cache.length;
+        return cache;
     }
 }

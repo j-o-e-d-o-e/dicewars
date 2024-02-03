@@ -2,9 +2,10 @@ import {CLUSTERS_MAX} from "./info.js";
 import {Cluster} from "./cluster.js";
 
 const MIN_NEIGHBOURS_NODE = 3;
-let paths = 4, bigCount = 0, smallCount = 0;
+let paths, bigCount, smallCount;
 
 export function createClusters(startNode) {
+    [paths, bigCount, smallCount] = [4, 0, 0];
     let clusters = [new Cluster(startNode)];
     while (clusters.length <= paths) {
         let node = getRandomAdjacentNodeFromCluster(clusters[0]);

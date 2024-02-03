@@ -6,23 +6,30 @@ import {Comp} from "../js/player-comp.js";
 
 let clusters, players, comp;
 
-beforeAll(() => {
-    let [_, startNode] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
+beforeEach(() => {
+    let startNode = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT)[1];
     clusters = createClusters(startNode);
     players = createPlayers(clusters)[0];
     comp = players[0];
 });
 
-test('mightyOther', () => {
-    const THRESHOLD_FACTOR = 1.8;
-    let other = players.find(p => p instanceof Comp && p.id !== comp.id);
-    other.dices = clusters.reduce((acc, c) => acc + c.dices, 0)
-        / players.length * THRESHOLD_FACTOR;
-    clusters.forEach((c, i) => {
-        if (i < clusters.length / players.length * THRESHOLD_FACTOR)
-            c.playerId = other.id
-    });
+test('mightyOther by clusters', () => {
+    let other = players.find(p => p.id !== comp.id);
+    clusters.slice(0, Math.floor(clusters.length / players.length * Comp.THRESHOLD_FACTOR))
+        .forEach(c => [c.playerId, c.dices] = [other.id, 1]);
+
     let res = comp.mightyOther(clusters, players);
+
+    expect(res).toBe(other);
+});
+
+test('mightyOther by dices', () => {
+    let other = players.find(p => p.id !== comp.id);
+    clusters.slice(0, Math.floor(clusters.length / players.length * Comp.THRESHOLD_FACTOR / 2))
+        .forEach(c => [c.playerId, c.dices] = [other.id, 8]);
+
+    let res = comp.mightyOther(clusters, players);
+
     expect(res).toBe(other);
 });
 
@@ -35,7 +42,17 @@ test('target', () => {
 });
 
 test('paths', () => {
-    let compClusters = clusters.filter(c => c.playerId === comp.id);
-    // noinspection JSUnusedLocalSymbols
-    let res = comp.paths(compClusters);
+    let cluster = clusters[0];
+    cluster.playerId = comp.id;
+    cluster.getAdjacentClustersFromCluster().forEach(c => c.playerId = cluster.playerId);
+
+    let res = comp.paths(clusters);
+    res.sort((a, b) => b.length - a.length);
+    console.log(res.map(r => r.map(c => c.id).sort()).join("\n"));
+
+    expect(res[0].length).toBeGreaterThanOrEqual(4);
+    for (let clusters of res.slice(1)) {
+        for (let cluster of clusters)
+            expect(res[0].includes(cluster)).toBeFalsy();
+    }
 });

@@ -3,6 +3,7 @@ import {Player} from "./player.js";
 import {drawCluster, drawDices} from "./draw.js";
 
 export class Comp extends Player {
+    static THRESHOLD_FACTOR = 2.5;
 
     constructor() {
         super();
@@ -37,18 +38,24 @@ export class Comp extends Player {
     }
 
     mightyOther(clusters, players) {
-        let _players = players.map(p => {
-            return {id: p.id, dices: p.dices + p.additionalDices, clusters: 0, obj: p}
+        let _players = players.filter(p => p.id !== this.id).map(p => {
+            return {id: p.id, dices: p.dices + p.additionalDices, clusters: 0}
         });
-        let _dices = 0;
+        let allDices = 0;
         for (let cluster of clusters) {
-            _dices += cluster.dices;
-            _players.find(p => p.id === cluster.playerId).clusters++;
+            allDices += cluster.dices;
+            let _p = _players.find(p => p.id === cluster.playerId);
+            if (_p !== undefined) {
+                _p.clusters++;
+                _p.dices += cluster.dices;
+            }
         }
-        const THRESHOLD_FACTOR = 2.5;
-        let mighty = _players.find(p => p.dices >= Math.floor(_dices / players.length) * THRESHOLD_FACTOR
-            || p.clusters >= Math.floor(clusters.length / players.length) * THRESHOLD_FACTOR);
-        if (mighty !== undefined && mighty.id !== this.id) return mighty.obj;
+        for (let _p of _players) {
+            if (_p.clusters > clusters.length / players.length * Comp.THRESHOLD_FACTOR ||
+                _p.dices > allDices / players.length * Comp.THRESHOLD_FACTOR) {
+                return players.find(p => p.id === _p.id);
+            }
+        }
     }
 
     target(cluster, mighty) {
@@ -59,18 +66,37 @@ export class Comp extends Player {
             (acc[current['dices']] = acc[current['dices']] || []).push(current);
             return acc;
         }, {});
-        let dices = [...Array(cluster.dices - 1).keys()]
-            .sort((a, b) => b - a)
-            .slice(0, cluster.dices - 2).concat([cluster.dices - 1]);
-        if (cluster.dices === 8) dices = dices.concat([8]);
+        let dices = [...Array(cluster.dices - 1).keys()].reverse();
+        dices[dices.length - 1] = cluster.dices - 1;
+        if (cluster.dices === 8) dices.push(8);
         for (let dice of dices) {
-            if (dice in grouped) return grouped[dice][0];
+            if (dice in grouped) return grouped[dice][Math.floor(Math.random() * grouped[dice].length)];
         }
     }
 
     paths(clusters) {
-        if (clusters.length === this.dices) return;
-        return [];
+        let regions = [];
+        for (let cluster of clusters.filter(c => c.playerId === this.id)) {
+            if (regions.flat().includes(cluster)) continue;
+            regions.push(cluster.getRegion());
+        }
+        regions = regions.map(r =>
+            r.filter(c => c.getAdjacentClustersFromCluster()
+                .some(c => c.playerId !== this.id))
+        );
+
+        // let paths = [];
+        // for (let region of regions) {
+        //     let others = regions.filter(r => r !== region);
+        //     for (let startCluster of region) {
+        //         for (let other of others) {
+        //             for (let endCluster of other) {
+        //                 TODO
+        // }
+        // }
+        // }
+        // }
+        return regions;
     }
 
     attack(cluster, target) {

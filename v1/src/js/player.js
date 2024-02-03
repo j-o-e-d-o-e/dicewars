@@ -58,7 +58,7 @@ export class Player {
     setDices(clusters) {
         this.dices = 0;
         for (let cluster of clusters.filter(c => c.playerId === this.id)) {
-            let size = cluster.getRegionSize();
+            let size = cluster.getRegion().length;
             if (size > this.dices) this.dices = size;
         }
     }

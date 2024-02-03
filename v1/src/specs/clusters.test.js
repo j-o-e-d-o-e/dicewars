@@ -3,10 +3,10 @@ import {createBoard} from "../js/board.js";
 import {createClusters} from "../js/clusters.js";
 import {Cluster} from "../js/cluster.js";
 
-let board, startNode;
+let startNode;
 
 beforeEach(() => {
-    [board, startNode] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
+    startNode = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT)[1];
 });
 
 test('create clusters', () => {

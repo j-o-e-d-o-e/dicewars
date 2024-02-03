@@ -1,29 +1,66 @@
-import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../js/info.js";
+import {CANVAS_HEIGHT, CANVAS_WIDTH, CLUSTER_MIN_SIZE} from "../js/info.js";
 import {createBoard} from "../js/board.js";
 import {createClusters} from "../js/clusters.js";
-import {createPlayers} from "../js/players.js";
 
-let board, startNode, clusters, players, player;
+let clusters;
 
-beforeAll(() => {
-    [board, startNode] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
+beforeEach(() => {
+    let startNode = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT)[1];
     clusters = createClusters(startNode);
-    [players, player] = createPlayers(clusters);
-
 });
 
-test('get region size with all clusters', () => {
+test('get adjacent nodes from cluster', () => {
+    let cluster = clusters[0];
+
+    let nodes = cluster.getAdjacentNodesFromCluster();
+
+    expect(nodes.length).toBeGreaterThan(CLUSTER_MIN_SIZE);
+    for (let node of nodes) {
+        expect(cluster.nodes.includes(node)).toBeFalsy();
+        expect(node.cluster?.id).not.toBe(cluster.id);
+    }
+});
+
+test('get adjacent clusters from cluster', () => {
+    const CLUSTERS_SIZE = 4;
+    clusters.slice(CLUSTERS_SIZE).forEach(c => c.nodes.forEach(n => n.cluster = undefined));
+    clusters = clusters.slice(0, CLUSTERS_SIZE);
+    let cluster = clusters[0];
+
+    let adjacentClusters = cluster.getAdjacentClustersFromCluster();
+
+    expect(adjacentClusters.length).toBe(CLUSTERS_SIZE - 1);
+    for (let adjacentCluster of adjacentClusters) {
+        for (let node of cluster.nodes)
+            expect(adjacentCluster.nodes.includes(node)).toBeFalsy();
+    }
+});
+
+test('get region with all clusters', () => {
     clusters.forEach(c => c.playerId = 0);
-    let size = clusters[0].getRegionSize();
-    expect(size).toBe(clusters.length);
+
+    let region = clusters[0].getRegion();
+
+    expect(region.length).toBe(clusters.length);
 });
 
-test('get region size with first 5 clusters', () => {
+test('get region with first 5 clusters', () => {
     const EXP_SIZE = 5;
-    clusters.forEach((c, i) => {
-        if (i < EXP_SIZE) c.playerId = 0;
-        else c.playerId = 1;
-    });
-    let size = clusters[0].getRegionSize();
-    expect(size).toBe(EXP_SIZE);
+    clusters.slice(0, EXP_SIZE).forEach(c => c.playerId = 1);
+
+    let region = clusters[0].getRegion();
+
+    expect(region.length).toBe(EXP_SIZE);
+});
+
+test('two regions do not overlap', () => {
+    clusters.slice(0, 5).forEach(c => c.playerId = 1);
+    let cluster1 = clusters[0];
+    clusters.slice(-5).forEach(c => c.playerId = 2);
+    let cluster2 = clusters.find(c => c.playerId === 2)
+
+    let region1 = cluster1.getRegion();
+    let region2 = cluster2.getRegion();
+
+    for (let cluster of region1) expect(region2.includes(cluster)).toBeFalsy();
 });

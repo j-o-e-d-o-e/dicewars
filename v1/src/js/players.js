@@ -29,8 +29,8 @@ export function createPlayers(clusters) {
 function log(players, clusters) {
     console.log(`${players.length} players created:
     ${players.map(p => `- ${p instanceof Human ? "Human" : "Comp"} with ${JSON.stringify({
-        biggestRegion: p.dices,
+        dices: p.dices,
         clusters: clusters.reduce((acc, c) => c.playerId === p.id ? ++acc : acc, 0),
-        dices: clusters.reduce((acc, c) => c.playerId === p.id ? acc + c.dices : acc, 0)
+        allDices: clusters.reduce((acc, c) => c.playerId === p.id ? acc + c.dices : acc, 0)
     })}`).join("\n\t")}`);
 }
