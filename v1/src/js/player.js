@@ -40,19 +40,18 @@ export class Player {
     }
 
     allocateNewDices(clusters) {
-        let indices = clusters.map((c, i) => c.playerId === this.id && c.dices < 8 ? i : undefined).filter(i => i);
+        let _clusters = clusters.filter(c => c.playerId === this.id && c.dices < 8);
         let dices = this.dices;
-        while (dices > 0 && indices.length > 0) {
-            let rand = Math.floor(Math.random() * indices.length)
-            let i = indices[rand];
-            clusters[i].dices++;
-            if (clusters[i].dices === 8) indices.splice(rand, 1);
+        while (dices > 0 && _clusters.length > 0) {
+            let i = Math.floor(Math.random() * _clusters.length)
+            _clusters[i].dices++;
+            if (_clusters[i].dices === 8) _clusters.splice(i, 1);
             if (this.additionalDices > 0) this.additionalDices--;
             else dices--;
         }
         if (dices > 0) {
             this.additionalDices += dices;
-            if (this.additionalDices > clusters.length * 2) this.additionalDices = clusters.length;
+            if (this.additionalDices > clusters.length * 2) this.additionalDices = clusters.length * 2;
         }
     }
 

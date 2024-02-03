@@ -4,18 +4,18 @@ import {createClusters} from "./clusters.js";
 import {createPlayers} from "./players.js";
 import {drawInit, drawCluster, drawDices, drawDicesNums, drawDicesBar} from "./draw.js";
 
-let canvas, btn;
+let canvas, btn, listenerDisabled = true;
 let clusters, players, human, playerIndex = -1;
 
 function main() {
     setup();
-    nextTurn();
+    nextTurn(players[0]);
 }
 
 function setup() {
     btn = document.getElementById("end-turn");
     btn.addEventListener("click", async () => {
-        canvas.removeEventListener("click", clickListener);
+        listenerDisabled = true;
         btn.disabled = true;
         if (human.clickedCluster !== undefined) drawCluster(human.clickedCluster.corners, human.id);
         await afterTurn(human);
@@ -30,21 +30,17 @@ function setup() {
         if (i === 0) canvas.style.background = "#eee"; // background-canvas
         div.appendChild(canvas);
     }
+    canvas.addEventListener("click", clickListener, false);
     const [board, centerNode] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
     clusters = createClusters(centerNode);
     [players, human] = createPlayers(clusters);
     drawInit(board, clusters, players, human.id);
 }
 
-function nextTurn() {
-    if (++playerIndex >= players.length) playerIndex = 0;
-    let current = players[playerIndex];
-    if (current === human) {
-        canvas.addEventListener("click", clickListener, false);
-        btn.disabled = false;
-    }
-    current.turn(clusters, players, async () => {
-        await afterTurn(current);
+function nextTurn(player) {
+    if (player === human) [listenerDisabled, btn.disabled] = [false, false];
+    player.turn(clusters, players, async () => {
+        await afterTurn(player);
     });
 }
 
@@ -57,21 +53,24 @@ function afterTurn(player) {
             drawDices(cluster, dicesBefore[index]);
         }
         drawDicesNums(player);
+        if (++playerIndex >= players.length) playerIndex = 0;
+        let next = players[playerIndex];
         setTimeout(() => {
-            drawDicesBar(player.id, players[playerIndex + 1 >= players.length ? 0 : playerIndex + 1].id);
+            drawDicesBar(player.id, next.id);
             console.log("...finished.");
-            resolve();
-        }, TIMEOUT_BG);
-    }).then(() => nextTurn());
+            resolve(next);
+        }, next === human ? 0 : TIMEOUT_BG);
+    }).then((next) => nextTurn(next));
 }
 
 function clickListener(event) {
+    if (listenerDisabled) return;
     let otherId = human.click({x: event.clientX, y: event.clientY});
     if (otherId !== undefined) {
         let gameEnded = human.afterSuccessfulMove(clusters, players, otherId);
         if (gameEnded) {
+            listenerDisabled = true;
             btn.disabled = true;
-            canvas.removeEventListener("click", clickListener);
             return;
         }
     }
