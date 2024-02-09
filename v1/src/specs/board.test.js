@@ -14,6 +14,6 @@ test('create board', () => {
 });
 
 test('get adjacent nodes from start-node', () => {
-    expect(startNode.getAdjacentNodesFromNode()).toHaveLength(6);
+    expect(startNode.adjacentNodesFromNode()).toHaveLength(6);
 });
 

@@ -25,7 +25,7 @@ test('create clusters', () => {
 test('create single cluster', () => {
     let cluster = new Cluster(startNode, 0);
     expect(cluster).toHaveProperty("id");
-    expect([startNode, ...startNode.getAdjacentNodesFromNode()]
+    expect([startNode, ...startNode.adjacentNodesFromNode()]
         .every(n => cluster.nodes.includes(n))).toBeTruthy();
     expect(cluster).toHaveProperty("centerPos");
     expect(cluster).toHaveProperty("corners");

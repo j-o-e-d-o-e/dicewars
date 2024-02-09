@@ -2,7 +2,10 @@ import {CANVAS_WIDTH, CANVAS_HEIGHT, CLUSTERS_MAX, TIMEOUT_BG} from './info.js';
 import {createBoard} from './board.js';
 import {createClusters} from "./clusters.js";
 import {createPlayers} from "./players.js";
-import {drawInit, drawCluster, drawDices, drawDicesNums, drawDicesBar} from "./draw.js";
+import {drawInit, drawDices, drawDicesNums, drawDicesBar} from "./draw.js";
+import {Human} from "./player-human.js";
+import {Comp} from "./player-comp.js";
+import {createTestClusters2} from "../specs/bootstrap.js";
 
 let canvas, btn, listenerDisabled = true;
 let clusters, players, human, playerIndex = -1;
@@ -10,6 +13,19 @@ let clusters, players, human, playerIndex = -1;
 function main() {
     setup();
     nextTurn(players[0]);
+    // testDisplay();
+}
+
+// noinspection JSUnusedLocalSymbols
+function testDisplay() {
+    let [board, _] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
+    clusters = createTestClusters2(board);
+    players = [new Comp(), new Comp(), new Human()];
+    human = players[players.length - 1];
+    drawInit(board, clusters, players, human.id);
+    let from = clusters[0], to = clusters[6];
+    let path = from.paths(to);
+    console.log(path);
 }
 
 function setup() {
@@ -75,7 +91,7 @@ function clickListener(event) {
         }
     }
     human.clickableClusters = clusters.filter(c => c.playerId === human.id && c.dices > 1
-        && c.getAdjacentClustersFromCluster().some(c => c.playerId !== human.id));
+        && c.adjacentClustersFromCluster().some(c => c.playerId !== human.id));
 }
 
 main();

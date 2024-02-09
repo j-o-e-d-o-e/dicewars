@@ -24,8 +24,8 @@ export function createClusters(startNode) {
 }
 
 function getRandomAdjacentNodeFromCluster(cluster) {
-    let candidates = cluster.getAdjacentNodesFromCluster().filter(n => n.cluster === undefined
-        && n.getAdjacentNodesFromNode().filter(n => n.cluster === undefined).length >= MIN_NEIGHBOURS_NODE);
+    let candidates = cluster.adjacentNodesFromCluster().filter(n => n.cluster === undefined
+        && n.adjacentNodesFromNode().filter(n => n.cluster === undefined).length >= MIN_NEIGHBOURS_NODE);
     if (candidates.length === 0) {
         paths--;
         if (++smallCount >= paths) smallCount = 0;

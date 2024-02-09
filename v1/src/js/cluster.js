@@ -1,15 +1,15 @@
-import {RADIUS_HEX, CLUSTER_MIN_SIZE} from "./info.js";
+import {RADIUS_HEX, CLUSTER_MIN_SIZE, CLUSTERS_MAX} from "./info.js";
 
 export class Cluster {
-    static COUNT = 0;
+    static count = 0;
 
-    constructor(start) {
-        this.id = Cluster.COUNT++;
-        this.playerId = undefined;
-        this.dices = Math.floor(Math.random() * 6) + 1;
+    constructor(start, test) {
+        this.id = test ? test.id : Cluster.count++;
+        this.playerId = test ? test.playerId : undefined;
+        this.dices = test ? test.dices : Math.floor(Math.random() * 6) + 1;
         this.nodes = [];
         this.addNodeAndItsNeighbours(start)
-        this.expand();
+        if (!test) this.expand();
         this.centerPos = this.centerPos();
         this.corners = this.cornersPos();
     }
@@ -17,7 +17,7 @@ export class Cluster {
     addNodeAndItsNeighbours(node) {
         node.cluster = this;
         this.nodes.push(node);
-        node.getAdjacentNodesFromNode()
+        node.adjacentNodesFromNode()
             .filter(n => n.cluster === undefined)
             .forEach(n => {
                 n.cluster = this;
@@ -27,7 +27,7 @@ export class Cluster {
 
     expand() {
         while (this.nodes.length < CLUSTER_MIN_SIZE) {
-            let candidates = this.getAdjacentNodesFromCluster().filter(n => n.cluster === undefined);
+            let candidates = this.adjacentNodesFromCluster().filter(n => n.cluster === undefined);
             if (candidates.length === 0) break;
             let rand = Math.floor(Math.random() * (candidates.length - 1));
             let node = candidates[rand];
@@ -37,7 +37,7 @@ export class Cluster {
 
     centerPos() {
         let centerNode = this.nodes.find(n => {
-            let neighbours = n.getAdjacentNodesFromNode();
+            let neighbours = n.adjacentNodesFromNode();
             return neighbours.length === 6 && neighbours.every(n => n.cluster?.id === this.id);
         });
         if (centerNode === undefined) centerNode = this.nodes[0];
@@ -74,16 +74,16 @@ export class Cluster {
         return res.map(l => l.start);
     }
 
-    getAdjacentNodesFromCluster() {
+    adjacentNodesFromCluster() {
         return Array.from(new Set(
-            this.nodes.flatMap(n => n.getAdjacentNodesFromNode())
+            this.nodes.flatMap(n => n.adjacentNodesFromNode())
                 .filter(n => !this.nodes.includes(n))
         ));
     }
 
-    getAdjacentClustersFromCluster() {
+    adjacentClustersFromCluster() {
         return [...new Set(
-            this.getAdjacentNodesFromCluster().filter(n => n.cluster !== undefined).map(n => n.cluster)
+            this.adjacentNodesFromCluster().filter(n => n.cluster !== undefined).map(n => n.cluster)
         )];
     }
 
@@ -91,14 +91,54 @@ export class Cluster {
         return this.nodes.some(n => Math.pow(p.x - n.hex.center.x, 2) + Math.pow(p.y - n.hex.center.y, 2) < Math.pow(RADIUS_HEX, 2));
     }
 
-    getRegion() {
+    region() {
         let cache = [this];
-        let neighbours = this.getAdjacentClustersFromCluster().filter(c => c.playerId === this.playerId);
+        let neighbours = this.adjacentClustersFromCluster().filter(c => c.playerId === this.playerId);
         while (neighbours.length > 0) {
             cache = cache.concat(neighbours);
-            neighbours = [...new Set(neighbours.flatMap(n => n.getAdjacentClustersFromCluster()
+            neighbours = [...new Set(neighbours.flatMap(n => n.adjacentClustersFromCluster()
                 .filter(c => !cache.includes(c) && c.playerId === this.playerId)))];
         }
         return cache;
+    }
+
+    paths(to) {
+        let paths = [];
+        let queue = [this];
+        let visited = Array(CLUSTERS_MAX).fill(false);
+        visited[this.id] = true;
+        let predecessors = Array(CLUSTERS_MAX);
+        let distances = Array(CLUSTERS_MAX);
+        distances[this.id] = 0;
+        while (queue.length > 0) {
+            let from = queue.shift();
+            let neighbours = from.adjacentClustersFromCluster();
+            for (let neighbour of neighbours) {
+                if ((this.playerId !== neighbour.playerId && this.dices - distances[from.id] <= neighbour.dices)
+                    || visited[neighbour.id]) continue;
+                predecessors[neighbour.id] = from;
+                distances[neighbour.id] = distances[from.id] + 1;
+                if (neighbour.id !== to.id) {
+                    visited[neighbour.id] = true;
+                    queue.push(neighbour);
+                } else {
+                    let current = to, pre = predecessors[current.id];
+                    let path = [current];
+                    let moves = []; // for logging only
+                    let dices = this.dices - distances[to.id] + 1;
+                    while (pre) {
+                        moves.push(`${pre.id} -> ${current.id}: ${this.playerId === current.playerId ? "no attack" : `${dices++} vs ${current.dices}`}`);
+                        path.push(pre);
+                        current = pre;
+                        pre = predecessors[current.id];
+                    }
+                    paths.push({
+                        path: path.reverse(),
+                        moves: moves.reverse()
+                    });
+                }
+            }
+        }
+        return paths.sort((a, b) => a.path.length - b.path.length);
     }
 }

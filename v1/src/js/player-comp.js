@@ -59,7 +59,7 @@ export class Comp extends Player {
     }
 
     target(cluster, mighty) {
-        let targets = cluster.getAdjacentClustersFromCluster().filter(c => c.playerId !== this.id);
+        let targets = cluster.adjacentClustersFromCluster().filter(c => c.playerId !== this.id);
         if (mighty !== undefined) targets = targets.filter(c => c.playerId === mighty.id);
         targets = targets.filter(c => cluster.dices > c.dices - (cluster.dices === 8));
         let grouped = targets.reduce((acc, current) => { // https://stackoverflow.com/a/34890276/9416041
@@ -74,29 +74,33 @@ export class Comp extends Player {
         }
     }
 
-    paths(clusters) {
+    pathsBetweenRegions(clusters) {
         let regions = [];
         for (let cluster of clusters.filter(c => c.playerId === this.id)) {
             if (regions.flat().includes(cluster)) continue;
-            regions.push(cluster.getRegion());
+            regions.push(cluster.region());
         }
         regions = regions.map(r =>
-            r.filter(c => c.getAdjacentClustersFromCluster()
+            r.filter(c => c.adjacentClustersFromCluster()
                 .some(c => c.playerId !== this.id))
         );
 
-        // let paths = [];
-        // for (let region of regions) {
-        //     let others = regions.filter(r => r !== region);
-        //     for (let startCluster of region) {
-        //         for (let other of others) {
-        //             for (let endCluster of other) {
-        //                 TODO
-        // }
-        // }
-        // }
-        // }
-        return regions;
+        let paths = [];
+        for (let [i, regionFrom] of regions.entries()) {
+            for (let clusterFrom of regionFrom) {
+                for (let [j, regionTo] of regions.entries()) {
+                    if (regionFrom === regionTo) continue;
+                    for (let clusterTo of regionTo) {
+                        paths.push({
+                            from: {region: i, cluster: clusterFrom},
+                            to: {region: j, cluster: clusterTo},
+                            paths: clusterFrom.paths(clusterTo)
+                        });
+                    }
+                }
+            }
+        }
+        return paths;
     }
 
     attack(cluster, target) {

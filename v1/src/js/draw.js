@@ -61,7 +61,7 @@ function _drawClusters(clusters) {
     for (let cluster of clusters) {
         _drawCluster(cluster.corners, "black", COLORS[cluster.playerId][0]);
         _drawDices(cluster, COLORS[cluster.playerId][1], {timeout: 0});
-        // _drawText(cluster);
+        _drawText(cluster);
     }
 }
 

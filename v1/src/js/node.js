@@ -16,7 +16,7 @@ export class Node {
         if (this.col !== cols && !(this.col === cols - 1 && this.row % 2 !== 0)) this.right = board[this.id + 1];
     }
 
-    getAdjacentNodesFromNode() {
+    adjacentNodesFromNode() {
         return [this.upRight, this.upLeft, this.left, this.downLeft, this.downRight, this.right].filter(n => n !== undefined);
     }
 }

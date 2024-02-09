@@ -21,7 +21,7 @@ export class Human extends Player {
             drawCluster(this.clickedCluster.corners, this.id);
             this.clickedCluster = undefined;
         } else {
-            let candidates = this.clickedCluster.getAdjacentClustersFromCluster().filter(c => c.playerId !== this.id);
+            let candidates = this.clickedCluster.adjacentClustersFromCluster().filter(c => c.playerId !== this.id);
             let target = candidates.find(c => c.containsPoint(point));
             if (target === undefined) return;
             let sumPlayer = Player.roleDice(this.clickedCluster.dices);
