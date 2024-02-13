@@ -60,12 +60,11 @@ test('paths', () => {
     for (let pathsBetweenTwoRegions of paths) {
         let from = pathsBetweenTwoRegions.from;
         let to = pathsBetweenTwoRegions.to;
+        if (pathsBetweenTwoRegions.paths.length === 0) console.log(`no path found: ${from.cluster.id} (region: ${from.region}) -> ${to.cluster.id} (region: ${to.region})`);
         for (let path of pathsBetweenTwoRegions.paths) {
-            if (paths.length === 0) console.log(`no path found: ${from.cluster.id} (region: ${from.region}) -> ${to.cluster.id} (region: ${to.region})`);
-            else
-                console.log(`Path from ${from.cluster.id} (region: ${from.region}) to ${to.cluster.id} (region: ${to.region}): `
-                    + `${path.path.map(c => c.id).join(', ')} (steps: ${path.path.length - 1})`
-                    + `\nMoves:\n\t- ${path.moves.join('\n\t- ')}`);
+            console.log(`Path from ${from.cluster.id} (region: ${from.region}) to ${to.cluster.id} (region: ${to.region}): `
+                + `${path.path.map(c => c.id).join(', ')} (steps: ${path.path.length - 1})`
+                + `\nMoves:\n\t- ${path.moves.join('\n\t- ')}`);
         }
     }
 });

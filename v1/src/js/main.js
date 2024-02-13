@@ -5,7 +5,7 @@ import {createPlayers} from "./players.js";
 import {drawInit, drawDices, drawDicesNums, drawDicesBar} from "./draw.js";
 import {Human} from "./player-human.js";
 import {Comp} from "./player-comp.js";
-import {createTestClusters2} from "../specs/bootstrap.js";
+import {createTestClusters4} from "../specs/bootstrap.js";
 
 let canvas, btn, listenerDisabled = true;
 let clusters, players, human, playerIndex = -1;
@@ -19,13 +19,19 @@ function main() {
 // noinspection JSUnusedLocalSymbols
 function testDisplay() {
     let [board, _] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
-    clusters = createTestClusters2(board);
+    clusters = createTestClusters4(board);
     players = [new Comp(), new Comp(), new Human()];
     human = players[players.length - 1];
     drawInit(board, clusters, players, human.id);
-    let from = clusters[0], to = clusters[6];
-    let path = from.paths(to);
-    console.log(path);
+    let from = clusters[1], to = clusters[4];
+    let paths = from.paths(to);
+    // noinspection DuplicatedCode
+    if (paths.length === 0) console.log(`no path found: ${from.id} -> ${to.id}`);
+    else {
+        for (let path of paths) {
+            console.log(`Path from ${from.id} to ${to.id}: ${path.path.map(c => c.id).join(', ')} (steps: ${path.path.length - 1})\nMoves:\n\t- ${path.moves.join('\n\t- ')}`);
+        }
+    }
 }
 
 function setup() {

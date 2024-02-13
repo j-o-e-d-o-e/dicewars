@@ -14,10 +14,10 @@ export class Comp extends Player {
         let compClusters = clusters.filter(c => c.playerId === this.id && c.dices > 1)
             .sort((a, b) => b.dices - a.dices);
         let cluster = compClusters.shift();
-        while (cluster !== undefined) {
+        while (cluster) {
             let mighty = this.mightyOther(clusters, players);
             let target = this.target(cluster, mighty);
-            if (target === undefined) {
+            if (!target) {
                 cluster = compClusters.shift();
                 continue;
             }
@@ -45,7 +45,7 @@ export class Comp extends Player {
         for (let cluster of clusters) {
             allDices += cluster.dices;
             let _p = _players.find(p => p.id === cluster.playerId);
-            if (_p !== undefined) {
+            if (_p) {
                 _p.clusters++;
                 _p.dices += cluster.dices;
             }
@@ -60,7 +60,7 @@ export class Comp extends Player {
 
     target(cluster, mighty) {
         let targets = cluster.adjacentClustersFromCluster().filter(c => c.playerId !== this.id);
-        if (mighty !== undefined) targets = targets.filter(c => c.playerId === mighty.id);
+        if (mighty) targets = targets.filter(c => c.playerId === mighty.id);
         targets = targets.filter(c => cluster.dices > c.dices - (cluster.dices === 8));
         let grouped = targets.reduce((acc, current) => { // https://stackoverflow.com/a/34890276/9416041
             (acc[current['dices']] = acc[current['dices']] || []).push(current);
@@ -80,27 +80,31 @@ export class Comp extends Player {
             if (regions.flat().includes(cluster)) continue;
             regions.push(cluster.region());
         }
-        regions = regions.map(r =>
-            r.filter(c => c.adjacentClustersFromCluster()
-                .some(c => c.playerId !== this.id))
-        );
+        regions = regions.map(r => r.filter(c => c.adjacentClustersFromCluster()
+            .some(c => c.playerId !== this.id)));
 
-        let paths = [];
+        let pathsBetweenRegions = [];
         for (let [i, regionFrom] of regions.entries()) {
             for (let clusterFrom of regionFrom) {
                 for (let [j, regionTo] of regions.entries()) {
                     if (regionFrom === regionTo) continue;
                     for (let clusterTo of regionTo) {
-                        paths.push({
-                            from: {region: i, cluster: clusterFrom},
-                            to: {region: j, cluster: clusterTo},
-                            paths: clusterFrom.paths(clusterTo)
-                        });
+                        let paths = clusterFrom.paths(clusterTo);
+                        if (paths.length > 0)
+                            pathsBetweenRegions.push({
+                                from: {cluster: clusterFrom, region: i},
+                                to: {cluster: clusterTo, region: j},
+                                paths: paths
+                            });
                     }
                 }
             }
         }
-        return paths;
+        return pathsBetweenRegions.sort((a, b) => {
+            let r = a.from.region - b.from.region;
+            if (!r) return a.from.cluster.id - b.from.cluster.id
+            return r;
+        });
     }
 
     attack(cluster, target) {

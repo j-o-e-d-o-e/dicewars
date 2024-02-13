@@ -14,7 +14,11 @@ test('path on small board', () => {
     let paths = from.paths(to);
 
     log(paths, from, to);
+    expect(paths).toHaveLength(2);
+    expect(paths[0].path.map(c => c.id)).toEqual([0, 1, 4, 5]);
+    expect(paths[1].path.map(c => c.id)).toEqual([0, 3, 6, 5]);
 });
+
 test('path on big board', () => {
     let clusters = createTestClusters2(board);
     let from = clusters[0], to = clusters[6];
@@ -22,6 +26,9 @@ test('path on big board', () => {
     let paths = from.paths(to);
 
     log(paths, from, to);
+    expect(paths).toHaveLength(2);
+    expect(paths[0].path.map(c => c.id)).toEqual([0, 9, 6]);
+    expect(paths[1].path.map(c => c.id)).toEqual([0, 1, 2, 3, 4, 5, 6]);
 });
 
 function log(paths, from, to) {

@@ -34,3 +34,9 @@ function log(players, clusters) {
         allDices: clusters.reduce((acc, c) => c.playerId === p.id ? acc + c.dices : acc, 0)
     })}`).join("\n\t")}`);
 }
+
+export function createComp(id) {
+    let comp = new Comp();
+    comp.id = id;
+    return comp;
+}
