@@ -44,27 +44,3 @@ test('target', () => {
     expect(res.playerId).not.toBe(comp.id);
     expect(res.dices).toBeLessThanOrEqual(cluster.dices);
 });
-
-test('paths', () => {
-    let cluster = clusters[0];
-    cluster.playerId = comp.id;
-    cluster.adjacentClustersFromCluster().forEach(c => c.playerId = cluster.playerId);
-
-    let paths = comp.pathsBetweenRegions(clusters);
-
-    paths.sort((a, b) => {
-        let r = a.from.region - b.from.region;
-        if (!r) return a.from.cluster.id - b.from.cluster.id
-        return r;
-    });
-    for (let pathsBetweenTwoRegions of paths) {
-        let from = pathsBetweenTwoRegions.from;
-        let to = pathsBetweenTwoRegions.to;
-        if (pathsBetweenTwoRegions.paths.length === 0) console.log(`no path found: ${from.cluster.id} (region: ${from.region}) -> ${to.cluster.id} (region: ${to.region})`);
-        for (let path of pathsBetweenTwoRegions.paths) {
-            console.log(`Path from ${from.cluster.id} (region: ${from.region}) to ${to.cluster.id} (region: ${to.region}): `
-                + `${path.path.map(c => c.id).join(', ')} (steps: ${path.path.length - 1})`
-                + `\nMoves:\n\t- ${path.moves.join('\n\t- ')}`);
-        }
-    }
-});

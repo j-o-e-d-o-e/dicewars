@@ -123,6 +123,7 @@ export function drawCluster(corners, playerId) {
 export function drawDices(cluster, dicesBefore) {
     if (dicesBefore === undefined) ctxFg[cluster.id].clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     _drawDices(cluster, COLORS[cluster.playerId][1], {startI: dicesBefore});
+    _drawText(cluster);
 }
 
 export function drawDicesNums(player) {

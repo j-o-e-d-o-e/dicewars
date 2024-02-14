@@ -102,8 +102,8 @@ export class Cluster {
         return cache;
     }
 
-    paths(to) {
-        let paths = [];
+    path(to) {
+        let res;
         let queue = [this];
         let visited = Array(CLUSTERS_MAX).fill(false);
         visited[this.id] = true;
@@ -125,21 +125,20 @@ export class Cluster {
                 } else {
                     let current = to, pre = predecessors[current.id];
                     let path = [current];
-                    let moves = []; // for logging only
-                    let dices = this.dices - distances[to.id] + 1;
                     while (pre) {
-                        moves.push(`${pre.id} -> ${current.id}: ${this.playerId === current.playerId ? "no attack" : `${dices++} vs ${current.dices}`}`);
                         path.push(pre);
                         current = pre;
                         pre = predecessors[current.id];
                     }
-                    paths.push({
-                        path: path.reverse(),
-                        moves: moves.reverse()
-                    });
+                    path.reverse();
+                    if (res) {
+                        let minDicesDiffP = Math.min(...path.slice(1, -1).map((c, i) => this.dices - i - c.dices));
+                        let minDicesDiffR = Math.min(...res.slice(1, -1).map((c, i) => this.dices - i - c.dices));
+                        if (minDicesDiffP > minDicesDiffR || (minDicesDiffP === minDicesDiffR && path.length < res.length)) res = path;
+                    } else res = path
                 }
             }
         }
-        return paths.sort((a, b) => a.path.length - b.path.length);
+        return res;
     }
 }

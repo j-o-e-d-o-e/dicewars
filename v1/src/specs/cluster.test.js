@@ -66,12 +66,3 @@ test('two regions do not overlap', () => {
 
     for (let cluster of region1) expect(region2.includes(cluster)).toBeFalsy();
 });
-
-test('path', () => {
-    let from = clusters[0];
-    from.dices = 8;
-    let to = clusters[5];
-
-    let paths = from.paths(to);
-    console.log(paths);
-});

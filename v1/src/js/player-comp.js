@@ -16,6 +16,11 @@ export class Comp extends Player {
         let cluster = compClusters.shift();
         while (cluster) {
             let mighty = this.mightyOther(clusters, players);
+            if (!mighty) {
+                // TODO
+                let path = this.path(clusters);
+                if (path) console.log(path.map(c => c.id));
+            }
             let target = this.target(cluster, mighty);
             if (!target) {
                 cluster = compClusters.shift();
@@ -74,7 +79,7 @@ export class Comp extends Player {
         }
     }
 
-    pathsBetweenRegions(clusters) {
+    path(clusters) {
         let regions = [];
         for (let cluster of clusters.filter(c => c.playerId === this.id)) {
             if (regions.flat().includes(cluster)) continue;
@@ -83,28 +88,28 @@ export class Comp extends Player {
         regions = regions.map(r => r.filter(c => c.adjacentClustersFromCluster()
             .some(c => c.playerId !== this.id)));
 
-        let pathsBetweenRegions = [];
+        let res;
         for (let [i, regionFrom] of regions.entries()) {
             for (let clusterFrom of regionFrom) {
                 for (let [j, regionTo] of regions.entries()) {
                     if (regionFrom === regionTo) continue;
                     for (let clusterTo of regionTo) {
-                        let paths = clusterFrom.paths(clusterTo);
-                        if (paths.length > 0)
-                            pathsBetweenRegions.push({
-                                from: {cluster: clusterFrom, region: i},
-                                to: {cluster: clusterTo, region: j},
-                                paths: paths
-                            });
+                        let path = clusterFrom.path(clusterTo);
+                        if (!path) continue;
+                        if (res) {
+                            let newSizeP = regionFrom.length + regionTo.length;
+                            let newSizeR = regions[res.from].length + regions[res.to].length;
+                            if (newSizeP > newSizeR || (newSizeP === newSizeR && path.length < res.path.length)) res = {
+                                from: i,
+                                to: j,
+                                path: path
+                            };
+                        } else res = {from: i, to: j, path: path};
                     }
                 }
             }
         }
-        return pathsBetweenRegions.sort((a, b) => {
-            let r = a.from.region - b.from.region;
-            if (!r) return a.from.cluster.id - b.from.cluster.id
-            return r;
-        });
+        return res?.path;
     }
 
     attack(cluster, target) {

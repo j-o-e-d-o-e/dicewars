@@ -5,7 +5,7 @@ import {createPlayers} from "./players.js";
 import {drawInit, drawDices, drawDicesNums, drawDicesBar} from "./draw.js";
 import {Human} from "./player-human.js";
 import {Comp} from "./player-comp.js";
-import {createTestClusters4} from "../specs/bootstrap.js";
+import {createTestClusters3} from "../specs/bootstrap.js";
 
 let canvas, btn, listenerDisabled = true;
 let clusters, players, human, playerIndex = -1;
@@ -19,19 +19,14 @@ function main() {
 // noinspection JSUnusedLocalSymbols
 function testDisplay() {
     let [board, _] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
-    clusters = createTestClusters4(board);
+    clusters = createTestClusters3(board);
     players = [new Comp(), new Comp(), new Human()];
     human = players[players.length - 1];
     drawInit(board, clusters, players, human.id);
-    let from = clusters[1], to = clusters[4];
-    let paths = from.paths(to);
-    // noinspection DuplicatedCode
-    if (paths.length === 0) console.log(`no path found: ${from.id} -> ${to.id}`);
-    else {
-        for (let path of paths) {
-            console.log(`Path from ${from.id} to ${to.id}: ${path.path.map(c => c.id).join(', ')} (steps: ${path.path.length - 1})\nMoves:\n\t- ${path.moves.join('\n\t- ')}`);
-        }
-    }
+    let from = clusters[5], to = clusters[8];
+    let path = from.path(to);
+    if (path) console.log(`Path from ${from.id} to ${to.id}: ${path.map(c => c.id).join(', ')} (steps: ${path.length - 1})`);
+    else console.log(`No path from ${from.id} to ${to.id}`);
 }
 
 function setup() {
@@ -82,7 +77,8 @@ function afterTurn(player) {
             console.log("...finished.");
             resolve(next);
         }, next === human ? 0 : TIMEOUT_BG);
-    }).then((next) => nextTurn(next));
+    })
+        // .then((next) => nextTurn(next));
 }
 
 function clickListener(event) {
