@@ -2,7 +2,7 @@ import {CANVAS_WIDTH, CANVAS_HEIGHT, CLUSTERS_MAX, TIMEOUT_BG} from './info.js';
 import {createBoard} from './board.js';
 import {createClusters} from "./clusters.js";
 import {createPlayers} from "./players.js";
-import {drawInit, drawDices, drawDicesNums, drawDicesBar} from "./draw.js";
+import {drawInit, drawDices, drawDicesNums, drawDicesBar, drawCluster} from "./draw.js";
 import {Human} from "./player-human.js";
 import {Comp} from "./player-comp.js";
 import {createTestClusters3} from "../specs/bootstrap.js";
@@ -77,8 +77,7 @@ function afterTurn(player) {
             console.log("...finished.");
             resolve(next);
         }, next === human ? 0 : TIMEOUT_BG);
-    })
-        // .then((next) => nextTurn(next));
+    }).then((next) => nextTurn(next));
 }
 
 function clickListener(event) {

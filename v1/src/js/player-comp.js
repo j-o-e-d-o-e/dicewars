@@ -11,35 +11,64 @@ export class Comp extends Player {
 
     async turn(clusters, players, cb) {
         super.turn();
-        let compClusters = clusters.filter(c => c.playerId === this.id && c.dices > 1)
+        let path = this.path(clusters);
+        while (path) {
+            console.log(`Path: ${path.map(c => c.id)}`);
+            let cluster = path.shift();
+            for (let target of path.slice(0, -1)) {
+                let otherId = await this.attack(cluster, target);
+                if (otherId !== undefined && this.afterSuccessfulMove(clusters, players, otherId)) return;
+                cluster = target;
+            }
+            path = this.path(clusters);
+        }
+        let _clusters = clusters.filter(c => c.playerId === this.id && c.dices > 1)
             .sort((a, b) => b.dices - a.dices);
-        let cluster = compClusters.shift();
+        let cluster = _clusters.shift();
         while (cluster) {
             let mighty = this.mightyOther(clusters, players);
-            if (!mighty) {
-                // TODO
-                let path = this.path(clusters);
-                if (path) console.log(path.map(c => c.id));
-            }
             let target = this.target(cluster, mighty);
             if (!target) {
-                cluster = compClusters.shift();
+                cluster = _clusters.shift();
                 continue;
             }
-            await this.attack(cluster, target).then(otherId => {
-                if (otherId === undefined) cluster = compClusters.shift();
-                else {
-                    cluster = target;
-                    let gameEnded = this.afterSuccessfulMove(clusters, players, otherId);
-                    if (gameEnded) {
-                        cluster = undefined;
-                        cb = () => {
-                        };
-                    }
-                }
-            });
+            let otherId = await this.attack(cluster, target)
+            if (otherId !== undefined) {
+                let gameEnded = this.afterSuccessfulMove(clusters, players, otherId);
+                if (gameEnded) return;
+                else cluster = target;
+            } else cluster = _clusters.shift();
         }
         cb();
+    }
+
+    attack(cluster, target) {
+        return new Promise(resolve => {
+            let sumPlayer = Player.roleDice(cluster.dices);
+            let sumOther = Player.roleDice(target.dices);
+            console.log(`attacks ${target.playerId}: ${cluster.id} vs ${target.id} -> thrown dices: ${sumPlayer} vs ${sumOther}`);
+            drawCluster(cluster.corners);
+            setTimeout(() => {
+                drawCluster(target.corners);
+                setTimeout(() => {
+                    let dicesPlayerBefore = cluster.dices;
+                    cluster.dices = 1;
+                    drawDices(cluster);
+                    drawCluster(cluster.corners, this.id);
+                    if (sumPlayer > sumOther) {
+                        let otherPlayerId = target.playerId;
+                        target.playerId = this.id;
+                        target.dices = dicesPlayerBefore - 1;
+                        drawDices(target);
+                        drawCluster(target.corners, this.id);
+                        resolve(otherPlayerId);
+                    } else {
+                        drawCluster(target.corners, target.playerId);
+                        resolve(undefined);
+                    }
+                }, TIMEOUT_BG);
+            }, TIMEOUT_SM);
+        });
     }
 
     mightyOther(clusters, players) {
@@ -110,34 +139,5 @@ export class Comp extends Player {
             }
         }
         return res?.path;
-    }
-
-    attack(cluster, target) {
-        return new Promise(resolve => {
-            let sumPlayer = Player.roleDice(cluster.dices);
-            let sumOther = Player.roleDice(target.dices);
-            console.log(`attacks ${target.playerId} -> thrown dices: ${sumPlayer} vs ${sumOther}`);
-            drawCluster(cluster.corners);
-            setTimeout(() => {
-                drawCluster(target.corners);
-                setTimeout(() => {
-                    let dicesPlayerBefore = cluster.dices;
-                    cluster.dices = 1;
-                    drawDices(cluster);
-                    drawCluster(cluster.corners, this.id);
-                    if (sumPlayer > sumOther) {
-                        let otherPlayerId = target.playerId;
-                        target.playerId = this.id;
-                        target.dices = dicesPlayerBefore - 1;
-                        drawDices(target);
-                        drawCluster(target.corners, this.id);
-                        resolve(otherPlayerId);
-                    } else {
-                        drawCluster(target.corners, target.playerId);
-                        resolve(undefined);
-                    }
-                }, TIMEOUT_BG);
-            }, TIMEOUT_SM);
-        });
     }
 }
