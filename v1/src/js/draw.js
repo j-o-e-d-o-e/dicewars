@@ -61,7 +61,7 @@ function _drawClusters(clusters) {
     for (let cluster of clusters) {
         _drawCluster(cluster.corners, "black", COLORS[cluster.playerId][0]);
         _drawDices(cluster, COLORS[cluster.playerId][1], {timeout: 0});
-        _drawText(cluster);
+        // _drawText(cluster);
     }
 }
 
@@ -123,7 +123,7 @@ export function drawCluster(corners, playerId) {
 export function drawDices(cluster, dicesBefore) {
     if (dicesBefore === undefined) ctxFg[cluster.id].clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     _drawDices(cluster, COLORS[cluster.playerId][1], {startI: dicesBefore});
-    _drawText(cluster);
+    // _drawText(cluster);
 }
 
 export function drawDicesNums(player) {

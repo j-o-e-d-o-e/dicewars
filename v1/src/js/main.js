@@ -3,9 +3,6 @@ import {createBoard} from './board.js';
 import {createClusters} from "./clusters.js";
 import {createPlayers} from "./players.js";
 import {drawInit, drawDices, drawDicesNums, drawDicesBar, drawCluster} from "./draw.js";
-import {Human} from "./player-human.js";
-import {Comp} from "./player-comp.js";
-import {createTestClusters3} from "../specs/bootstrap.js";
 
 let canvas, btn, listenerDisabled = true;
 let clusters, players, human, playerIndex = -1;
@@ -17,17 +14,16 @@ function main() {
 }
 
 // noinspection JSUnusedLocalSymbols
-function testDisplay() {
-    let [board, _] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
-    clusters = createTestClusters3(board);
-    players = [new Comp(), new Comp(), new Human()];
-    human = players[players.length - 1];
-    drawInit(board, clusters, players, human.id);
-    let from = clusters[5], to = clusters[8];
-    let path = from.path(to);
-    if (path) console.log(`Path from ${from.id} to ${to.id}: ${path.map(c => c.id).join(', ')} (steps: ${path.length - 1})`);
-    else console.log(`No path from ${from.id} to ${to.id}`);
-}
+// function testDisplay() {
+//     let [board, _] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
+//     clusters = createTestClusters4(board);
+//     players = [new Comp(), new Comp(), new Human()];
+//     for (let player of players) player.setDices(clusters);
+//     human = players[players.length - 1];
+//     drawInit(board, clusters, players, human.id);
+//     let res = players[0].mightyOther(clusters, players);
+//     if (res) console.log(`Mighty: ${res.id} (dices: ${res.dices})`);
+// }
 
 function setup() {
     btn = document.getElementById("end-turn");

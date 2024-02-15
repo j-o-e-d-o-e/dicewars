@@ -3,7 +3,6 @@ import {Player} from "./player.js";
 import {drawCluster, drawDices} from "./draw.js";
 
 export class Comp extends Player {
-    static THRESHOLD_FACTOR = 2.5;
 
     constructor() {
         super();
@@ -13,7 +12,7 @@ export class Comp extends Player {
         super.turn();
         let path = this.path(clusters);
         while (path) {
-            console.log(`Path: ${path.map(c => c.id)}`);
+            // console.log(`Path: ${path.map(c => c.id)}`);
             let cluster = path.shift();
             for (let target of path.slice(0, -1)) {
                 let otherId = await this.attack(cluster, target);
@@ -72,24 +71,8 @@ export class Comp extends Player {
     }
 
     mightyOther(clusters, players) {
-        let _players = players.filter(p => p.id !== this.id).map(p => {
-            return {id: p.id, dices: p.dices + p.additionalDices, clusters: 0}
-        });
-        let allDices = 0;
-        for (let cluster of clusters) {
-            allDices += cluster.dices;
-            let _p = _players.find(p => p.id === cluster.playerId);
-            if (_p) {
-                _p.clusters++;
-                _p.dices += cluster.dices;
-            }
-        }
-        for (let _p of _players) {
-            if (_p.clusters > clusters.length / players.length * Comp.THRESHOLD_FACTOR ||
-                _p.dices > allDices / players.length * Comp.THRESHOLD_FACTOR) {
-                return players.find(p => p.id === _p.id);
-            }
-        }
+        let threshold = clusters.length / 2;
+        return players.find(p => p.id !== this.id && p.dices >= threshold)
     }
 
     target(cluster, mighty) {
