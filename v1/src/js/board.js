@@ -6,7 +6,7 @@ export function createBoard(width, height) {
     const xSpacing = RADIUS_HEX * Math.sqrt(3);
     let board = [];
     let index = 0, row = 0, col = 0;
-    for (let y = ySpacing, z = 0; y + RADIUS_HEX <= height; y += ySpacing, z++) {
+    for (let y = ySpacing * 2, z = 0; y + RADIUS_HEX <= height; y += ySpacing, z++) {
         let xOffset = z % 2 === 0 ? 0 : RADIUS_HEX - 1;
         col = 0;
         for (let x = xSpacing + xOffset; x + RADIUS_HEX <= width; x += xSpacing) {
