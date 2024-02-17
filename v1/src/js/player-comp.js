@@ -8,7 +8,7 @@ export class Comp extends Player {
         super();
     }
 
-    async turn(clusters, players, cb) {
+    async turn(clusters, players, afterTurn, end) {
         super.turn();
         let path = this.path(clusters);
         while (path) {
@@ -34,11 +34,14 @@ export class Comp extends Player {
             let otherId = await this.attack(cluster, target)
             if (otherId !== undefined) {
                 let gameEnded = this.afterSuccessfulMove(clusters, players, otherId);
-                if (gameEnded) return;
+                if (gameEnded) {
+                    end(false);
+                    return;
+                }
                 else cluster = target;
             } else cluster = _clusters.shift();
         }
-        cb();
+        afterTurn();
     }
 
     attack(cluster, target) {

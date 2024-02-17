@@ -1,5 +1,6 @@
 import {Player} from "./player.js";
 import {drawCluster, drawDices} from "./draw.js";
+import Stats from "./stats.js";
 
 export class Human extends Player {
 
@@ -32,6 +33,7 @@ export class Human extends Player {
             drawCluster(this.clickedCluster.corners, this.id);
             drawDices(this.clickedCluster);
             if (sumPlayer > sumOther) {
+                Stats.set.successfulAttacks();
                 let otherPlayerId = target.playerId;
                 target.playerId = this.id;
                 target.dices = dicesPlayerBefore - 1;
@@ -40,6 +42,7 @@ export class Human extends Player {
                 this.clickedCluster = undefined;
                 return otherPlayerId;
             }
+            Stats.set.unsuccessfulAttacks()
             this.clickedCluster = undefined;
         }
     }
