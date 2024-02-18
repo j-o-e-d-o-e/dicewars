@@ -1,8 +1,23 @@
 import {Cluster} from "../js/cluster.js";
 
+const testClusters = [
+    createTestClusters1,
+    createTestClusters2,
+    createTestClusters3,
+    createTestClusters4,
+    createTestClusters5,
+    createTestClusters6
+];
+
+export function createTestClusters(board, num) {
+    let clusters = testClusters[num - 1](board);
+    for (let cluster of clusters) cluster.neighbours();
+    return clusters;
+}
+
 // cluster-path
 
-export function createTestClusters1(board) {
+function createTestClusters1(board) {
     return [
         new Cluster(board[400], {id: 0, playerId: 0, dices: 6}),
         new Cluster(board[295], {id: 1, playerId: 1, dices: 2}),
@@ -14,7 +29,7 @@ export function createTestClusters1(board) {
     ];
 }
 
-export function createTestClusters2(board) {
+function createTestClusters2(board) {
     return [
         new Cluster(board[400], {id: 0, playerId: 0, dices: 8}),
         new Cluster(board[508], {id: 1, playerId: 1, dices: 1}),
@@ -32,7 +47,7 @@ export function createTestClusters2(board) {
 
 // player-comp-path
 
-export function createTestClusters3(board) {
+function createTestClusters3(board) {
     return [
         new Cluster(board[505], {id: 0, playerId: 0, dices: 1}),
         new Cluster(board[400], {id: 1, playerId: 0, dices: 4}),
@@ -49,7 +64,7 @@ export function createTestClusters3(board) {
 
 // player-comp-path, player-comp-target
 
-export function createTestClusters4(board) {
+function createTestClusters4(board) {
     return [
         new Cluster(board[505], {id: 0, playerId: 0, dices: 1}),
         new Cluster(board[400], {id: 1, playerId: 0, dices: 6}),
@@ -73,7 +88,7 @@ export function createTestClusters4(board) {
 
 // player-comp-mighty
 
-export function createTestClusters5(board) {
+function createTestClusters5(board) {
     return [
         new Cluster(board[292], {id: 0, playerId: 0, dices: 1}),
         new Cluster(board[295], {id: 1, playerId: 1, dices: 1}),
@@ -92,14 +107,14 @@ export function createTestClusters5(board) {
     ];
 }
 
-export function createTestClusters6(board) {
+function createTestClusters6(board) {
     let idCount = 0, playerCount = 0;
     return [
-        new Cluster(board[79], {id: idCount++, playerId:  playerCount, dices: 1}),
-        new Cluster(board[82], {id: idCount++, playerId:  playerCount, dices: 1}),
-        new Cluster(board[85], {id: idCount++, playerId:  playerCount, dices: 1}),
-        new Cluster(board[88], {id: idCount++, playerId:  playerCount, dices: 1}),
-        new Cluster(board[91], {id: idCount++, playerId:  playerCount, dices: 1}),
+        new Cluster(board[79], {id: idCount++, playerId: playerCount, dices: 1}),
+        new Cluster(board[82], {id: idCount++, playerId: playerCount, dices: 1}),
+        new Cluster(board[85], {id: idCount++, playerId: playerCount, dices: 1}),
+        new Cluster(board[88], {id: idCount++, playerId: playerCount, dices: 1}),
+        new Cluster(board[91], {id: idCount++, playerId: playerCount, dices: 1}),
         new Cluster(board[187], {id: idCount++, playerId: playerCount, dices: 1}),
         new Cluster(board[190], {id: idCount++, playerId: playerCount, dices: 1}),
         new Cluster(board[193], {id: idCount++, playerId: playerCount, dices: 1}),

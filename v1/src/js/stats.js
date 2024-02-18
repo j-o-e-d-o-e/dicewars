@@ -1,6 +1,6 @@
 const stats = {
     startTime: undefined,
-    turns: 0,
+    rounds: 0,
     successfulAttacks: 0,
     unsuccessfulAttacks: 0
 }
@@ -13,20 +13,20 @@ export default {
             let seconds = ((millis % 60000) / 1000).toFixed(0);
             return `Time played: ${minutes + ":" + (seconds < 10 ? '0' : '') + seconds}`;
         },
-        turns() {
-            return `Turns: ${stats.turns}`;
+        rounds() {
+            return `Rounds: ${stats.rounds}`;
         },
         successRate() {
-            return `Success rate: ${stats.successfulAttacks === 0 && stats.unsuccessfulAttacks === 0 ? 0 :
-                Math.round((stats.successfulAttacks / (stats.successfulAttacks + stats.unsuccessfulAttacks)) * 100)}%`;
+            let div = stats.successfulAttacks + stats.unsuccessfulAttacks;
+            return `Success rate: ${div === 0 ? 0 : Math.round((stats.successfulAttacks / div) * 100)}%`;
         },
     },
     set: {
         startTime() {
             stats.startTime = new Date();
         },
-        turns() {
-            stats.turns++;
+        rounds() {
+            stats.rounds++;
         },
         successfulAttacks() {
             stats.successfulAttacks++;
@@ -37,7 +37,7 @@ export default {
     },
     reset() {
         stats.startTime = new Date();
-        stats.turns = 0;
+        stats.rounds = 0;
         stats.successfulAttacks = 0;
         stats.unsuccessfulAttacks = 0;
     }

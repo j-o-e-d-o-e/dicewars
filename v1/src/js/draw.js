@@ -1,6 +1,6 @@
 import {CANVAS_WIDTH, CANVAS_HEIGHT, RADIUS_HEX, CLUSTERS_MAX, TIMEOUT_SM, COLORS} from "./info.js"
 
-let ctxBg, ctxFg = [], dicesBar;
+let ctxBg, ctxFg, dicesBar;
 
 const LINE_WIDTH = 9;
 
@@ -11,13 +11,16 @@ export function drawInit(board, clusters, players) {
 }
 
 function init(players) {
-    ctxBg = document.getElementById("canvas-0").getContext("2d")
+    ctxBg = document.getElementById("canvas-0").getContext("2d");
     ctxBg.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    ctxFg = [];
     for (let i = 1; i <= CLUSTERS_MAX; i++) {
         let ctx = document.getElementById("canvas-" + i).getContext("2d")
         ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         ctxFg.push(ctx);
     }
+    const dicesPlayers = document.getElementsByClassName("dices-player");
+    while (dicesPlayers.length > 0) dicesPlayers[0].parentNode.removeChild(dicesPlayers[0]);
     dicesBar = document.getElementById("dices-bar");
     for (let player of players) {
         let parentDiv = document.createElement("div");
@@ -111,7 +114,6 @@ export function drawCluster(corners, playerId) {
     else _drawCluster(corners, "black", COLORS[playerId].color);
 }
 
-// export function drawDices(cluster, dicesBefore, timeout = TIMEOUT_SM) {
 export function drawDices(cluster, dicesBefore) {
     if (dicesBefore === undefined) ctxFg[cluster.id].clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     _drawDices(cluster, COLORS[cluster.playerId].cubeId, {startI: dicesBefore});

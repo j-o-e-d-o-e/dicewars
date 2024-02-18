@@ -14,6 +14,7 @@
 
 html, body {
     height: 100%;
+    background-color: var(--dark);
 }
 
 #launch, #end {
@@ -24,7 +25,6 @@ html, body {
 #launch, #end, #main {
     display: none;
     height: 100%;
-    background-color: var(--dark);
 }
 
 h1 {
@@ -36,7 +36,9 @@ h1 {
 
 #launch > div {
     text-align: start;
-    margin-left: 200px;
+    position: relative;
+    left: 20%;
+    max-width: 80%;
 }
 
 #launch > div > span, input[type="radio"], #launch > div > label {
@@ -105,12 +107,11 @@ button {
 
 #main {
     background: var(--dark);
-    background: linear-gradient(0deg, var(--dark) 20%, var(--lighter) 80%);
+    background: linear-gradient(0deg, var(--dark) 18%, var(--lighter) 80%);
 }
 
 #stage {
     position: relative;
-    background-color: var(--darkergreen);
     margin-left: auto;
     margin-right: auto;
     width: 1280px;
@@ -126,6 +127,25 @@ canvas {
 /*#canvas-0 {*/
 /*    background-color: #efe7e7;*/
 /*}*/
+
+#main-before {
+    position: fixed;
+    margin-top: 770px;
+    left: 15%;
+}
+
+#main-before > span {
+    vertical-align: middle;
+    color: var(--lightergreen);
+}
+
+#btn-yes, #btn-no {
+    margin-left: 10px;
+}
+
+#btn-yes:hover, #btn-no:hover {
+    background-color: var(--darkergreen) !important;
+}
 
 #dices-bar {
     position: fixed;

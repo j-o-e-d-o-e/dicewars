@@ -1,13 +1,13 @@
 import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../js/info.js";
 import {createBoard} from "../js/board.js";
-import {createTestClusters4} from "./bootstrap.js";
 import {createComp} from "../js/players.js";
+import {createTestClusters} from "./bootstrap.js";
 
 let clusters;
 
 beforeAll(() => {
     let board = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT)[0];
-    clusters = createTestClusters4(board);
+    clusters = createTestClusters(board, 4);
 });
 
 test('target with 2 dices less is preferred', () => {

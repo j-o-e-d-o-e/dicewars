@@ -1,4 +1,4 @@
-import {RADIUS_HEX, CLUSTER_MIN_SIZE, CLUSTERS_MAX} from "./info.js";
+import {CLUSTER_MIN_SIZE, CLUSTERS_MAX} from "./info.js";
 
 export class Cluster {
     static count = 0;
@@ -12,6 +12,7 @@ export class Cluster {
         if (!test) this.expand();
         this.centerPos = this.centerPos();
         this.corners = this.cornersPos();
+        this.adjacentClusters = undefined;
     }
 
     addNodeAndItsNeighbours(node) {
@@ -81,14 +82,27 @@ export class Cluster {
         ));
     }
 
-    adjacentClustersFromCluster() {
-        return [...new Set(
+    neighbours() {
+        this.adjacentClusters = [...new Set(
             this.adjacentNodesFromCluster().filter(n => n.cluster !== undefined).map(n => n.cluster)
         )];
     }
 
+    adjacentClustersFromCluster() {
+        return this.adjacentClusters;
+    }
+
     containsPoint(p) {
-        return this.nodes.some(n => Math.pow(p.x - n.hex.center.x, 2) + Math.pow(p.y - n.hex.center.y, 2) < Math.pow(RADIUS_HEX, 2));
+        let corners = this.corners;
+        let odd = false; // wikipedia.org/wiki/Even%E2%80%93odd_rule
+        for (let i = 0, j = corners.length - 1; i < corners.length; i++) {
+            if (((corners[i].y > p.y) !== (corners[j].y > p.y))
+                && (p.x < ((corners[j].x - corners[i].x) * (p.y - corners[i].y) / (corners[j].y - corners[i].y) + corners[i].x))) {
+                odd = !odd;
+            }
+            j = i;
+        }
+        return odd;
     }
 
     region() {

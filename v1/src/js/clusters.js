@@ -19,6 +19,13 @@ export function createClusters(startNode) {
         clusters.push(new Cluster(node));
         if ((clusters.length - 1) % paths === 0) bigCount += paths;
     }
+    Cluster.count = 0;
+    clusters.sort((a, b) => a.centerPos.y - b.centerPos.y);
+    for (let cluster of clusters) {
+        cluster.id = Cluster.count++
+        cluster.neighbours();
+        delete cluster.nodes;
+    }
     log(clusters);
     return clusters;
 }
@@ -41,9 +48,5 @@ function getNextClusterIndex() {
 }
 
 function log(clusters) {
-    console.log(`${clusters.length} clusters created with ${JSON.stringify(clusters.reduce((acc, current) => {
-        acc.nodes += current.nodes.length;
-        acc.dices += current.dices;
-        return acc;
-    }, {nodes: 0, dices: 0}))}`);
+    console.log(`${clusters.length} clusters created with ${clusters.reduce((acc, current) => acc + current.dices, 0)} dices`);
 }

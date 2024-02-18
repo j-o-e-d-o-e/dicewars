@@ -1,7 +1,7 @@
 import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../js/info.js";
 import {createBoard} from "../js/board.js";
-import {createTestClusters5, createTestClusters6} from "./bootstrap.js";
 import {createComp} from "../js/players.js";
+import {createTestClusters} from "./bootstrap.js";
 
 let board, players, comp;
 
@@ -12,7 +12,7 @@ beforeAll(() => {
 });
 
 test('mighty other on small board', () => {
-    let clusters = createTestClusters5(board);
+    let clusters = createTestClusters(board, 5);
     for (let player of players) player.setDices(clusters);
 
     let mighty = comp.mightyOther(clusters, players);
@@ -21,7 +21,7 @@ test('mighty other on small board', () => {
 });
 
 test('mighty other on big board', () => {
-    let clusters = createTestClusters6(board);
+    let clusters = createTestClusters(board, 6);
     for (let player of players) player.setDices(clusters);
 
     let mighty = comp.mightyOther(clusters, players);

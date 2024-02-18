@@ -1,7 +1,7 @@
 import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../js/info.js";
 import {createBoard} from "../js/board.js";
-import {createTestClusters3, createTestClusters4} from "./bootstrap.js";
 import {createComp} from "../js/players.js";
+import {createTestClusters} from "./bootstrap.js";
 
 let board, comp;
 
@@ -11,7 +11,7 @@ beforeEach(() => {
 });
 
 test('paths on small board', () => {
-    let clusters = createTestClusters3(board);
+    let clusters = createTestClusters(board, 3);
 
     let path = comp.path(clusters);
 
@@ -20,7 +20,7 @@ test('paths on small board', () => {
 });
 
 test('paths on big board', () => {
-    let clusters = createTestClusters4(board);
+    let clusters = createTestClusters(board, 4);
 
     let path = comp.path(clusters);
 

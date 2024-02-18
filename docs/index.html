@@ -4,6 +4,7 @@
     <meta charset="utf-8"/>
     <title>DICEWARS</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="assets/cube-8.svg" sizes="any" type="image/svg+xml">
 </head>
 <body>
 <div id="launch">
@@ -45,8 +46,13 @@
 </div>
 <div id="main">
     <div id="stage"></div>
-    <div id="dices-bar"></div>
-    <div>
+    <div id="main-before">
+        <span>Play this board?</span>
+        <button type="button" id="btn-yes">Yes</button>
+        <button type="button" id="btn-no">No</button>
+    </div>
+    <div id="main-play">
+        <div id="dices-bar"></div>
         <button type="button" id="btn-turn">End turn</button>
     </div>
 </div>
@@ -55,7 +61,7 @@
     <div id="div-end">
         <ul id="ul-end">
             <li id="li-end-time"></li>
-            <li id="li-end-turns"></li>
+            <li id="li-end-rounds"></li>
             <li id="li-end-successRate"></li>
         </ul>
     </div>

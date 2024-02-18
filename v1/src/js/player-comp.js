@@ -12,11 +12,10 @@ export class Comp extends Player {
         super.turn();
         let path = this.path(clusters);
         while (path) {
-            // console.log(`Path: ${path.map(c => c.id)}`);
             let cluster = path.shift();
             for (let target of path.slice(0, -1)) {
                 let otherId = await this.attack(cluster, target);
-                if (otherId !== undefined && this.afterSuccessfulMove(clusters, players, otherId)) return;
+                if (otherId === undefined || this.afterSuccessfulMove(clusters, players, otherId)) break;
                 cluster = target;
             }
             path = this.path(clusters);
@@ -35,10 +34,9 @@ export class Comp extends Player {
             if (otherId !== undefined) {
                 let gameEnded = this.afterSuccessfulMove(clusters, players, otherId);
                 if (gameEnded) {
-                    end(false);
+                    await end(false);
                     return;
-                }
-                else cluster = target;
+                } else cluster = target;
             } else cluster = _clusters.shift();
         }
         afterTurn();
@@ -74,8 +72,9 @@ export class Comp extends Player {
     }
 
     mightyOther(clusters, players) {
-        let threshold = clusters.length / 2;
-        return players.find(p => p.id !== this.id && p.dices >= threshold)
+        let threshold = Math.floor(clusters.length / 3);
+        let filtered = players.filter(p => p.id !== this.id && p.dices > threshold)
+        if (filtered.length > 0) return filtered.reduce((acc, current) => !acc || current.dices > acc.dices ? current : acc);
     }
 
     target(cluster, mighty) {
