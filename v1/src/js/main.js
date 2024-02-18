@@ -3,12 +3,10 @@ import {createBoard} from './board.js';
 import {createClusters} from "./clusters.js";
 import {createPlayers} from "./players.js";
 import {drawInit, drawDices, drawDicesNums, drawDicesBar, drawCluster} from "./draw.js";
-import {Comp} from "./player-comp.js";
-import {Human} from "./player-human.js";
 import {Cluster} from "./cluster.js";
 import {Player} from "./player.js";
 import Stats from "./stats.js";
-import {createTestClusters5} from "../specs/bootstrap.js";
+// import {createTestClusters5} from "../specs/bootstrap.js";
 
 let canvas, btn, listenerDisabled = true;
 let clusters, players, human, playerIndex = -1;
@@ -19,19 +17,19 @@ function main() {
 }
 
 // noinspection JSUnusedLocalSymbols
-function testDisplay() {
-    init()
-    document.getElementById("launch").style.display = "none";
-    document.getElementById("main").style.display = "block";
-    let [board, _] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
-    clusters = createTestClusters5(board);
-    players = [new Comp(), new Comp(), new Human()];
-    for (let player of players) player.setDices(clusters);
-    human = players[players.length - 1];
-    drawInit(board, clusters, players);
-    let res = players[0].mightyOther(clusters, players);
-    if (res) console.log(`Mighty: ${res.id} (dices: ${res.dices})`);
-}
+// function testDisplay() {
+//     init()
+//     document.getElementById("launch").style.display = "none";
+//     document.getElementById("main").style.display = "block";
+//     let [board, _] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
+//     clusters = createTestClusters5(board);
+//     players = [new Comp(), new Comp(), new Human()];
+//     for (let player of players) player.setDices(clusters);
+//     human = players[players.length - 1];
+//     drawInit(board, clusters, players);
+//     let res = players[0].mightyOther(clusters, players);
+//     if (res) console.log(`Mighty: ${res.id} (dices: ${res.dices})`);
+// }
 
 function init() {
     document.getElementById("launch").style.display = "block";
