@@ -100,8 +100,24 @@ button {
     margin-top: 50px;
 }
 
-#btn-launch:hover, #btn-restart:hover {
+#btn-yes, #btn-no {
+    margin-left: 10px;
+}
+
+#btn-launch:hover, #btn-yes:hover, #btn-no:hover, #btn-restart:hover {
     background-color: var(--darkergreen) !important;
+    outline: 4px solid var(--orange);
+}
+
+#btn-turn {
+    position: fixed;
+    margin-top: 770px;
+    right: 15%;
+    border: 2px solid var(--lightergreen);
+}
+
+#btn-turn:not([disabled]) {
+    background-color: var(--darkergreen);
     border: 4px solid var(--orange);
 }
 
@@ -139,14 +155,6 @@ canvas {
     color: var(--lightergreen);
 }
 
-#btn-yes, #btn-no {
-    margin-left: 10px;
-}
-
-#btn-yes:hover, #btn-no:hover {
-    background-color: var(--darkergreen) !important;
-}
-
 #dices-bar {
     position: fixed;
     margin-top: 770px;
@@ -176,18 +184,6 @@ span {
     font-size: 18px;
     text-align: right;
     margin-bottom: 0;
-}
-
-#btn-turn {
-    position: fixed;
-    margin-top: 770px;
-    right: 15%;
-    border: 2px solid var(--lightergreen);
-}
-
-#btn-turn:not([disabled]) {
-    background-color: var(--darkergreen);
-    border: 4px solid var(--orange);
 }
 
 ul {

@@ -40,6 +40,8 @@ export class Human extends Player {
                 drawCluster(target.corners, this.id);
                 drawDices(target);
                 this.clickedCluster = undefined;
+                if (target.dices > 1 && target.adjacentClustersFromCluster().some(c => c.playerId !== this.id))
+                    this.clickableClusters.push(target);
                 return otherPlayerId;
             }
             Stats.set.unsuccessfulAttacks()
