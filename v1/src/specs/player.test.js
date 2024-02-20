@@ -1,4 +1,3 @@
-import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../js/info.js";
 import {createBoard} from "../js/board.js";
 import {createClusters} from "../js/clusters.js";
 import {createPlayers} from "../js/players.js";
@@ -6,8 +5,8 @@ import {createPlayers} from "../js/players.js";
 let clusters, player;
 
 beforeAll(() => {
-    let [_, startNode] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
-    clusters = createClusters(startNode);
+    let centerNode = createBoard()[1];
+    clusters = createClusters(centerNode);
     player = createPlayers(clusters)[1];
 });
 

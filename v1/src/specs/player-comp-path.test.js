@@ -1,13 +1,12 @@
-import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../js/info.js";
 import {createBoard} from "../js/board.js";
-import {createComp} from "../js/players.js";
 import {createTestClusters} from "./bootstrap.js";
+import {createTestComp} from "../js/players.js";
 
 let board, comp;
 
 beforeEach(() => {
-    board = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT)[0];
-    comp = createComp(0);
+    board = createBoard()[0];
+    comp = createTestComp(0);
 });
 
 test('paths on small board', () => {

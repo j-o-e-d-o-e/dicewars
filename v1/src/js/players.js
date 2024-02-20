@@ -35,7 +35,7 @@ function log(players, clusters) {
     })}`).join("\n\t")}`);
 }
 
-export function createComp(id) {
+export function createTestComp(id) {
     let comp = new Comp();
     comp.id = id;
     return comp;

@@ -1,5 +1,5 @@
 import {Human} from "./player-human.js";
-import {drawRemovePlayer, drawDicesNums} from "./draw.js";
+import {deletePlayerFromDicesBar, drawDicesNums} from "./draw.js";
 
 export class Player {
     static count = 0;
@@ -27,7 +27,7 @@ export class Player {
         other.setDices(clusters);
         if (!clusters.some(c => c.playerId === other.id)) {
             let [deleted] = players.splice(players.findIndex(p => p.id === other.id), 1);
-            drawRemovePlayer(deleted.id);
+            deletePlayerFromDicesBar(deleted.id);
             console.log(`Deleted player (id: ${deleted.id}).`);
             if (deleted instanceof Human) {
                 console.log(`Human player (id: ${deleted.id}) has lost.`);

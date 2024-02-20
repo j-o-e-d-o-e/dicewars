@@ -1,10 +1,9 @@
-import {CANVAS_WIDTH, CANVAS_HEIGHT} from '../js/info.js';
 import {createBoard} from '../js/board';
 
 let board, startNode;
 
 beforeAll(() => {
-    [board, startNode] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
+    [board, startNode] = createBoard();
 });
 
 test('create board', () => {

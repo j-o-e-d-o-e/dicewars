@@ -1,4 +1,3 @@
-import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../js/info.js";
 import {createBoard} from "../js/board.js";
 import {createClusters} from "../js/clusters.js";
 import {Cluster} from "../js/cluster.js";
@@ -6,9 +5,9 @@ import {Cluster} from "../js/cluster.js";
 let clusters;
 
 beforeEach(() => {
-    let startNode = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT)[1];
+    let centerNode = createBoard()[1];
     Cluster.count = 0;
-    clusters = createClusters(startNode);
+    clusters = createClusters(centerNode);
 });
 
 test('get adjacent clusters from cluster', () => {

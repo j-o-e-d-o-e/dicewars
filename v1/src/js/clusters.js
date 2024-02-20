@@ -4,9 +4,9 @@ import {Cluster} from "./cluster.js";
 const MIN_NEIGHBOURS_NODE = 3;
 let paths, bigCount, smallCount;
 
-export function createClusters(startNode) {
+export function createClusters(centerNode) {
     [paths, bigCount, smallCount] = [4, 0, 0];
-    let clusters = [new Cluster(startNode)];
+    let clusters = [new Cluster(centerNode)];
     while (clusters.length <= paths) {
         let node = getRandomAdjacentNodeFromCluster(clusters[0]);
         if (node === undefined) continue;
@@ -19,13 +19,17 @@ export function createClusters(startNode) {
         clusters.push(new Cluster(node));
         if ((clusters.length - 1) % paths === 0) bigCount += paths;
     }
-    Cluster.count = 0;
     clusters.sort((a, b) => a.centerPos.y - b.centerPos.y);
+    Cluster.count = 0;
     for (let cluster of clusters) {
         cluster.id = Cluster.count++
         cluster.neighbours();
+    }
+    for (let cluster of clusters) {
+        for (let node of cluster.nodes) node.cluster = undefined;
         delete cluster.nodes;
     }
+    transpose(clusters, centerNode);
     log(clusters);
     return clusters;
 }
@@ -45,6 +49,21 @@ function getNextClusterIndex() {
     let res = bigCount + smallCount++ + 1;
     if (smallCount === paths) smallCount = 0;
     return res;
+}
+
+function transpose(clusters, centerNode) {
+    let mostLeftPos, mostRightPos;
+    for (let cluster of clusters) {
+        if (!mostLeftPos || cluster.centerPos.x < mostLeftPos.x) mostLeftPos = cluster.centerPos;
+        if (!mostRightPos || cluster.centerPos.x > mostRightPos.x) mostRightPos = cluster.centerPos;
+    }
+    let diffL = centerNode.hex.center.x - mostLeftPos.x;
+    let diffR = mostRightPos.x - centerNode.hex.center.x;
+    let diffV = diffL > diffR ? (diffL - diffR) / 2 : -(diffR - diffL) / 2;
+    for (let cluster of clusters) {
+        cluster.centerPos.x += diffV
+        for (let corner of cluster.corners) corner.x += diffV
+    }
 }
 
 function log(clusters) {

@@ -1,10 +1,9 @@
 import {createBoard} from "../js/board.js";
-import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../js/info.js";
 import {createTestClusters} from "./bootstrap.js";
 
 let board;
 beforeEach(() => {
-    board = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT)[0];
+    board = createBoard()[0];
 });
 
 test('path on small board', () => {

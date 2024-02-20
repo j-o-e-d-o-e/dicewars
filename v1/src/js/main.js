@@ -1,5 +1,5 @@
 import {CANVAS_WIDTH, CANVAS_HEIGHT, CLUSTERS_MAX, TIMEOUT_BG, setPlayers, setColor} from './info.js';
-import {createBoard, transpose} from './board.js';
+import {createBoard} from './board.js';
 import {createClusters} from "./clusters.js";
 import {createPlayers} from "./players.js";
 import {drawInit, drawDices, drawDicesNums, drawDicesBar, drawCluster} from "./draw.js";
@@ -7,6 +7,7 @@ import {Cluster} from "./cluster.js";
 import {Player} from "./player.js";
 import Stats from "./stats.js";
 
+const [board, centerNode] = createBoard();
 let canvas, btn, listenerDisabled = true;
 let clusters, players, human, playerIndex = 0;
 
@@ -56,7 +57,6 @@ function init() {
         document.getElementById("main-play").style.display = "block";
         playerIndex = 0;
         Stats.reset();
-        Stats.set.startTime();
         nextTurn(players[0]);
     });
     document.getElementById("btn-no").addEventListener("click", () => createGame());
@@ -98,9 +98,7 @@ function init() {
 function createGame(colorI = 0) {
     Player.count = 0;
     Cluster.count = 0;
-    const [board, centerNode] = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT);
     clusters = createClusters(centerNode);
-    transpose(clusters, board, centerNode);
     [players, human] = createPlayers(clusters);
     setColor(human.id, colorI);
     drawInit(board, clusters, players);

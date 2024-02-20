@@ -43,6 +43,7 @@ function init(players) {
 function _drawBoard(board) {
     ctxBg.fillStyle = "grey";
     ctxBg.strokeStyle = "grey";
+    ctxBg.lineWidth = 1;
     for (let node of board) {
         ctxBg.fillText(String(node.id), node.hex.center.x - 2, node.hex.center.y + 4);
         ctxBg.beginPath();
@@ -131,6 +132,6 @@ export function drawDicesBar(lastPlayerId, nextPlayerId) {
     dicesBar.children.namedItem(nextPlayerId).style = "background-color:rgba(255, 165, 0, 0.5)";
 }
 
-export function drawRemovePlayer(playerId) {
+export function deletePlayerFromDicesBar(playerId) {
     dicesBar.removeChild(dicesBar.children.namedItem(playerId));
 }

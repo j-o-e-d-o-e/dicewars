@@ -42,7 +42,7 @@ export class Cluster {
             return neighbours.length === 6 && neighbours.every(n => n.cluster?.id === this.id);
         });
         if (centerNode === undefined) centerNode = this.nodes[0];
-        return centerNode.hex.center;
+        return {x: centerNode.hex.center.x, y: centerNode.hex.center.y};
     }
 
     cornersPos() {

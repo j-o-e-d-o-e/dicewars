@@ -22,9 +22,6 @@ export default {
         },
     },
     set: {
-        startTime() {
-            stats.startTime = new Date();
-        },
         rounds() {
             stats.rounds++;
         },

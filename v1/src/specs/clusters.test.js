@@ -1,16 +1,15 @@
-import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../js/info.js";
 import {createBoard} from "../js/board.js";
 import {createClusters} from "../js/clusters.js";
 import {Cluster} from "../js/cluster.js";
 
-let startNode;
+let centerNode;
 
 beforeEach(() => {
-    startNode = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT)[1];
+    centerNode = createBoard()[1];
 });
 
 test('create clusters', () => {
-    let clusters = createClusters(startNode);
+    let clusters = createClusters(centerNode);
     for (let cluster of clusters) {
         expect(cluster.id).toBeDefined();
         expect(cluster.dices).toBeGreaterThanOrEqual(0);
@@ -23,9 +22,9 @@ test('create clusters', () => {
 });
 
 test('create single cluster', () => {
-    let cluster = new Cluster(startNode, 0);
+    let cluster = new Cluster(centerNode, 0);
     expect(cluster).toHaveProperty("id");
-    expect([startNode, ...startNode.adjacentNodesFromNode()]
+    expect([centerNode, ...centerNode.adjacentNodesFromNode()]
         .every(n => cluster.nodes.includes(n))).toBeTruthy();
     expect(cluster).toHaveProperty("centerPos");
     expect(cluster).toHaveProperty("corners");

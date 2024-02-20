@@ -1,14 +1,13 @@
-import {CANVAS_HEIGHT, CANVAS_WIDTH} from "../js/info.js";
 import {createBoard} from "../js/board.js";
-import {createComp} from "../js/players.js";
+import {createTestComp} from "../js/players.js";
 import {createTestClusters} from "./bootstrap.js";
 
 let board, players, comp;
 
 beforeAll(() => {
-    board = createBoard(CANVAS_WIDTH, CANVAS_HEIGHT)[0];
-    comp = createComp(0);
-    players = [comp, createComp(1), createComp(2)];
+    board = createBoard()[0];
+    comp = createTestComp(0);
+    players = [comp, createTestComp(1), createTestComp(2)];
 });
 
 test('mighty other on small board', () => {
