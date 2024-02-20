@@ -2,10 +2,9 @@ import {Human} from "./player-human.js";
 import {deletePlayerFromDicesBar, drawDicesNums} from "./draw.js";
 
 export class Player {
-    static count = 0;
 
-    constructor() {
-        this.id = Player.count++;
+    constructor(id) {
+        this.id = id;
         this.dices = 0;
         this.additionalDices = 0;
     }

@@ -7,10 +7,10 @@ export function createPlayers(clusters) {
     let playerProb = 0.3, playerIndex;
     for (let i = 0; i < PLAYERS; i++) {
         if (playerIndex === undefined && players.length > 0 && (Math.random() < playerProb || i === PLAYERS - 1)) {
-            players.push(new Human());
+            players.push(new Human(i));
             playerIndex = i;
         } else {
-            players.push(new Comp());
+            players.push(new Comp(i));
             playerProb += 0.1;
         }
     }
@@ -33,10 +33,4 @@ function log(players, clusters) {
         clusters: clusters.reduce((acc, c) => c.playerId === p.id ? ++acc : acc, 0),
         allDices: clusters.reduce((acc, c) => c.playerId === p.id ? acc + c.dices : acc, 0)
     })}`).join("\n\t")}`);
-}
-
-export function createTestComp(id) {
-    let comp = new Comp();
-    comp.id = id;
-    return comp;
 }

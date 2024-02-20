@@ -1,10 +1,9 @@
 import {CLUSTER_MIN_SIZE, CLUSTERS_MAX} from "./info.js";
 
 export class Cluster {
-    static count = 0;
 
-    constructor(start, test) {
-        this.id = test ? test.id : Cluster.count++;
+    constructor(start, id, test) {
+        this.id = id;
         this.playerId = test ? test.playerId : undefined;
         this.dices = test ? test.dices : Math.floor(Math.random() * 6) + 1;
         this.nodes = [];

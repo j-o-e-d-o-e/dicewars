@@ -4,8 +4,8 @@ import Stats from "./stats.js";
 
 export class Human extends Player {
 
-    constructor() {
-        super();
+    constructor(id) {
+        super(id);
         this.clickableClusters = undefined;
         this.clickedCluster = undefined;
     }

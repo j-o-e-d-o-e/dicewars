@@ -3,8 +3,6 @@ import {createBoard} from './board.js';
 import {createClusters} from "./clusters.js";
 import {createPlayers} from "./players.js";
 import {drawInit, drawDices, drawDicesNums, drawDicesBar, drawCluster} from "./draw.js";
-import {Cluster} from "./cluster.js";
-import {Player} from "./player.js";
 import Stats from "./stats.js";
 
 const [board, centerNode] = createBoard();
@@ -96,8 +94,6 @@ function init() {
 }
 
 function createGame(colorI = 0) {
-    Player.count = 0;
-    Cluster.count = 0;
     clusters = createClusters(centerNode);
     [players, human] = createPlayers(clusters);
     setColor(human.id, colorI);

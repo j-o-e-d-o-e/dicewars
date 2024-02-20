@@ -6,26 +6,24 @@ let paths, bigCount, smallCount;
 
 export function createClusters(centerNode) {
     [paths, bigCount, smallCount] = [4, 0, 0];
-    let clusters = [new Cluster(centerNode)];
+    let id = 0;
+    let clusters = [new Cluster(centerNode, id++)];
     while (clusters.length <= paths) {
         let node = getRandomAdjacentNodeFromCluster(clusters[0]);
         if (node === undefined) continue;
-        clusters.push(new Cluster(node));
+        clusters.push(new Cluster(node, id++));
     }
     while (clusters.length < CLUSTERS_MAX && paths >= 0) {
         let index = getNextClusterIndex();
         let node = getRandomAdjacentNodeFromCluster(clusters[index]);
         if (node === undefined) continue;
-        clusters.push(new Cluster(node));
+        clusters.push(new Cluster(node, id++));
         if ((clusters.length - 1) % paths === 0) bigCount += paths;
     }
+    for (let cluster of clusters) cluster.neighbours();
     clusters.sort((a, b) => a.centerPos.y - b.centerPos.y);
-    Cluster.count = 0;
-    for (let cluster of clusters) {
-        cluster.id = Cluster.count++
-        cluster.neighbours();
-    }
-    for (let cluster of clusters) {
+    for (let [i, cluster] of clusters.entries()) {
+        cluster.id = i;
         for (let node of cluster.nodes) node.cluster = undefined;
         delete cluster.nodes;
     }

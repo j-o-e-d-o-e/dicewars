@@ -1,13 +1,15 @@
 import {createBoard} from "../js/board.js";
-import {createTestComp} from "../js/players.js";
 import {createTestClusters} from "./bootstrap.js";
+// noinspection ES6UnusedImports: avoid 'ReferenceError: Cannot access 'Player' before initialization'
+import {Human} from "../js/player-human.js";
+import {Comp} from "../js/player-comp.js";
 
 let board, players, comp;
 
 beforeAll(() => {
     board = createBoard()[0];
-    comp = createTestComp(0);
-    players = [comp, createTestComp(1), createTestComp(2)];
+    comp = new Comp(0);
+    players = [comp, new Comp(1), new Comp(2)];
 });
 
 test('mighty other on small board', () => {

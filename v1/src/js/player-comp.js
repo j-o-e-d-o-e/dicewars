@@ -4,8 +4,8 @@ import {drawCluster, drawDices} from "./draw.js";
 
 export class Comp extends Player {
 
-    constructor() {
-        super();
+    constructor(id) {
+        super(id);
     }
 
     async turn(clusters, players, afterTurn, end) {
