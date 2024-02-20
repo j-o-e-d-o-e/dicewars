@@ -74,8 +74,8 @@ function _drawCluster(corners, lineColor, fillColor) {
 }
 
 function _drawDices(cluster, colorId, {timeout = TIMEOUT_SM, startI = 0} = {}) {
-    let x = cluster.centerPos.x - 30;
-    let y = cluster.centerPos.y - 20;
+    let x = cluster.center.x - 30;
+    let y = cluster.center.y - 20;
     let size = 50;
     let xOffset = 16;
     let yOffset = 20;
@@ -103,8 +103,8 @@ function _drawDices(cluster, colorId, {timeout = TIMEOUT_SM, startI = 0} = {}) {
 function _drawText(cluster) {
     const xTextOffset = RADIUS_HEX / 2;
     const yTextOffset = RADIUS_HEX / 2 + 2;
-    let x = cluster.centerPos.x - xTextOffset - 4 * Math.floor(cluster.id / 10);
-    let y = cluster.centerPos.y + yTextOffset;
+    let x = cluster.center.x - xTextOffset - 4 * Math.floor(cluster.id / 10);
+    let y = cluster.center.y + yTextOffset;
     ctxFg[cluster.id].fillStyle = "black";
     ctxFg[cluster.id].font = "40px Standard";
     ctxFg[cluster.id].fillText(cluster.id, x + 20, y - 20);

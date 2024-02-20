@@ -7,21 +7,21 @@ let paths, bigCount, smallCount;
 export function createClusters(centerNode) {
     [paths, bigCount, smallCount] = [4, 0, 0];
     let id = 0;
-    let clusters = [new Cluster(centerNode, id++)];
+    let clusters = [new Cluster(id++, centerNode)];
     while (clusters.length <= paths) {
         let node = getRandomAdjacentNodeFromCluster(clusters[0]);
         if (node === undefined) continue;
-        clusters.push(new Cluster(node, id++));
+        clusters.push(new Cluster(id++, node));
     }
     while (clusters.length < CLUSTERS_MAX && paths >= 0) {
         let index = getNextClusterIndex();
         let node = getRandomAdjacentNodeFromCluster(clusters[index]);
         if (node === undefined) continue;
-        clusters.push(new Cluster(node, id++));
+        clusters.push(new Cluster(id++, node));
         if ((clusters.length - 1) % paths === 0) bigCount += paths;
     }
     for (let cluster of clusters) cluster.neighbours();
-    clusters.sort((a, b) => a.centerPos.y - b.centerPos.y);
+    clusters.sort((a, b) => a.center.y - b.center.y);
     for (let [i, cluster] of clusters.entries()) {
         cluster.id = i;
         for (let node of cluster.nodes) node.cluster = undefined;
@@ -52,14 +52,14 @@ function getNextClusterIndex() {
 function transpose(clusters, centerNode) {
     let mostLeftPos, mostRightPos;
     for (let cluster of clusters) {
-        if (!mostLeftPos || cluster.centerPos.x < mostLeftPos.x) mostLeftPos = cluster.centerPos;
-        if (!mostRightPos || cluster.centerPos.x > mostRightPos.x) mostRightPos = cluster.centerPos;
+        if (!mostLeftPos || cluster.center.x < mostLeftPos.x) mostLeftPos = cluster.center;
+        if (!mostRightPos || cluster.center.x > mostRightPos.x) mostRightPos = cluster.center;
     }
     let diffL = centerNode.hex.center.x - mostLeftPos.x;
     let diffR = mostRightPos.x - centerNode.hex.center.x;
     let diffV = diffL > diffR ? (diffL - diffR) / 2 : -(diffR - diffL) / 2;
     for (let cluster of clusters) {
-        cluster.centerPos.x += diffV
+        cluster.center.x += diffV
         for (let corner of cluster.corners) corner.x += diffV
     }
 }

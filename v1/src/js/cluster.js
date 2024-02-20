@@ -2,14 +2,14 @@ import {CLUSTER_MIN_SIZE, CLUSTERS_MAX} from "./info.js";
 
 export class Cluster {
 
-    constructor(start, id, test) {
+    constructor(id, start, test) {
         this.id = id;
         this.playerId = test ? test.playerId : undefined;
         this.dices = test ? test.dices : Math.floor(Math.random() * 6) + 1;
         this.nodes = [];
         this.addNodeAndItsNeighbours(start)
         if (!test) this.expand();
-        this.centerPos = this.centerPos();
+        this.center = this.centerPos();
         this.corners = this.cornersPos();
         this.adjacentClusters = undefined;
     }

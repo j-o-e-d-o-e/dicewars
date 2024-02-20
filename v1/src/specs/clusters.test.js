@@ -14,18 +14,18 @@ test('create clusters', () => {
         expect(cluster.id).toBeDefined();
         expect(cluster.dices).toBeGreaterThanOrEqual(0);
         expect(cluster.dices).toBeLessThanOrEqual(6);
-        expect(cluster.centerPos).toHaveProperty("x");
-        expect(cluster.centerPos).toHaveProperty("y");
+        expect(cluster.center).toHaveProperty("x");
+        expect(cluster.center).toHaveProperty("y");
         expect(cluster.corners[0]).toHaveProperty("x");
         expect(cluster.corners[0]).toHaveProperty("y");
     }
 });
 
 test('create single cluster', () => {
-    let cluster = new Cluster(centerNode, 0);
+    let cluster = new Cluster(0, centerNode);
     expect(cluster).toHaveProperty("id");
     expect([centerNode, ...centerNode.adjacentNodesFromNode()]
         .every(n => cluster.nodes.includes(n))).toBeTruthy();
-    expect(cluster).toHaveProperty("centerPos");
+    expect(cluster).toHaveProperty("center");
     expect(cluster).toHaveProperty("corners");
 });
