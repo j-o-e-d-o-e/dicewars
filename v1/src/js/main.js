@@ -21,6 +21,14 @@ function testDisplay() {
     document.getElementById("main").style.display = "block";
     document.getElementById("main-before").style.display = "none";
     createGame();
+    clusters.forEach(c => {
+        c.dices = 8;
+        drawCluster(c.corners, c.playerId);
+    });
+    players.forEach(p => {
+        p.additionalDices = CLUSTERS_MAX * 2;
+        drawDicesNums(p);
+    });
     nextTurn(players[0]);
 }
 
@@ -75,12 +83,11 @@ function init() {
         div.appendChild(canvas);
     }
     canvas.addEventListener("click", async event => {
+        event.stopPropagation();
         if (listenerDisabled) return;
         let rect = canvas.getBoundingClientRect();
         let otherId = human.click({x: event.clientX - rect.left, y: event.clientY - rect.top});
         if (otherId !== undefined && human.afterSuccessfulMove(clusters, players, otherId)) await end(true);
-        else human.clickableClusters = clusters.filter(c => c.playerId === human.id && c.dices > 1
-            && c.adjacentClustersFromCluster().some(c => c.playerId !== human.id));
     }, false);
 
     document.getElementById("end").style.display = "none";
@@ -103,6 +110,8 @@ function createGame(colorI = 0) {
 function nextTurn(player) {
     if (player === human) {
         [listenerDisabled, btn.disabled] = [false, false];
+        human.clickableClusters = clusters.filter(c => c.playerId === human.id && c.dices > 1
+            && c.adjacentClustersFromCluster().some(c => c.playerId !== human.id));
         Stats.set.rounds();
     }
     player.turn(clusters, players, async () => await afterTurn(player), end);
@@ -123,7 +132,7 @@ function afterTurn(player) {
             drawDicesBar(player.id, next.id);
             console.log("...finished.");
             resolve(next);
-        }, next === human ? 0 : TIMEOUT_BG);
+        }, TIMEOUT_BG);
     }).then((next) => nextTurn(next));
 }
 
