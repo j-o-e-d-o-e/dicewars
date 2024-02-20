@@ -9,8 +9,8 @@ export class Cluster {
         this.nodes = [];
         this.addNodeAndItsNeighbours(start)
         if (!test) this.expand();
-        this.center = this.centerPos();
         this.corners = this.cornersPos();
+        this.center = this.centerPos();
         this.adjacentClusters = undefined;
     }
 
@@ -33,15 +33,6 @@ export class Cluster {
             let node = candidates[rand];
             this.addNodeAndItsNeighbours(node);
         }
-    }
-
-    centerPos() {
-        let centerNode = this.nodes.find(n => {
-            let neighbours = n.adjacentNodesFromNode();
-            return neighbours.length === 6 && neighbours.every(n => n.cluster?.id === this.id);
-        });
-        if (centerNode === undefined) centerNode = this.nodes[0];
-        return {x: centerNode.hex.center.x, y: centerNode.hex.center.y};
     }
 
     cornersPos() {
@@ -72,6 +63,21 @@ export class Cluster {
             }
         }
         return res.map(l => l.start);
+    }
+
+    centerPos() { // https://stackoverflow.com/a/9939071/9416041
+        let corners = [...this.corners, this.corners[0]];
+        let shoelace, doubleArea = 0, x = 0, y = 0;
+        for (let i = 0, j = corners.length - 1; i < corners.length; j = i++) {
+            let p1 = corners[i];
+            let p2 = corners[j];
+            shoelace = p1.x * p2.y - p2.x * p1.y;
+            doubleArea += shoelace;
+            x += (p1.x + p2.x) * shoelace;
+            y += (p1.y + p2.y) * shoelace;
+        }
+        shoelace = doubleArea * 3;
+        return {x: x / shoelace, y: y / shoelace};
     }
 
     adjacentNodesFromCluster() {
