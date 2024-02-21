@@ -144,9 +144,9 @@ canvas {
     position: absolute;
     margin-top: 770px;
     padding-bottom: 20px;
-    width: 1280px;
+    width: 965px;
     right: 0;
-    left: 10%;
+    left: 0;
     margin-right: auto;
     margin-left: auto
 }

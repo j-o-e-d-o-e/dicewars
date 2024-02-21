@@ -9,7 +9,7 @@ button{border-radius:15px;background-color:var(--lightergreen);border:0;color:wh
 #btn-launch,#btn-restart{margin-top:50px}#btn-yes,#btn-no{margin-left:10px}#btn-launch:hover,#btn-yes:hover,#btn-no:hover,#btn-restart:hover{background-color:var(--darkergreen) !important;outline:4px solid var(--orange)}
 #btn-turn:not([disabled]){background-color:var(--darkergreen);border:4px solid var(--orange)}
 #stage{position:relative;margin-left:auto;margin-right:auto;width:1280px}canvas{position:absolute;left:0;top:0;z-index:1}
-#main-before,#main-play{color:white;position:absolute;margin-top:770px;padding-bottom:20px;width:1280px;right:0;left:10%;margin-right:auto;margin-left:auto}
+#main-before,#main-play{color:white;position:absolute;margin-top:770px;padding-bottom:20px;width:965px;right:0;left:0;margin-right:auto;margin-left:auto}
 #main-before>span{vertical-align:middle;color:white}#btn-turn{float:left;border:2px solid var(--lightergreen)}
 #dices-bar{float:left;padding:0 0 0 16px !important;min-width:800px}.dices-player{display:inline-grid;justify-content:center;min-width:90px;margin-right:10px;font-weight:bold;border-radius:15px}
 .dices-player>*{color:white}img{width:50px;height:50px}span{vertical-align:super;font-size:30px}
