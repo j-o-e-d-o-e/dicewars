@@ -191,7 +191,7 @@ ul {
     text-align: left;
 }
 
-li {
+ul > li {
     display: flex;
     align-items: center;
     padding: .5rem;
@@ -199,7 +199,7 @@ li {
     color: var(--lightergreen);
 }
 
-li::before {
+ul > li::before {
     width: 15px;
     height: 15px;
     border-radius: 15px;
@@ -208,6 +208,39 @@ li::before {
     position: relative;
     background-color: var(--orange);
     content: '';
+    display: inline-block;
+    visibility: visible;
+}
+
+#howto {
+    padding-top: 50px;
+}
+
+#howto > span, #howto > ol > li {
+    font-size: .5em;
+}
+
+ol > li {
+    display: flex;
+    align-items: center;
+    padding: .5rem;
+    font-size: x-large;
+    color: var(--lightergreen);
+}
+
+ol > li {
+    counter-increment: li
+}
+
+ol > li::before {
+    width: 15px;
+    height: 15px;
+    color: var(--orange);
+    border-radius: 15px;
+    top: -6px;
+    left: -18px;
+    position: relative;
+    content: counter(li) ".";
     display: inline-block;
     visibility: visible;
 }
