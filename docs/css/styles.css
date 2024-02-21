@@ -1,7 +1,7 @@
 :root{--darkergreen:#04aa6d;--lightergreen:rgba(4,170,109,0.88);--orange:rgba(255,165,0,0.9);--light:#d1d3d1;--lighter:rgba(150,150,150,1);--dark:rgba(51,51,51,1)}
 *{margin:0;font-family:'Courier New',monospace}html,body{height:100%;background-color:var(--dark)}
 #launch,#end{text-align:center;font-size:xxx-large}#launch,#end,#main{display:none;height:100%}
-h1{padding-top:100px;padding-bottom:100px;color:var(--darkergreen);text-shadow:2px 2px var(--orange)}
+h1{padding-top:50px;padding-bottom:50px;color:var(--darkergreen);text-shadow:2px 2px var(--orange)}
 #launch>div{text-align:start;position:relative;left:20%;max-width:80%}#launch>div>span,input[type="radio"],#launch>div>label{vertical-align:middle;color:white;left:0}
 #launch>div>label{font-size:x-large}label>img{width:45px;height:45px}input[type='radio']:after{width:15px;height:15px;border-radius:15px;top:-2px;left:-1px;position:relative;background-color:var(--lighter);content:'';display:inline-block;visibility:visible;border:2px solid white}
 input[type='radio']:checked:after{width:15px;height:15px;border-radius:15px;top:-2px;left:-1px;position:relative;background-color:var(--orange);content:'';display:inline-block;visibility:visible;border:2px solid white}
