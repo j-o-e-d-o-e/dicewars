@@ -17,12 +17,12 @@ html, body {
     background-color: var(--dark);
 }
 
-@media screen and (min-width: 1900px) {
-    #main {
-        background: var(--dark);
-        background: linear-gradient(0deg, var(--dark) 18%, var(--lighter) 80%);
-    }
-}
+/*@media screen and (min-width: 1600px) {*/
+/*    #main {*/
+/*        background: var(--dark);*/
+/*        background: linear-gradient(0deg, var(--dark) 18%, var(--lighter) 80%);*/
+/*    }*/
+/*}*/
 
 #launch, #end {
     text-align: center;
@@ -50,7 +50,7 @@ h1 {
 
 #launch > div > span, input[type="radio"], #launch > div > label {
     vertical-align: middle;
-    color: var(--lightergreen);
+    color: white;
     left: 0;
 }
 
@@ -70,7 +70,7 @@ input[type='radio']:after {
     top: -2px;
     left: -1px;
     position: relative;
-    background-color: var(--light);
+    background-color: var(--lighter);
     content: '';
     display: inline-block;
     visibility: visible;
@@ -88,14 +88,14 @@ input[type='radio']:checked:after {
     content: '';
     display: inline-block;
     visibility: visible;
-    border: 2px solid #efe7e7;
+    border: 2px solid white;
 }
 
 button {
     border-radius: 15px;
     background-color: var(--lightergreen);
     border: none;
-    color: #fff;
+    color: white;
     padding: 15px 32px;
     text-align: center;
     text-decoration: none;
@@ -140,16 +140,20 @@ canvas {
 /*}*/
 
 #main-before, #main-play {
+    color: white;
     position: absolute;
     margin-top: 770px;
     padding-bottom: 20px;
-    left: 15%;
-    width: 1200px;
+    width: 1280px;
+    right: 0;
+    left: 10%;
+    margin-right: auto;
+    margin-left: auto
 }
 
 #main-before > span {
     vertical-align: middle;
-    color: var(--lightergreen);
+    color: white;
 }
 
 #btn-turn {
@@ -170,6 +174,10 @@ canvas {
     margin-right: 10px;
     font-weight: bold;
     border-radius: 15px;
+}
+
+.dices-player > * {
+    color: white;
 }
 
 img {
@@ -198,7 +206,7 @@ ul > li {
     align-items: center;
     padding: .5rem;
     font-size: x-large;
-    color: var(--lightergreen);
+    color: white;
 }
 
 ul > li::before {
@@ -227,7 +235,7 @@ ol > li {
     align-items: center;
     padding: .5rem;
     font-size: x-large;
-    color: var(--lightergreen);
+    color: white;
 }
 
 ol > li {

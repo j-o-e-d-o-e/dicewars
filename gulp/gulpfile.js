@@ -1,5 +1,6 @@
 const gulp = require('gulp');
 const uglify = require('gulp-uglify');
+const uglifycss = require('gulp-uglifycss')
 
 function scripts(cb) {
     gulp.src('../v1/src/js/*.js')
@@ -16,6 +17,10 @@ function html(cb) {
 
 function css(cb) {
     gulp.src('../v1/src/css/*.css')
+        .pipe(uglifycss({
+            "maxLineLen": 80,
+            "uglyComments": true
+        }))
         .pipe(gulp.dest('../docs/css'))
     cb();
 }

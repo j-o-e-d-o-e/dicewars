@@ -111,7 +111,7 @@ function _drawText(cluster) {
 }
 
 export function drawCluster(corners, playerId) {
-    if (playerId === undefined) _drawCluster(corners, "red", "rgba(239, 236, 236, 0.8)");
+    if (playerId === undefined) _drawCluster(corners, "red", "rgba(255, 255, 255, 0.8)");
     else _drawCluster(corners, "black", COLORS[playerId].color);
 }
 
