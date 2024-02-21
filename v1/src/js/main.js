@@ -149,7 +149,6 @@ function end(won) {
             resolve();
         }, TIMEOUT_BG);
     });
-
 }
 
 main();

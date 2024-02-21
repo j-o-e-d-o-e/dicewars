@@ -17,6 +17,13 @@ html, body {
     background-color: var(--dark);
 }
 
+@media screen and (min-width: 1900px) {
+    #main {
+        background: var(--dark);
+        background: linear-gradient(0deg, var(--dark) 18%, var(--lighter) 80%);
+    }
+}
+
 #launch, #end {
     text-align: center;
     font-size: xxx-large;
@@ -109,21 +116,9 @@ button {
     outline: 4px solid var(--orange);
 }
 
-#btn-turn {
-    position: fixed;
-    margin-top: 770px;
-    right: 15%;
-    border: 2px solid var(--lightergreen);
-}
-
 #btn-turn:not([disabled]) {
     background-color: var(--darkergreen);
     border: 4px solid var(--orange);
-}
-
-#main {
-    background: var(--dark);
-    background: linear-gradient(0deg, var(--dark) 18%, var(--lighter) 80%);
 }
 
 #stage {
@@ -144,10 +139,12 @@ canvas {
 /*    background-color: #efe7e7;*/
 /*}*/
 
-#main-before {
-    position: fixed;
+#main-before, #main-play {
+    position: absolute;
     margin-top: 770px;
+    padding-bottom: 20px;
     left: 15%;
+    width: 1200px;
 }
 
 #main-before > span {
@@ -155,10 +152,15 @@ canvas {
     color: var(--lightergreen);
 }
 
+#btn-turn {
+    float: left;
+    border: 2px solid var(--lightergreen);
+}
+
 #dices-bar {
-    position: fixed;
-    margin-top: 770px;
-    left: 15%;
+    float: left;
+    padding: 0 0 0 16px !important;
+    min-width: 800px;
 }
 
 .dices-player {
