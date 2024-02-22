@@ -121,7 +121,7 @@ button {
 
 #btn-turn:not([disabled]) {
     background-color: var(--darkergreen);
-    border: 4px solid var(--orange);
+    outline: 4px solid var(--orange);
 }
 
 #stage {
