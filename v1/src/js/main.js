@@ -134,7 +134,7 @@ function afterTurn(player) {
                 console.log("...finished.");
                 resolve(next);
             }, next.id !== human.id ? TIMEOUT_BG : 0);
-        }, TIMEOUT_BG);
+        }, player.id !== human.id ? TIMEOUT_BG : 0);
     }).then((next) => nextTurn(next));
 }
 
