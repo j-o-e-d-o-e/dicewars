@@ -15,8 +15,12 @@ export class Comp extends Player {
             let cluster = path.shift();
             for (let target of path.slice(0, -1)) {
                 let otherId = await this.attack(cluster, target);
-                if (otherId === undefined || this.afterSuccessfulMove(clusters, players, otherId)) break;
-                cluster = target;
+                if (otherId === undefined) break;
+                else if (!this.afterSuccessfulMove(clusters, players, otherId)) cluster = target;
+                else {
+                    await end(false);
+                    return;
+                }
             }
             path = this.path(clusters);
         }
@@ -31,13 +35,12 @@ export class Comp extends Player {
                 continue;
             }
             let otherId = await this.attack(cluster, target)
-            if (otherId !== undefined) {
-                let gameEnded = this.afterSuccessfulMove(clusters, players, otherId);
-                if (gameEnded) {
-                    await end(false);
-                    return;
-                } else cluster = target;
-            } else cluster = _clusters.shift();
+            if (otherId === undefined) cluster = _clusters.shift()
+            else if (!this.afterSuccessfulMove(clusters, players, otherId)) cluster = target;
+            else {
+                await end(false);
+                return;
+            }
         }
         afterTurn();
     }

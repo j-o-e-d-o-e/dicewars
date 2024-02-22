@@ -61,6 +61,11 @@ function _drawClusters(clusters) {
     }
 }
 
+export function drawCluster(corners, playerId) {
+    if (playerId === undefined) _drawCluster(corners, "red", "rgba(255, 255, 255, 0.8)");
+    else _drawCluster(corners, "black", COLORS[playerId].color);
+}
+
 function _drawCluster(corners, lineColor, fillColor) {
     ctxBg.beginPath();
     for (let corner of corners) ctxBg.lineTo(corner.x, corner.y);
@@ -71,6 +76,12 @@ function _drawCluster(corners, lineColor, fillColor) {
     ctxBg.stroke();
     ctxBg.fillStyle = fillColor;
     ctxBg.fill();
+}
+
+export function drawDices(cluster, dicesBefore) {
+    if (dicesBefore === undefined) ctxFg[cluster.id].clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    _drawDices(cluster, COLORS[cluster.playerId].cubeId, {startI: dicesBefore});
+    // _drawText(cluster);
 }
 
 function _drawDices(cluster, colorId, {timeout = TIMEOUT_SM, startI = 0} = {}) {
@@ -108,17 +119,6 @@ function _drawText(cluster) {
     ctxFg[cluster.id].fillStyle = "black";
     ctxFg[cluster.id].font = "40px Standard";
     ctxFg[cluster.id].fillText(cluster.id, x + 20, y - 20);
-}
-
-export function drawCluster(corners, playerId) {
-    if (playerId === undefined) _drawCluster(corners, "red", "rgba(255, 255, 255, 0.8)");
-    else _drawCluster(corners, "black", COLORS[playerId].color);
-}
-
-export function drawDices(cluster, dicesBefore) {
-    if (dicesBefore === undefined) ctxFg[cluster.id].clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    _drawDices(cluster, COLORS[cluster.playerId].cubeId, {startI: dicesBefore});
-    // _drawText(cluster);
 }
 
 export function drawDicesNums(player) {
