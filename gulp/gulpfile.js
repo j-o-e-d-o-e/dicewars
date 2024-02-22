@@ -25,7 +25,7 @@ function css(cb) {
     cb();
 }
 function assets(cb) {
-    gulp.src(['../v1/src/assets/*[1-9].svg', '../v1/src/assets/favicon.svg'])
+    gulp.src(['../v1/src/assets/**'])
         .pipe(gulp.dest('../docs/assets'))
     cb();
 }
