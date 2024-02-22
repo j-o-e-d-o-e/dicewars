@@ -119,19 +119,21 @@ function nextTurn(player) {
 
 function afterTurn(player) {
     return new Promise(resolve => {
-        let dicesBefore = clusters.map(c => c.dices);
-        player.allocateNewDices(clusters);
-        for (let [index, cluster] of clusters.entries()) {
-            if (cluster.playerId !== player.id || cluster.dices === dicesBefore[index]) continue;
-            drawDices(cluster, dicesBefore[index]);
-        }
-        drawDicesNums(player);
-        if (++playerIndex >= players.length) playerIndex = 0;
-        let next = players[playerIndex];
         setTimeout(() => {
-            drawDicesBar(player.id, next.id);
-            console.log("...finished.");
-            resolve(next);
+            let dicesBefore = clusters.map(c => c.dices);
+            player.allocateNewDices(clusters);
+            for (let [index, cluster] of clusters.entries()) {
+                if (cluster.playerId !== player.id || cluster.dices === dicesBefore[index]) continue;
+                drawDices(cluster, dicesBefore[index]);
+            }
+            drawDicesNums(player);
+            if (++playerIndex >= players.length) playerIndex = 0;
+            let next = players[playerIndex];
+            setTimeout(() => {
+                drawDicesBar(player.id, next.id);
+                console.log("...finished.");
+                resolve(next);
+            }, next.id !== human.id ? TIMEOUT_BG : 0);
         }, TIMEOUT_BG);
     }).then((next) => nextTurn(next));
 }
