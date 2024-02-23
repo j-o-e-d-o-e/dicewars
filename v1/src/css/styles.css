@@ -172,7 +172,7 @@ canvas {
 
 .dices-player {
     display: inline-grid;
-    justify-content: center;
+    justify-content: space-between;
     min-width: 90px;
     margin-right: 10px;
     font-weight: bold;
