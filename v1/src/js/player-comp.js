@@ -36,7 +36,7 @@ export class Comp extends Player {
             }
             let otherId = await this.attack(cluster, target)
             if (otherId === undefined) cluster = _clusters.shift()
-            else if (!this.afterSuccessfulMove(clusters, players, otherId)) cluster = target;
+            else if (!this.afterSuccessfulMove(clusters, players, otherId)) cluster = target.dices > 1 ? target : _clusters.shift();
             else {
                 await end(false);
                 return;
