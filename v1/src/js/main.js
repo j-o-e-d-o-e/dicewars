@@ -17,10 +17,10 @@ function main() {
 // noinspection JSUnusedLocalSymbols
 function testDisplay() {
     init();
+    createGame();
     document.getElementById("launch").style.display = "none";
     document.getElementById("main").style.display = "block";
     document.getElementById("main-before").style.display = "none";
-    createGame();
     clusters.forEach(c => {
         c.dices = 8;
         drawCluster(c.corners, c.playerId);
@@ -29,7 +29,6 @@ function testDisplay() {
         p.additionalDices = CLUSTERS_MAX * 2;
         drawDicesNums(p);
     });
-    nextTurn(players[0]);
 }
 
 function init() {
@@ -50,11 +49,11 @@ function init() {
                 break;
             }
         }
+        createGame(colorI);
         document.getElementById("launch").remove();
         document.getElementById("main").style.display = "block";
         document.getElementById("main-before").style.display = "block";
         document.getElementById("main-play").style.display = "none";
-        createGame(colorI);
     });
 
     document.getElementById("main").style.display = "none";
@@ -92,11 +91,11 @@ function init() {
 
     document.getElementById("end").style.display = "none";
     document.getElementById("btn-restart").addEventListener("click", () => {
+        createGame();
         document.getElementById("end").style.display = "none";
         document.getElementById("main").style.display = "block";
         document.getElementById("main-before").style.display = "block";
         document.getElementById("main-play").style.display = "none";
-        createGame();
     });
 }
 
