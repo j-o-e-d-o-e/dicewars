@@ -6,7 +6,7 @@ h1{padding-top:50px;padding-bottom:50px;color:var(--darkergreen);text-shadow:2px
 #launch>div>span,input[type="radio"],#launch>div>label{vertical-align:middle;color:white;left:0}
 #launch>div>label{font-size:x-large}label>img{width:45px;height:45px}input[type='radio']:after{width:15px;height:15px;border-radius:15px;top:-2px;left:-1px;position:relative;background-color:var(--lighter);content:'';display:inline-block;visibility:visible;border:2px solid white}
 input[type='radio']:checked:after{width:15px;height:15px;border-radius:15px;top:-2px;left:-1px;position:relative;background-color:var(--orange);content:'';display:inline-block;visibility:visible;border:2px solid white}
-button{border-radius:15px;background-color:var(--lightergreen);border:0;color:white;padding:15px 32px;text-align:center;text-decoration:none;display:inline-block;font-size:16px}
+button{border-radius:15px;background-color:var(--lightergreen);border:0;color:white;padding:15px 32px;text-align:center;text-decoration:none;display:inline-block;font-size:large}
 #btn-launch,#btn-restart{margin-top:50px}#btn-yes,#btn-no{margin-left:10px}#btn-launch:hover,#btn-yes:hover,#btn-no:hover,#btn-restart:hover{background-color:var(--darkergreen) !important;outline:4px solid var(--orange)}
 #btn-turn:not([disabled]){background-color:var(--darkergreen);outline:4px solid var(--orange)}
 #stage{position:relative;margin-left:auto;margin-right:auto;width:1280px}canvas{position:absolute;left:0;top:0;z-index:1}
