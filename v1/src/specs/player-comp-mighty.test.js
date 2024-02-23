@@ -16,16 +16,16 @@ test('mighty other on small board', () => {
     let clusters = createTestClusters(board, 5);
     for (let player of players) player.setDices(clusters);
 
-    let mighty = comp.mightyOther(clusters, players);
+    let  [mighty] = comp.mightyOthers(clusters, players);
 
-    expect(mighty?.id).toBe(2);
+    expect(mighty.id).toBe(2);
 });
 
 test('mighty other on big board', () => {
     let clusters = createTestClusters(board, 6);
     for (let player of players) player.setDices(clusters);
 
-    let mighty = comp.mightyOther(clusters, players);
+    let [mighty] = comp.mightyOthers(clusters, players);
 
-    expect(mighty?.id).toBe(2);
+    expect(mighty.id).toBe(2);
 });

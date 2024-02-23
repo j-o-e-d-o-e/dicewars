@@ -28,8 +28,8 @@ export class Comp extends Player {
             .sort((a, b) => b.dices - a.dices);
         let cluster = _clusters.shift();
         while (cluster) {
-            let mighty = this.mightyOther(clusters, players);
-            let target = this.target(cluster, mighty);
+            let mighties = this.mightyOthers(clusters, players);
+            let target = this.target(cluster, mighties);
             if (!target) {
                 cluster = _clusters.shift();
                 continue;
@@ -74,16 +74,23 @@ export class Comp extends Player {
         });
     }
 
-    mightyOther(clusters, players) {
+    mightyOthers(clusters, players) {
         let threshold = Math.floor(clusters.length / 3);
-        let filtered = players.filter(p => p.id !== this.id && p.dices > threshold)
-        if (filtered.length > 0) return filtered.reduce((acc, current) => !acc || current.dices > acc.dices ? current : acc);
+        return players.filter(p => p.id !== this.id && p.dices > threshold).sort((a, b) => b.dices - a.dices);
     }
 
-    target(cluster, mighty) {
+    target(cluster, mighties) {
         let targets = cluster.adjacentClustersFromCluster().filter(c => c.playerId !== this.id);
-        if (mighty) targets = targets.filter(c => c.playerId === mighty.id);
+        if (mighties.length > 0) {
+            let tmp;
+            for (let mighty of mighties) {
+                tmp = targets.filter(c => c.playerId === mighty.id);
+                if (tmp.length > 0) break;
+            }
+            targets = tmp;
+        }
         targets = targets.filter(c => cluster.dices > c.dices - (cluster.dices === 8));
+        if (targets.length === 0) return;
         let grouped = targets.reduce((acc, current) => { // https://stackoverflow.com/a/34890276/9416041
             (acc[current['dices']] = acc[current['dices']] || []).push(current);
             return acc;
