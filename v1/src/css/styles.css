@@ -103,7 +103,7 @@ button {
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: large;
+    font-size: x-large;
 }
 
 #btn-launch, #btn-restart {
