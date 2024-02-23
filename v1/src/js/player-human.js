@@ -30,6 +30,8 @@ export class Human extends Player {
             console.log(`attacks ${target.playerId}: ${this.clickedCluster.id} vs ${target.id} -> thrown dices: ${sumPlayer} vs ${sumOther}`);
             let dicesPlayerBefore = this.clickedCluster.dices;
             this.clickedCluster.dices = 1;
+            let i = this.clickableClusters.findIndex(c => c.id === this.clickedCluster.id);
+            this.clickableClusters.splice(i, 1);
             drawCluster(this.clickedCluster.corners, this.id);
             drawDices(this.clickedCluster);
             if (sumPlayer > sumOther) {
