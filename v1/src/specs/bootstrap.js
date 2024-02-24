@@ -32,15 +32,15 @@ function createTestClusters1(board) {
 function createTestClusters2(board) {
     return [
         new Cluster(0, board[400], {playerId: 0, dices: 8}),
-        new Cluster(1, board[508], {playerId: 1, dices: 1}),
-        new Cluster(2, board[511], {playerId: 2, dices: 1}),
-        new Cluster(3, board[514], {playerId: 3, dices: 1}),
-        new Cluster(4, board[409], {playerId: 1, dices: 1}),
-        new Cluster(5, board[301], {playerId: 2, dices: 1}),
-        new Cluster(6, board[298], {playerId: 0, dices: 7}),
+        new Cluster(1, board[508], {playerId: 1, dices: 8}),
+        new Cluster(2, board[511], {playerId: 2, dices: 6}),
+        new Cluster(3, board[514], {playerId: 3, dices: 5}),
+        new Cluster(4, board[409], {playerId: 1, dices: 4}),
+        new Cluster(5, board[301], {playerId: 0, dices: 8}),
+        new Cluster(6, board[298], {playerId: 1, dices: 8}),
         new Cluster(7, board[403], {playerId: 3, dices: 8}),
         new Cluster(8, board[406], {playerId: 1, dices: 8}),
-        new Cluster(9, board[295], {playerId: 2, dices: 1}),
+        new Cluster(9, board[295], {playerId: 2, dices: 8}),
         new Cluster(10, board[190], {playerId: 3, dices: 8}),
     ];
 }

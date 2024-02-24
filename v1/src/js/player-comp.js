@@ -11,7 +11,9 @@ export class Comp extends Player {
     async turn(clusters, players, afterTurn, end) {
         super.turn();
         let path = this.path(clusters);
-        while (path) {
+        let mighties = this.mightyOthers(clusters, players);
+        while (path && (mighties.length === 0 || mighties[0].dices <= clusters.length / 2
+            || path.slice(1, -1).every(c => c.playerId === mighties[0].id))) {
             let cluster = path.shift();
             for (let target of path.slice(0, -1)) {
                 let otherId = await this.attack(cluster, target);
@@ -23,12 +25,13 @@ export class Comp extends Player {
                 }
             }
             path = this.path(clusters);
+            mighties = this.mightyOthers(clusters, players);
         }
         let _clusters = clusters.filter(c => c.playerId === this.id && c.dices > 1)
             .sort((a, b) => b.dices - a.dices);
         let cluster = _clusters.shift();
         while (cluster) {
-            let mighties = this.mightyOthers(clusters, players);
+            mighties = this.mightyOthers(clusters, players);
             let target = this.target(cluster, mighties);
             if (!target) {
                 cluster = _clusters.shift();

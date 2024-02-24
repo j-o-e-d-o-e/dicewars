@@ -133,8 +133,9 @@ export class Cluster {
             let from = queue.shift();
             let neighbours = from.adjacentClustersFromCluster();
             for (let neighbour of neighbours) {
+                let currentDices = this.dices - distances[from.id];
                 if ((neighbour.id !== to.id && neighbour.playerId === this.playerId)
-                    || (neighbour.playerId !== to.playerId && neighbour.dices >= this.dices - distances[from.id])
+                    || (neighbour.playerId !== to.playerId && neighbour.dices - (currentDices === 8) >= currentDices)
                     || visited[neighbour.id]) continue;
                 predecessors[neighbour.id] = from;
                 distances[neighbour.id] = distances[from.id] + 1;

@@ -18,12 +18,12 @@ test('path on small board', () => {
 
 test('path on big board', () => {
     let clusters = createTestClusters(board, 2);
-    let from = clusters[0], to = clusters[6];
+    let from = clusters[0], to = clusters[5];
 
     let path = from.path(to);
 
-    // log(path, from, to);
-    expect(path.map(c => c.id)).toEqual([0, 9, 6]);
+    log(path, from, to);
+    expect(path.map(c => c.id)).toEqual([0, 1, 2, 3, 4, 5]);
 });
 
 // noinspection JSUnusedLocalSymbols
