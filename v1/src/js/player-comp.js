@@ -78,7 +78,7 @@ export class Comp extends Player {
     }
 
     mightyOthers(clusters, players) {
-        let threshold = Math.floor(clusters.length / 3);
+        let threshold = Math.ceil(clusters.length / 3);
         return players.filter(p => p.id !== this.id && p.dices > threshold).sort((a, b) => b.dices - a.dices);
     }
 
