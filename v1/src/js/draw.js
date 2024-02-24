@@ -55,24 +55,24 @@ function _drawBoard(board) {
 
 function _drawClusters(clusters) {
     for (let cluster of clusters) {
-        _drawCluster(cluster.corners, "black", COLORS[cluster.playerId].color);
+        _drawCluster(cluster.corners, "black", LINE_WIDTH, COLORS[cluster.playerId].color);
         _drawDices(cluster, COLORS[cluster.playerId].cubeId);
         // _drawText(cluster);
     }
 }
 
 export function drawCluster(corners, playerId) {
-    if (playerId === undefined) _drawCluster(corners, "red", "rgba(255, 255, 255, 0.8)");
-    else _drawCluster(corners, "black", COLORS[playerId].color);
+    if (playerId === undefined) _drawCluster(corners, "red", LINE_WIDTH - 1, "rgba(255, 255, 255, 0.8)");
+    else _drawCluster(corners, "black", LINE_WIDTH, COLORS[playerId].color);
 }
 
-function _drawCluster(corners, lineColor, fillColor) {
+function _drawCluster(corners, lineColor, lineWidth, fillColor) {
     ctxBg.beginPath();
     for (let corner of corners) ctxBg.lineTo(corner.x, corner.y);
     ctxBg.lineTo(corners[0].x, corners[0].y)
     ctxBg.lineTo(corners[1].x, corners[1].y)
     ctxBg.strokeStyle = lineColor;
-    ctxBg.lineWidth = LINE_WIDTH;
+    ctxBg.lineWidth = lineWidth;
     ctxBg.stroke();
     ctxBg.fillStyle = fillColor;
     ctxBg.fill();
