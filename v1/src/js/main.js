@@ -1,8 +1,8 @@
-import {CANVAS_WIDTH, CANVAS_HEIGHT, CLUSTERS_MAX, TIMEOUT_BG, setPlayers, setColor} from './info.js';
+import {CANVAS_WIDTH, CANVAS_HEIGHT, CLUSTERS_MAX, TIMEOUT_BG, setPlayers} from './info.js';
 import {createBoard} from './board.js';
 import {createClusters} from "./clusters.js";
 import {createPlayers} from "./players.js";
-import {drawInit, drawDices, drawDicesNums, drawDicesBar, drawCluster} from "./draw.js";
+import {setColor, loadImages, drawInit, drawCluster, drawDices, drawDicesNums, drawDicesBar} from "./draw.js";
 import Stats from "./stats.js";
 
 const [board, centerNode] = createBoard();
@@ -32,6 +32,8 @@ function testDisplay() {
 }
 
 function init() {
+    // noinspection JSIgnoredPromiseFromCall
+    loadImages();
     document.getElementById("launch").style.display = "block";
     document.getElementById("btn-launch").addEventListener("click", () => {
         for (let i = 3; i <= 8; i++) {

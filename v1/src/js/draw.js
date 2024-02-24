@@ -1,8 +1,36 @@
-import {CANVAS_WIDTH, CANVAS_HEIGHT, RADIUS_HEX, CLUSTERS_MAX, TIMEOUT_SM, COLORS} from "./info.js"
+import {CANVAS_WIDTH, CANVAS_HEIGHT, RADIUS_HEX, CLUSTERS_MAX, TIMEOUT_SM} from "./info.js"
 
-let ctxBg, ctxFg, dicesBar;
-
+const COLORS = [
+    {color: "#B37FFE", img: undefined}, {color: "#B3FF01", img: undefined},
+    {color: "#009302", img: undefined}, {color: "#FF7FFE", img: undefined},
+    {color: "#FF7F01", img: undefined}, {color: "#B3FFFE", img: undefined},
+    {color: "#FFFF01", img: undefined}, {color: "#FF5858", img: undefined}
+];
 const LINE_WIDTH = 9;
+let colorIndex, ctxBg, ctxFg, dicesBar;
+
+export async function loadImages() {
+    let promises = [];
+    for (let i = 0; i < COLORS.length; i++) {
+        promises.push(new Promise(resolve => {
+            let img = new Image();
+            img.onload = () => {
+                COLORS[i].img = img;
+                resolve();
+            };
+            img.src = `assets/cube-${i + 1}.svg`;
+        }));
+    }
+    await Promise.all(promises);
+}
+
+export function setColor(humanId, colorI) {
+    if (colorIndex) colorI = colorIndex;
+    let tmp = COLORS[humanId];
+    COLORS[humanId] = COLORS[colorI];
+    COLORS[colorI] = tmp;
+    colorIndex = humanId;
+}
 
 export function drawInit(board, clusters, players) {
     init(players)
@@ -28,7 +56,7 @@ function init(players) {
         parentDiv.id = player.id;
         let childDiv = document.createElement("div");
         let img = document.createElement("img");
-        img.src = `assets/cube-${COLORS[player.id].cubeId}.svg`;
+        img.src = COLORS[player.id].img.src;
         let span = document.createElement("span");
         span.innerHTML = player.dices;
         let p = document.createElement("p");
@@ -56,7 +84,8 @@ function _drawBoard(board) {
 function _drawClusters(clusters) {
     for (let cluster of clusters) {
         _drawCluster(cluster.corners, "black", LINE_WIDTH, COLORS[cluster.playerId].color);
-        _drawDices(cluster, COLORS[cluster.playerId].cubeId);
+        // noinspection JSIgnoredPromiseFromCall
+        _drawDices(cluster);
         // _drawText(cluster);
     }
 }
@@ -80,34 +109,31 @@ function _drawCluster(corners, lineColor, lineWidth, fillColor) {
 
 export function drawDices(cluster, dicesBefore) {
     if (dicesBefore === undefined) ctxFg[cluster.id].clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    _drawDices(cluster, COLORS[cluster.playerId].cubeId, {startI: dicesBefore});
+    // noinspection JSIgnoredPromiseFromCall
+    _drawDices(cluster, {startI: dicesBefore});
     // _drawText(cluster);
 }
 
-function _drawDices(cluster, colorId, {timeout = TIMEOUT_SM, startI = 0} = {}) {
+async function _drawDices(cluster, {timeout = TIMEOUT_SM, startI = 0} = {}) {
     let x = cluster.center.x - 30;
     let y = cluster.center.y - 20;
     let size = 50;
     let xOffset = 16;
     let yOffset = 20;
-    let img = new Image();
-    img.onload = async () => {
-        let ctx = ctxFg[cluster.id];
-        for (let i = 0; i < cluster.dices; i++) {
-            if (i === 4) {
-                x += xOffset;
-                y += 8;
-            }
-            if (i < startI) continue;
-            await new Promise(resolve => {
-                setTimeout(() => {
-                    ctx.drawImage(img, x, y - yOffset * (i % 4), size, size)
-                    resolve();
-                }, timeout);
-            });
+    let ctx = ctxFg[cluster.id];
+    for (let i = 0; i < cluster.dices; i++) {
+        if (i === 4) {
+            x += xOffset;
+            y += 8;
         }
-    };
-    img.src = `assets/cube-${colorId}.svg`;
+        if (i < startI) continue;
+        await new Promise(resolve => {
+            setTimeout(() => {
+                ctx.drawImage(COLORS[cluster.playerId].img, x, y - yOffset * (i % 4), size, size)
+                resolve();
+            }, timeout);
+        });
+    }
 }
 
 // noinspection JSUnusedLocalSymbols
