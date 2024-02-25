@@ -62,7 +62,9 @@ export class Cluster {
                 }
             }
         }
-        return res.map(l => l.start);
+        return res.map(line => {
+            return {x: Math.floor(line.start.x), y: line.start.y};
+        });
     }
 
     centerPos() { // https://stackoverflow.com/a/9939071/9416041
@@ -77,7 +79,7 @@ export class Cluster {
             y += (p1.y + p2.y) * shoelace;
         }
         shoelace = doubleArea * 3;
-        return {x: x / shoelace, y: y / shoelace};
+        return {x: Math.floor(x / shoelace), y: Math.floor(y / shoelace)};
     }
 
     adjacentNodesFromCluster() {

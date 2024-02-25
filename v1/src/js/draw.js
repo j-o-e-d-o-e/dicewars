@@ -119,7 +119,6 @@ export function drawDices(cluster, dicesBefore) {
 async function _drawDices(ctx, cluster, {timeout = TIMEOUT_SM, startI = 0} = {}) {
     let x = cluster.center.x - 30;
     let y = cluster.center.y - 20;
-    let size = 50;
     let xOffset = 16;
     let yOffset = 20;
     for (let i = 0; i < cluster.dices; i++) {
@@ -130,7 +129,7 @@ async function _drawDices(ctx, cluster, {timeout = TIMEOUT_SM, startI = 0} = {})
         if (i < startI) continue;
         await new Promise(resolve => {
             setTimeout(() => {
-                ctx.drawImage(COLORS[cluster.playerId].img, x, y - yOffset * (i % 4), size, size)
+                ctx.drawImage(COLORS[cluster.playerId].img, x, y - yOffset * (i % 4))
                 resolve();
             }, timeout);
         });

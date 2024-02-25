@@ -57,7 +57,7 @@ function transpose(clusters, centerNode) {
     }
     let diffL = centerNode.hex.center.x - mostLeftPos.x;
     let diffR = mostRightPos.x - centerNode.hex.center.x;
-    let diffV = diffL > diffR ? (diffL - diffR) / 2 : -(diffR - diffL) / 2;
+    let diffV = Math.floor(diffL > diffR ? (diffL - diffR) / 2 : -(diffR - diffL) / 2);
     for (let cluster of clusters) {
         cluster.center.x += diffV
         for (let corner of cluster.corners) corner.x += diffV
