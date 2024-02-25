@@ -32,7 +32,7 @@ export class Player {
                 console.log(`Human player (id: ${deleted.id}) has lost.`);
                 return true;
             } else if (players.length === 1) {
-                console.log(`Comp player (id: ${this.id}) has won.`);
+                console.log(`${this instanceof Human ? "Human" : "Comp"} player (id: ${this.id}) has won.`);
                 return true;
             }
         } else drawDicesNums(other);
