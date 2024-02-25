@@ -14,6 +14,7 @@ beforeAll(() => {
 
 test('mighty other on small board', () => {
     let clusters = createTestClusters(board, 5);
+    Comp.thresholds(clusters);
     for (let player of players) player.setDices(clusters);
 
     let  [mighty] = comp.mightyOthers(clusters, players);
@@ -23,6 +24,7 @@ test('mighty other on small board', () => {
 
 test('mighty other on big board', () => {
     let clusters = createTestClusters(board, 6);
+    Comp.thresholds(clusters);
     for (let player of players) player.setDices(clusters);
 
     let [mighty] = comp.mightyOthers(clusters, players);

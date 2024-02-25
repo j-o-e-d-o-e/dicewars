@@ -3,6 +3,13 @@ import {Player} from "./player.js";
 import {drawCluster, drawDices} from "./draw.js";
 
 export class Comp extends Player {
+    static thresholdMighty;
+    static thresholdVeryMighty;
+
+    static thresholds(clusters) {
+        Comp.thresholdMighty = Math.ceil(clusters.length / 3);
+        Comp.thresholdVeryMighty = Math.ceil(clusters.length / 2);
+    }
 
     constructor(id) {
         super(id);
@@ -12,7 +19,7 @@ export class Comp extends Player {
         super.turn();
         let path = this.path(clusters);
         let mighties = this.mightyOthers(clusters, players);
-        while (path && (mighties.length === 0 || mighties[0].dices <= clusters.length / 2
+        while (path && (mighties.length === 0 || mighties[0].dices <= Comp.thresholdVeryMighty
             || path.slice(1, -1).every(c => c.playerId === mighties[0].id))) {
             let cluster = path.shift();
             for (let target of path.slice(0, -1)) {
@@ -31,7 +38,7 @@ export class Comp extends Player {
             .sort((a, b) => b.dices - a.dices);
         let cluster = _clusters.shift();
         while (cluster) {
-            mighties = this.mightyOthers(clusters, players);
+            mighties = this.dices > Comp.thresholdMighty ? [] : this.mightyOthers(clusters, players);
             let target = this.target(cluster, mighties);
             if (!target) {
                 cluster = _clusters.shift();
@@ -78,12 +85,12 @@ export class Comp extends Player {
     }
 
     mightyOthers(clusters, players) {
-        let threshold = Math.ceil(clusters.length / 3);
-        return players.filter(p => p.id !== this.id && p.dices > threshold).sort((a, b) => b.dices - a.dices);
+        return players.filter(p => p.id !== this.id && p.dices > Comp.thresholdMighty).sort((a, b) => b.dices - a.dices);
     }
 
     target(cluster, mighties) {
         let targets = cluster.adjacentClustersFromCluster().filter(c => c.playerId !== this.id);
+        if (targets.length === 0) return;
         if (mighties.length > 0) {
             let tmp;
             for (let mighty of mighties) {

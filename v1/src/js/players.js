@@ -3,6 +3,7 @@ import {Human} from "./player-human.js";
 import {Comp} from "./player-comp.js";
 
 export function createPlayers(clusters) {
+    Comp.thresholds(clusters);
     let players = [];
     let playerProb = 0.3, playerIndex;
     for (let i = 0; i < PLAYERS; i++) {
