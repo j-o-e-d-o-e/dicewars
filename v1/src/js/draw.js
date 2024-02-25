@@ -108,7 +108,7 @@ function _drawCluster(corners, lineColor, lineWidth, fillColor) {
 }
 
 export function drawDices(cluster, dicesBefore) {
-    if (dicesBefore === undefined) ctxFg[cluster.id].clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    if (dicesBefore === undefined) ctxFg[cluster.id].clearRect(cluster.center.x - 30, cluster.center.y -80, 80, 120);
     // noinspection JSIgnoredPromiseFromCall
     _drawDices(cluster, {startI: dicesBefore});
     // _drawText(cluster);

@@ -10,8 +10,10 @@ let canvas, btn, listenerDisabled = true;
 let clusters, players, human, playerIndex = 0;
 
 function main() {
-    init();
-    // testDisplay();
+    loadImages().then(() => {
+        init();
+        // testDisplay();
+    });
 }
 
 // noinspection JSUnusedLocalSymbols
@@ -32,8 +34,6 @@ function testDisplay() {
 }
 
 function init() {
-    // noinspection JSIgnoredPromiseFromCall
-    loadImages();
     document.getElementById("launch").style.display = "block";
     document.getElementById("btn-launch").addEventListener("click", () => {
         for (let i = 3; i <= 8; i++) {
