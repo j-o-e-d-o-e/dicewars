@@ -92,7 +92,13 @@ function init() {
         if (listenerDisabled) return;
         let rect = canvas.getBoundingClientRect();
         let otherId = human.click({x: event.clientX - rect.left, y: event.clientY - rect.top});
-        if (otherId !== undefined && human.afterSuccessfulMove(clusters, players, otherId)) await end(true);
+        if (otherId !== undefined) {
+            if (human.afterSuccessfulMove(clusters, players, otherId)) {
+                await end(true);
+                return;
+            }
+            human.setClickables(clusters);
+        }
     }, false);
 
     document.getElementById("end").style.display = "none";
@@ -115,8 +121,7 @@ function createGame(colorI = 0) {
 function nextTurn(player) {
     if (player === human) {
         [listenerDisabled, btn.disabled] = [false, false];
-        human.clickableClusters = clusters.filter(c => c.playerId === human.id && c.dices > 1
-            && c.adjacentClustersFromCluster().some(c => c.playerId !== human.id));
+        human.setClickables(clusters);
         Stats.set.rounds();
     }
     player.turn(clusters, players, async () => await afterTurn(player), end);

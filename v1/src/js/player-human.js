@@ -30,8 +30,6 @@ export class Human extends Player {
             console.log(`attacks ${target.playerId}: ${this.clickedCluster.id} vs ${target.id} -> thrown dices: ${sumPlayer} vs ${sumOther}`);
             let dicesPlayerBefore = this.clickedCluster.dices;
             this.clickedCluster.dices = 1;
-            let i = this.clickableClusters.findIndex(c => c.id === this.clickedCluster.id);
-            this.clickableClusters.splice(i, 1);
             drawCluster(this.clickedCluster.corners, this.id);
             drawDices(this.clickedCluster);
             if (sumPlayer > sumOther) {
@@ -42,12 +40,16 @@ export class Human extends Player {
                 drawCluster(target.corners, this.id);
                 drawDices(target);
                 this.clickedCluster = undefined;
-                if (target.dices > 1 && target.adjacentClustersFromCluster().some(c => c.playerId !== this.id))
-                    this.clickableClusters.push(target);
                 return otherPlayerId;
             }
             Stats.set.unsuccessfulAttacks()
+            let i = this.clickableClusters.findIndex(c => c.id === this.clickedCluster.id);
+            this.clickableClusters.splice(i, 1);
             this.clickedCluster = undefined;
         }
+    }
+    setClickables(clusters){
+        this.clickableClusters = clusters.filter(c => c.playerId === this.id && c.dices > 1
+            && c.adjacentClustersFromCluster().some(c => c.playerId !== this.id));
     }
 }
