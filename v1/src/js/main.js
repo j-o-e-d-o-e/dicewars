@@ -2,11 +2,14 @@ import {CANVAS_WIDTH, CANVAS_HEIGHT, CLUSTERS_MAX, TIMEOUT_BG, setPlayers} from 
 import {createBoard} from './board.js';
 import {createClusters} from "./clusters.js";
 import {createPlayers} from "./players.js";
-import {setColor, loadImages, drawInit, drawCluster, drawDices, drawDicesNums, drawDicesBar} from "./draw.js";
+import {
+    loadImages, setColor, setBackgroundCtx, setForegroundCtx,
+    drawInit, drawCluster, drawDices, drawDicesNums, drawDicesBar,
+} from "./draw.js";
 import Stats from "./stats.js";
 
 const [board, centerNode] = createBoard();
-let canvas, btn, listenerDisabled = true;
+let btn, listenerDisabled = true;
 let clusters, players, human, playerIndex = 0;
 
 function main() {
@@ -75,13 +78,14 @@ function init() {
         await afterTurn(human);
     });
     btn.disabled = true;
-    let div = document.getElementById("stage");
+    let div = document.getElementById("stage"), canvas;
     for (let i = 0; i <= CLUSTERS_MAX; i++) {
         canvas = document.createElement("canvas");
-        canvas.id = "canvas-" + i;
         canvas.width = CANVAS_WIDTH;
         canvas.height = CANVAS_HEIGHT;
         div.appendChild(canvas);
+        if (i === 0) setBackgroundCtx(canvas);
+        else setForegroundCtx(canvas);
     }
     canvas.addEventListener("click", async event => {
         event.stopPropagation();
