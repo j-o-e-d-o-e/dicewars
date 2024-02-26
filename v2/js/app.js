@@ -9,6 +9,7 @@ import {
 import Stats from "./stats.js";
 
 const [board, centerNode] = createBoard();
+console.log("board created, next main");
 let btn, listenerDisabled = true;
 let clusters, players, human, playerIndex = 0;
 
@@ -159,5 +160,4 @@ function toggleHidden(ids) {
   for (let id of ids) document.getElementById(id).classList.toggle("hidden");
 }
 
-console.log("before main");
 main();
