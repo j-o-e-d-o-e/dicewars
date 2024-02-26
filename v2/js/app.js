@@ -51,8 +51,7 @@ function init() {
         break;
       }
     }
-    document.getElementById("launch").remove();
-    toggleHidden(["main", "main-play"]);
+    toggleHidden(["launch", "main", "main-play"]);
   });
 
   toggleHidden(["main"]);
