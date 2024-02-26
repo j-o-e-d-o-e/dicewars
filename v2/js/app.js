@@ -37,9 +37,11 @@ function testDisplay() {
 function init() {
   document.getElementById("btn-launch").addEventListener("click", () => {
     let players = document.forms["form-players"].getElementsByTagName("input");
+    console.log(players.length);
     for (let player of players) {
       if (player.checked) {
-        setPlayers(player.value);
+        console.log(player);
+        setPlayers(3);
         break;
       }
     }
@@ -47,7 +49,8 @@ function init() {
     let colors = document.forms["form-colors"].getElementsByTagName("input");
     for (let color of colors) {
       if (color.checked) {
-        createGame(color.value);
+        console.log(color);
+        createGame(7);
         break;
       }
     }
