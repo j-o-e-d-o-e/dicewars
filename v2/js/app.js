@@ -36,22 +36,20 @@ function testDisplay() {
 
 function init() {
   document.getElementById("btn-launch").addEventListener("click", () => {
-    for (let i = 3; i <= 8; i++) {
-      let radio = document.getElementById("p" + i);
-      if (radio.checked) {
-        setPlayers(i);
+    let players = document.getElementsByName("players");
+    for (let player of players) {
+      if (player.checked) {
+        setPlayers(player.value);
         break;
       }
     }
-    let colorI;
-    for (let i = 1; i <= 8; i++) {
-      let radio = document.getElementById("c" + i);
-      if (radio.checked) {
-        colorI = i - 1;
+    let colors = document.getElementsByName("colors");
+    for (let color of colors) {
+      if (color.checked) {
+        createGame(color.value);
         break;
       }
     }
-    createGame(colorI);
     document.getElementById("launch").remove();
     toggleHidden(["main", "main-play"]);
   });
@@ -102,7 +100,7 @@ function init() {
   });
 }
 
-function createGame(colorI = 0) {
+function createGame(colorI) {
   clusters = createClusters(centerNode);
   [players, human] = createPlayers(clusters);
   setColor(human.id, colorI);
