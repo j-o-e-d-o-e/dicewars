@@ -14,6 +14,7 @@ let clusters, players, human, playerIndex = 0;
 
 function main() {
   loadImages().then(() => {
+    console.log("loaded images, next init");
     init();
     // testDisplay();
   });
@@ -35,6 +36,7 @@ function testDisplay() {
 }
 
 function init() {
+  console.log("init start");
   document.getElementById("btn-launch").addEventListener("click", () => {
     let players = document.forms["form-players"].getElementsByTagName("input");
     for (let i = 0; i < players.length; i++) {
