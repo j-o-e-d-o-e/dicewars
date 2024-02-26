@@ -261,6 +261,7 @@ textarea {
 * {
   margin: 0;
   font-family: 'Courier New', monospace;
+  color: white;
 }
 
 html, body {
@@ -295,13 +296,12 @@ h1 {
   max-width: 75%;
 }
 
-#launch > div > span, input[type="radio"], #launch > div > label {
+form > span, input[type="radio"], form > label {
   vertical-align: middle;
-  color: white;
   left: 0;
 }
 
-#launch > div > label {
+form > label {
   font-size: x-large;
 }
 
@@ -342,7 +342,7 @@ button {
   border-radius: 15px;
   background-color: var(--lightergreen);
   border: none;
-  color: white;
+  /*color: white;*/
   padding: 15px 32px;
   text-align: center;
   text-decoration: none;
@@ -387,7 +387,6 @@ canvas {
 /*}*/
 
 #main-before, #main-play {
-  color: white;
   position: absolute;
   margin-top: 770px;
   padding-bottom: 20px;
@@ -404,7 +403,6 @@ canvas {
 
 #main-before > span {
   vertical-align: middle;
-  color: white;
 }
 
 #btn-turn {
@@ -427,10 +425,6 @@ canvas {
   margin-right: 10px;
   font-weight: bold;
   border-radius: 15px;
-}
-
-.dices-player > * {
-  color: white;
 }
 
 img {
@@ -459,7 +453,6 @@ ul > li {
   align-items: center;
   padding: .5rem;
   font-size: x-large;
-  color: white;
 }
 
 ul > li::before {
@@ -488,7 +481,6 @@ ol > li {
   align-items: center;
   padding: .5rem;
   font-size: x-large;
-  color: white;
 }
 
 ol > li {

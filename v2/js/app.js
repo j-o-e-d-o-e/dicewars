@@ -36,14 +36,15 @@ function testDisplay() {
 
 function init() {
   document.getElementById("btn-launch").addEventListener("click", () => {
-    let players = document.getElementsByName("players");
+    let players = document.forms["form-players"].getElementsByTagName("input");
     for (let player of players) {
       if (player.checked) {
         setPlayers(player.value);
         break;
       }
     }
-    let colors = document.getElementsByName("colors");
+
+    let colors = document.forms["form-colors"].getElementsByTagName("input");
     for (let color of colors) {
       if (color.checked) {
         createGame(color.value);
