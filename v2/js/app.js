@@ -159,4 +159,5 @@ function toggleHidden(ids) {
   for (let id of ids) document.getElementById(id).classList.toggle("hidden");
 }
 
+console.log("before main");
 main();
