@@ -35,7 +35,6 @@ function testDisplay() {
 }
 
 function init() {
-  console.log("init");
   document.getElementById("btn-launch").addEventListener("click", () => {
     let players = document.forms["form-players"].getElementsByTagName("input");
     console.log(players.length);
