@@ -39,7 +39,7 @@ function init() {
     let players = document.forms["form-players"].getElementsByTagName("input");
     for (let player of players) {
       if (player.checked) {
-        setPlayers(3);
+        setPlayers(player.value);
         break;
       }
     }
@@ -47,7 +47,7 @@ function init() {
     let colors = document.forms["form-colors"].getElementsByTagName("input");
     for (let color of colors) {
       if (color.checked) {
-        createGame(7);
+        createGame(color.value);
         break;
       }
     }
