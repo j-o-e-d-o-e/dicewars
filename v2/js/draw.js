@@ -41,14 +41,14 @@ export function setForegroundCtx(ctx) {
 }
 
 export function drawInit(board, clusters, players) {
-  init(players)
+  ctxBg.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  for (let ctx of ctxFg) ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  _setDicesBar(players)
   // _drawBoard(board);
   _drawClusters(clusters);
 }
 
-function init(players) {
-  ctxBg.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-  for (let ctx of ctxFg) ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+function _setDicesBar(players) {
   const dicesPlayers = document.getElementsByClassName("dices-player");
   while (dicesPlayers.length > 0) dicesPlayers[0].parentNode.removeChild(dicesPlayers[0]);
   dicesBar = document.getElementById("dices-bar");
