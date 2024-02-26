@@ -37,17 +37,19 @@ function testDisplay() {
 function init() {
   document.getElementById("btn-launch").addEventListener("click", () => {
     let players = document.forms["form-players"].getElementsByTagName("input");
-    for (let player of players) {
-      if (player.checked) {
-        setPlayers(player.value);
+    for (let i = 0; i < players.length; i++) {
+      if (players[i].checked) {
+        setPlayers(players[i].value);
         break;
       }
     }
 
     let colors = document.forms["form-colors"].getElementsByTagName("input");
-    for (let color of colors) {
-      if (color.checked) {
-        createGame(color.value);
+    console.log("inputs from form-colors:", colors.length);
+    for (let i = 0; i < colors.length; i++) {
+      if (colors[i].checked) {
+        console.log("chosen color:", colors[i].value);
+        createGame(colors[i].value);
         break;
       }
     }
