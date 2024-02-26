@@ -9,13 +9,11 @@ import {
 import Stats from "./stats.js";
 
 const [board, centerNode] = createBoard();
-console.log("board created, next main");
 let btn, listenerDisabled = true;
 let clusters, players, human, playerIndex = 0;
 
 function main() {
   loadImages().then(() => {
-    console.log("loaded images, next init");
     init();
     // testDisplay();
   });
@@ -23,9 +21,9 @@ function main() {
 
 // noinspection JSUnusedLocalSymbols
 function testDisplay() {
+  toggleHidden(["launch", "main", "main-play"]);
   init();
   createGame();
-  toggleHidden(["launch", "main", "main-before"]);
   clusters.forEach(c => {
     c.dices = 8;
     drawCluster(c.corners, c.playerId);
@@ -37,29 +35,27 @@ function testDisplay() {
 }
 
 function init() {
-  console.log("init start");
   document.getElementById("btn-launch").addEventListener("click", () => {
     let players = document.forms["form-players"].getElementsByTagName("input");
-    for (let i = 0; i < players.length; i++) {
-      if (players[i].checked) {
-        setPlayers(players[i].value);
+    for (let player of players) {
+      if (player.checked) {
+        setPlayers(player.value);
         break;
       }
     }
 
     let colors = document.forms["form-colors"].getElementsByTagName("input");
-    console.log("inputs from form-colors:", colors.length);
-    for (let i = 0; i < colors.length; i++) {
-      if (colors[i].checked) {
-        console.log("chosen color:", colors[i].value);
+    for (let color of colors) {
+      if (color.checked) {
+        createGame(color.value);
         break;
       }
     }
-    createGame(7);
-    toggleHidden(["launch", "main", "main-play"]);
+    document.getElementById("launch").remove();
+    toggleHidden(["main", "main-before"]);
   });
 
-  toggleHidden(["main"]);
+  toggleHidden(["main", "main-before", "main-play"]);
   document.getElementById("btn-yes").addEventListener("click", () => {
     toggleHidden(["main-before", "main-play"]);
     playerIndex = 0;
@@ -101,11 +97,11 @@ function init() {
   toggleHidden(["end"]);
   document.getElementById("btn-restart").addEventListener("click", () => {
     createGame();
-    toggleHidden(["end", "main", "main-before", "main-play"])
+    toggleHidden(["end", "main", "main-before"])
   });
 }
 
-function createGame(colorI) {
+function createGame(colorI = 0) {
   clusters = createClusters(centerNode);
   [players, human] = createPlayers(clusters);
   setColor(human.id, colorI);
@@ -147,7 +143,7 @@ function end(won) {
     listenerDisabled = true;
     btn.disabled = true;
     setTimeout(() => {
-      toggleHidden(["main", "end"]);
+      toggleHidden(["main", "main-play", "end"]);
       if (won) document.getElementById("h-end").textContent = "You won!";
       else document.getElementById("h-end").textContent = "You lost.";
       for (let key in Stats.get) document.getElementById(`li-end-${key}`).textContent = Stats.get[key]();

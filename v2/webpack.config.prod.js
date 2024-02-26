@@ -2,13 +2,9 @@ const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const {join} = require("path");
 
 module.exports = merge(common, {
   mode: 'production',
-  output: {
-    path: join(__dirname, "../docs")
-  },
   plugins: [
     new HtmlWebpackPlugin({
       template: './index.html',
