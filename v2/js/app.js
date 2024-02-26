@@ -49,10 +49,10 @@ function init() {
     for (let i = 0; i < colors.length; i++) {
       if (colors[i].checked) {
         console.log("chosen color:", colors[i].value);
-        createGame(colors[i].value);
         break;
       }
     }
+    createGame(7);
     toggleHidden(["launch", "main", "main-play"]);
   });
 
