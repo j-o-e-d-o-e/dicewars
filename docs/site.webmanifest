@@ -1,9 +1,8 @@
 {
-  "short_name": "Dicewars",
-  "name": "Dicewars",
+  "short_name": "dicewars",
+  "name": "dicewars",
   "description": "Remake of DICEWARS (https://www.gamedesign.jp/games/dicewars/)",
   "display": "fullscreen",
-  "orientation": "landscape-primary"
   "icons": [{
     "src": "icon.png",
     "type": "image/png",
