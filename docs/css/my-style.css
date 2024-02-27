@@ -23,8 +23,7 @@ html, body {
   font-size: xxx-large;
 }
 
-#launch, #end, #main {
-  display: none;
+#launch, #main, #end {
   height: 100%;
 }
 
@@ -35,7 +34,7 @@ h1 {
   text-shadow: 2px 2px var(--orange);
 }
 
-#launch > div {
+#forms, #howto {
   text-align: start;
   position: relative;
   left: 0;
@@ -45,9 +44,39 @@ h1 {
   max-width: 75%;
 }
 
+#forms {
+  display: grid;
+  justify-content: start;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+  grid-column-gap: 20px;
+  height: fit-content;
+}
+
+#forms-1 {
+  grid-area: 1 / 1 / 1 / 1;
+}
+
+#forms-2 {
+  grid-area: 1 / 2 / 1 / 2;
+}
+
+#forms-3 {
+  grid-area: 2 / 1 / 2 / 1;
+}
+
+#forms-4 {
+  grid-area: 2 / 2 / 2 / 2;
+}
+
 form > span, input[type="radio"], form > label {
   vertical-align: middle;
   left: 0;
+}
+
+#forms-1 > span, #forms-3 > span {
+  vertical-align: middle;
+  font-size: 30px;
 }
 
 form > label {
@@ -59,11 +88,15 @@ label > img {
   height: 45px;
 }
 
+input[type='radio']:before {
+  right: -5px;
+}
+
 input[type='radio']:after {
   width: 15px;
   height: 15px;
   border-radius: 15px;
-  top: -2px;
+  top: -4px;
   left: -1px;
   position: relative;
   background-color: var(--lighter);
@@ -85,6 +118,15 @@ input[type='radio']:checked:after {
   display: inline-block;
   visibility: visible;
   border: 2px solid white;
+}
+
+#howto {
+  padding-top: 100px;
+  padding-bottom: 20px;
+}
+
+#howto > span, #howto > ol > li {
+  font-size: .5em;
 }
 
 button {
@@ -180,7 +222,7 @@ img {
   height: 50px;
 }
 
-span {
+#main-before > span, .dices-player > div > span {
   vertical-align: bottom;
   font-size: 30px;
 }
@@ -216,14 +258,6 @@ ul > li::before {
   visibility: visible;
 }
 
-#howto {
-  padding-top: 100px;
-}
-
-#howto > span, #howto > ol > li {
-  font-size: .5em;
-}
-
 ol > li {
   display: flex;
   align-items: center;
@@ -248,6 +282,13 @@ ol > li::before {
   visibility: visible;
 }
 
-#launch, #main, #main-before, #main-play, #end {
-  display: block;
+@media only screen and (max-width: 1000px) {
+  h1 {
+    padding-top: 20px;
+    padding-bottom: 0;
+  }
+
+  #howto {
+    padding-top: 0;
+  }
 }
