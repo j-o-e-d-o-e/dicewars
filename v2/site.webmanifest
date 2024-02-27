@@ -1,12 +1,14 @@
 {
-  "short_name": "",
-  "name": "",
+  "short_name": "dicewars",
+  "name": "dicewars",
+  "description": "Remake of DICEWARS (https://www.gamedesign.jp/games/dicewars/)",
+  "display": "fullscreen",
   "icons": [{
     "src": "icon.png",
     "type": "image/png",
     "sizes": "192x192"
   }],
-  "start_url": "/?utm_source=homescreen",
-  "background_color": "#fafafa",
-  "theme_color": "#fafafa"
+  "start_url": "/dicewars/",
+  "background_color": "rgba(51, 51, 51, 1)",
+  "theme_color": "#04aa6d"
 }
