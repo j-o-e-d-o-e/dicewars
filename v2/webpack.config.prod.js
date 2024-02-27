@@ -8,7 +8,7 @@ module.exports = merge(common, {
   plugins: [
     new HtmlWebpackPlugin({
       template: './index.html',
-      inject: true // may be omitted, see also: https://stackoverflow.com/a/38292765/9416041
+      inject: false // https://stackoverflow.com/a/38292765/9416041
     }),
     new CopyPlugin({
       patterns: [
