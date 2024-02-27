@@ -1,4 +1,4 @@
-import {CANVAS_WIDTH, CANVAS_HEIGHT, CLUSTERS_MAX, TIMEOUT_BG, setPlayers} from './info.js';
+import {CANVAS_WIDTH, CANVAS_HEIGHT, CLUSTERS_MAX, TIMEOUT_BG, setPlayers, setSize} from './info.js';
 import {createBoard} from './board.js';
 import {createClusters} from "./clusters.js";
 import {createPlayers} from "./players.js";
@@ -8,11 +8,13 @@ import {
 } from "./draw.js";
 import Stats from "./stats.js";
 
-const [board, centerNode] = createBoard();
+let board, centerNode;
 let btn, listenerDisabled = true;
 let clusters, players, human, playerIndex = 0;
 
 function main() {
+  setSize(window.innerHeight);
+  [board, centerNode] = createBoard();
   loadImages().then(() => {
     init();
     // testDisplay();

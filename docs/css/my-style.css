@@ -282,7 +282,7 @@ ol > li::before {
   visibility: visible;
 }
 
-@media only screen and (max-width: 1000px) {
+@media only screen and (max-height: 750px) {
   h1 {
     padding-top: 10px;
     padding-bottom: 0;
@@ -291,5 +291,10 @@ ol > li::before {
   #howto {
     padding-top: 0;
     padding-bottom: 10px;
+  }
+
+  #main-before, #main-play {
+    margin-top: 680px;
+    padding-bottom: 2px;
   }
 }

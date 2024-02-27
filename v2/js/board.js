@@ -1,10 +1,9 @@
 import {CANVAS_WIDTH, CANVAS_HEIGHT, RADIUS_HEX} from './info.js';
 import {Node} from './node.js';
 
-const ySpacing = RADIUS_HEX * 3 / 2, topPadding = ySpacing * 2;
-const xSpacing = RADIUS_HEX * Math.sqrt(3);
-
 export function createBoard() {
+    const ySpacing = RADIUS_HEX * 3 / 2, topPadding = ySpacing * 2;
+    const xSpacing = RADIUS_HEX * Math.sqrt(3);
     let board = [];
     let index = 0, row = 0, col = 0;
     for (let y = topPadding, z = 0; y + RADIUS_HEX <= CANVAS_HEIGHT; y += ySpacing, z++) {

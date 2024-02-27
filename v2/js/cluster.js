@@ -1,5 +1,6 @@
-import {CLUSTER_MIN_SIZE, CLUSTERS_MAX} from "./info.js";
+import {CLUSTERS_MAX} from "./info.js";
 
+const CLUSTER_MIN_SIZE = 10;
 export class Cluster {
 
     constructor(id, start, test) {
