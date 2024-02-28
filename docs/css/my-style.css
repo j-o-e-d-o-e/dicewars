@@ -69,18 +69,18 @@ h1 {
   grid-area: 2 / 2 / 2 / 2;
 }
 
+#forms-1 > span, #forms-3 > span {
+  vertical-align: middle;
+  font-size: .5em;
+}
+
 form > span, input[type="radio"], form > label {
   vertical-align: middle;
   left: 0;
 }
 
-#forms-1 > span, #forms-3 > span {
-  vertical-align: middle;
-  font-size: 30px;
-}
-
 form > label {
-  font-size: x-large;
+  font-size: .5em;
 }
 
 label > img {
@@ -123,10 +123,11 @@ input[type='radio']:checked:after {
 #howto {
   padding-top: 100px;
   padding-bottom: 20px;
+  font-size: .5em;
 }
 
-#howto > span, #howto > ol > li {
-  font-size: .5em;
+#howto > p > span {
+  color: var(--orange);
 }
 
 button {
@@ -137,7 +138,7 @@ button {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: x-large;
+  font-size: large;
 }
 
 #btn-launch, #btn-restart {
@@ -219,11 +220,11 @@ canvas {
 
 #main-before > span, .dices-player > div > span {
   vertical-align: bottom;
-  font-size: 30px;
+  font-size: xx-large;
 }
 
 .dices-player > p {
-  font-size: 18px;
+  font-size: large;
   text-align: right;
   margin-bottom: 0;
 }
@@ -253,38 +254,32 @@ ul > li::before {
   visibility: visible;
 }
 
-ol > li {
-  display: flex;
-  align-items: center;
-  padding: .5rem;
-  font-size: x-large;
-}
-
-ol > li {
-  counter-increment: li
-}
-
-ol > li::before {
-  width: 15px;
-  height: 15px;
-  color: var(--orange);
-  border-radius: 15px;
-  top: -9px;
-  left: -18px;
-  position: relative;
-  content: counter(li) ".";
-  display: inline-block;
-  visibility: visible;
-}
-
 @media only screen and (max-height: 750px) {
   h1 {
-    padding-top: 10px;
+    padding-top: 0;
     padding-bottom: 0;
+    margin-bottom: 0 !important;
+  }
+
+  button {
+    font-size: medium;
+  }
+
+  #btn-launch, #btn-restart {
+    margin-top: 0;
   }
 
   #howto {
-    padding-top: 0;
+    padding-top: 10px;
     padding-bottom: 10px;
+  }
+
+  #main-before > span, .dices-player > div > span {
+    vertical-align: middle;
+    font-size: large;
+  }
+
+  .dices-player > p {
+    font-size: medium;
   }
 }
