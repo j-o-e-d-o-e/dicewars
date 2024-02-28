@@ -26,6 +26,7 @@ function testDisplay() {
   toggleHidden(["launch", "main", "main-play"]);
   init();
   createGame();
+  // end(false).then(() => toggleHidden(["launch", "main"]));
 }
 
 function init() {

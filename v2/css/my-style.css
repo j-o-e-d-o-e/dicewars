@@ -123,10 +123,11 @@ input[type='radio']:checked:after {
 #howto {
   padding-top: 100px;
   padding-bottom: 20px;
+  font-size: .5em;
 }
 
-#howto > span, #howto > ol > li {
-  font-size: .5em;
+#howto > p > span {
+  color: var(--orange);
 }
 
 button {
@@ -253,42 +254,23 @@ ul > li::before {
   visibility: visible;
 }
 
-ol > li {
-  display: flex;
-  align-items: center;
-  padding: .5rem;
-  font-size: x-large;
-}
-
-ol > li {
-  counter-increment: li
-}
-
-ol > li::before {
-  width: 15px;
-  height: 15px;
-  color: var(--orange);
-  border-radius: 15px;
-  top: -9px;
-  left: -18px;
-  position: relative;
-  content: counter(li) ".";
-  display: inline-block;
-  visibility: visible;
-}
-
 @media only screen and (max-height: 750px) {
   h1 {
-    padding-top: 10px;
+    padding-top: 0;
     padding-bottom: 0;
+    margin-bottom: 0 !important;
   }
 
   button {
     font-size: medium;
   }
 
+  #btn-launch, #btn-restart {
+    margin-top: 0;
+  }
+
   #howto {
-    padding-top: 0;
+    padding-top: 10px;
     padding-bottom: 10px;
   }
 
