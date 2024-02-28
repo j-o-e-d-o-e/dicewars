@@ -13,8 +13,8 @@ let btn, listenerDisabled = true;
 let clusters, players, human, playerIndex = 0;
 
 function main() {
-  registerServiceWorker(); // comment out for dev
-  setSizes(window.innerHeight);
+  registerServiceWorker();
+  setSizes(Math.min(window.innerHeight, window.innerHeight));
   [board, centerNode] = createBoard();
   loadImages().then(() => {
     init();
