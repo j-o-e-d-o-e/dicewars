@@ -272,14 +272,10 @@ ul > li::before {
   #howto {
     padding-top: 10px;
     padding-bottom: 10px;
+    font-size: .4em;
   }
 
   #main-before > span, .dices-player > div > span {
     vertical-align: middle;
-    font-size: large;
-  }
-
-  .dices-player > p {
-    font-size: medium;
   }
 }
