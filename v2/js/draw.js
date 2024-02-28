@@ -133,7 +133,10 @@ function _drawCluster(corners, lineColor, lineWidth, fillColor) {
 
 export function drawDices(cluster, dicesBefore) {
   let ctx = ctxFg[cluster.id];
-  if (dicesBefore === undefined) ctx.clearRect(cluster.center.x - 30, cluster.center.y - 80, 80, 120);
+  if (dicesBefore === undefined) {
+    ctx.clearRect(cluster.center.x - RADIUS_HEX - 5, cluster.center.y - RADIUS_HEX * 4, RADIUS_HEX * 3, RADIUS_HEX * 6);
+    ctx.beginPath();
+  }
   _drawDices(ctx, cluster, {startI: dicesBefore}).then(() => {
     // _drawText(ctx, cluster);
   });
