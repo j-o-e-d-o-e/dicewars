@@ -6,7 +6,8 @@ const COLORS = [
   {color: "#FF7F01", img: undefined}, {color: "#B3FFFE", img: undefined},
   {color: "#FFFF01", img: undefined}, {color: "#FF5858", img: undefined}
 ];
-const LINE_WIDTH = 9, DICES_BAR_COLOR = "background-color:rgba(255, 165, 0, 0.5)";
+const DICES_BAR_COLOR = "background-color:rgba(255, 165, 0, 0.5)";
+let lineWidth, xOffset, xOffsetIncr, yOffset, yOffsetIncr;
 let colorIndex, ctxBg, ctxFg = [], dicesBar;
 
 export async function loadImages() {
@@ -18,7 +19,7 @@ export async function loadImages() {
         COLORS[i].img = img;
         resolve();
       };
-      img.src = `img/cube-${i + 1}.svg`;
+      img.src = `img/cube-${i + 1}${RADIUS_HEX === 13 ? "-sm" : ""}.svg`;
     }));
   }
   await Promise.all(promises);
@@ -43,9 +44,29 @@ export function setForegroundCtx(ctx) {
 export function drawInit(board, clusters, players) {
   ctxBg.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   for (let ctx of ctxFg) ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-  _setDicesBar(players)
+  _setSizes();
+  _setDicesBar(players);
   // _drawBoard(board);
   _drawClusters(clusters);
+}
+
+function _setSizes() {
+  switch (RADIUS_HEX) {
+    case 20:
+    case 18:
+      lineWidth = RADIUS_HEX === 20 ? 9 : 8;
+      xOffset = 30;
+      xOffsetIncr = 16;
+      yOffset = 20;
+      yOffsetIncr = 8;
+      break;
+    case 13:
+      lineWidth = 6;
+      xOffset = 20;
+      xOffsetIncr = 10;
+      yOffset = 13;
+      yOffsetIncr = 5;
+  }
 }
 
 function _setDicesBar(players) {
@@ -85,7 +106,7 @@ function _drawBoard(board) {
 
 function _drawClusters(clusters) {
   for (let cluster of clusters) {
-    _drawCluster(cluster.corners, "black", LINE_WIDTH, COLORS[cluster.playerId].color);
+    _drawCluster(cluster.corners, "black", lineWidth, COLORS[cluster.playerId].color);
     // noinspection JSIgnoredPromiseFromCall
     _drawDices(ctxFg[cluster.id], cluster);
     // _drawText(ctxFg[cluster.id], cluster);
@@ -93,8 +114,8 @@ function _drawClusters(clusters) {
 }
 
 export function drawCluster(corners, playerId) {
-  if (playerId === undefined) _drawCluster(corners, "red", LINE_WIDTH - 1, "rgba(255, 255, 255, 0.8)");
-  else _drawCluster(corners, "black", LINE_WIDTH, COLORS[playerId].color);
+  if (playerId === undefined) _drawCluster(corners, "red", lineWidth - 1, "rgba(255, 255, 255, 0.8)");
+  else _drawCluster(corners, "black", lineWidth, COLORS[playerId].color);
 }
 
 function _drawCluster(corners, lineColor, lineWidth, fillColor) {
@@ -117,14 +138,12 @@ export function drawDices(cluster, dicesBefore) {
 }
 
 async function _drawDices(ctx, cluster, {timeout = TIMEOUT_SM, startI = 0} = {}) {
-  let x = cluster.center.x - 30;
-  let y = cluster.center.y - 20;
-  let xOffset = 16;
-  let yOffset = 20;
+  let x = cluster.center.x - xOffset;
+  let y = cluster.center.y - RADIUS_HEX;
   for (let i = 0; i < cluster.dices; i++) {
     if (i === 4) {
-      x += xOffset;
-      y += 8;
+      x += xOffsetIncr;
+      y += yOffsetIncr;
     }
     if (i < startI) continue;
     await new Promise(resolve => {

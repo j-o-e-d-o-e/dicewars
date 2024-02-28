@@ -217,11 +217,6 @@ canvas {
   border-radius: 15px;
 }
 
-img {
-  width: 50px;
-  height: 50px;
-}
-
 #main-before > span, .dices-player > div > span {
   vertical-align: bottom;
   font-size: 30px;
@@ -291,10 +286,5 @@ ol > li::before {
   #howto {
     padding-top: 0;
     padding-bottom: 10px;
-  }
-
-  #main-before, #main-play {
-    margin-top: 680px;
-    padding-bottom: 2px;
   }
 }

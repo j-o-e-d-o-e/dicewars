@@ -1,4 +1,4 @@
-import {CANVAS_WIDTH, CANVAS_HEIGHT, CLUSTERS_MAX, TIMEOUT_BG, setPlayers, setSize} from './info.js';
+import {CANVAS_WIDTH, CANVAS_HEIGHT, CLUSTERS_MAX, TIMEOUT_BG, setPlayers, setSizes} from './info.js';
 import {createBoard} from './board.js';
 import {createClusters} from "./clusters.js";
 import {createPlayers} from "./players.js";
@@ -13,7 +13,7 @@ let btn, listenerDisabled = true;
 let clusters, players, human, playerIndex = 0;
 
 function main() {
-  setSize(window.innerHeight);
+  setSizes(window.innerHeight);
   [board, centerNode] = createBoard();
   loadImages().then(() => {
     init();
@@ -26,14 +26,6 @@ function testDisplay() {
   toggleHidden(["launch", "main", "main-play"]);
   init();
   createGame();
-  clusters.forEach(c => {
-    c.dices = 8;
-    drawCluster(c.corners, c.playerId);
-  });
-  players.forEach(p => {
-    p.additionalDices = CLUSTERS_MAX * 2;
-    drawDicesNums(p);
-  });
 }
 
 function init() {
