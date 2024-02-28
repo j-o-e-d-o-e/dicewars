@@ -13,6 +13,7 @@ let btn, listenerDisabled = true;
 let clusters, players, human, playerIndex = 0;
 
 function main() {
+  registerServiceWorker();
   setSizes(window.innerHeight);
   [board, centerNode] = createBoard();
   loadImages().then(() => {
@@ -149,6 +150,22 @@ function end(won) {
 
 function toggleHidden(ids) {
   for (let id of ids) document.getElementById(id).classList.toggle("hidden");
+}
+
+function registerServiceWorker() {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+      try {
+        if (import.meta.env?.DEV) {
+          await navigator.serviceWorker.register('/service-worker.js', {
+            type: 'module',
+          });
+        } else await navigator.serviceWorker.register('/service-worker.js');
+      } catch (err) {
+        console.log('😥 Service worker registration failed: ', err);
+      }
+    });
+  }
 }
 
 main();
