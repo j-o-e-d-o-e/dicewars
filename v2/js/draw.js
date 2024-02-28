@@ -80,6 +80,8 @@ function _setDicesBar(players) {
     let childDiv = document.createElement("div");
     let img = document.createElement("img");
     img.src = COLORS[player.id].img.src;
+    img.width = 50;
+    img.height = 50;
     let span = document.createElement("span");
     span.innerHTML = player.dices;
     let p = document.createElement("p");
