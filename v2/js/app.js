@@ -14,7 +14,7 @@ let clusters, players, human, playerIndex = 0;
 
 function main() {
   registerServiceWorker();
-  setSizes(Math.min(window.innerHeight, window.innerHeight));
+  setSizes(screen.height);
   [board, centerNode] = createBoard();
   loadImages().then(() => {
     init();
