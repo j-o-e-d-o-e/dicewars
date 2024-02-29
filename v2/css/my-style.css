@@ -252,11 +252,14 @@ ul > li::before {
 
   button {
     padding: 1% 2% 1% 2%;
-    font-size: .4em;
   }
 
   #btn-launch, #btn-restart {
     margin-top: 0;
+  }
+
+  #btn-yes, #btn-no {
+    margin-left: 5px;
   }
 
   #forms, #howto {
@@ -267,12 +270,8 @@ ul > li::before {
     font-size: .4em;
   }
 
-  input[type='radio']:after, input[type='radio']:checked:after {
-    width: 12px;
-    height: 12px;
-  }
-
   form > label {
+    margin-left: -5px;
     font-size: .4em;
   }
 
