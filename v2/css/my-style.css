@@ -18,7 +18,7 @@ html, body {
   background-color: var(--dark);
 }
 
-#launch, #end {
+#launch, #main, #end {
   text-align: center;
   font-size: xxx-large;
 }
@@ -127,7 +127,7 @@ button {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: large;
+  font-size: .4em;
 }
 
 #btn-launch, #btn-restart {
@@ -251,6 +251,11 @@ ul > li::before {
 
   button {
     padding: 1% 2% 1% 2%;
+    font-size: .4em;
+  }
+
+  #btn-launch, #btn-restart {
+    margin-top: 0;
   }
 
   #forms, #howto {
@@ -275,10 +280,6 @@ ul > li::before {
     height: 40px;
   }
 
-  #btn-launch, #btn-restart {
-    margin-top: 0;
-  }
-
   #howto {
     margin-top: 15px;
     margin-bottom: 5px;
@@ -287,9 +288,5 @@ ul > li::before {
 
   #main-before > span, .dices-player > div > span {
     vertical-align: middle;
-  }
-
-  #main > * > button {
-    font-size: x-large;
   }
 }
