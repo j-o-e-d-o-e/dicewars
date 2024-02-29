@@ -186,6 +186,7 @@ canvas {
 }
 
 #btn-turn {
+  margin-top: 10px;
   margin-left: 20px;
   float: left;
   border: 2px solid var(--lightergreen);
