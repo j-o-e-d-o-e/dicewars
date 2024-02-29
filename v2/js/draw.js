@@ -8,7 +8,7 @@ const COLORS = [
 ];
 const DICES_BAR_COLOR = "background-color:rgba(255, 165, 0, 0.5)";
 let lineWidth, xOffset, xOffsetIncr, yOffset, yOffsetIncr;
-let colorIndex, ctxBg, ctxFg = [], dicesBar;
+let colorIndex, ctxBg, ctxDices = [], dicesBar;
 
 export async function loadImages() {
   let promises = [];
@@ -37,13 +37,13 @@ export function setBackgroundCtx(ctx) {
   ctxBg = ctx.getContext("2d");
 }
 
-export function setForegroundCtx(ctx) {
-  ctxFg.push(ctx.getContext("2d"));
+export function addDicesCtx(ctx) {
+  ctxDices.push(ctx.getContext("2d"));
 }
 
 export function drawInit(board, clusters, players) {
   ctxBg.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-  for (let ctx of ctxFg) ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  for (let ctx of ctxDices) ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   _setSizes();
   _setDicesBar(players);
   // _drawBoard(board);
@@ -110,8 +110,8 @@ function _drawClusters(clusters) {
   for (let cluster of clusters) {
     _drawCluster(cluster.corners, "black", lineWidth, COLORS[cluster.playerId].color);
     // noinspection JSIgnoredPromiseFromCall
-    _drawDices(ctxFg[cluster.id], cluster);
-    // _drawText(ctxFg[cluster.id], cluster);
+    _drawDices(ctxDices[cluster.id], cluster);
+    // _drawText(ctxDices[cluster.id], cluster);
   }
 }
 
@@ -132,11 +132,8 @@ function _drawCluster(corners, lineColor, lineWidth, fillColor) {
 }
 
 export function drawDices(cluster, dicesBefore) {
-  let ctx = ctxFg[cluster.id];
-  if (dicesBefore === undefined) {
-    ctx.clearRect(cluster.center.x - RADIUS_HEX - 5, cluster.center.y - RADIUS_HEX * 4, RADIUS_HEX * 3, RADIUS_HEX * 6);
-    ctx.beginPath();
-  }
+  let ctx = ctxDices[cluster.id];
+  if (dicesBefore === undefined) ctx.clearRect(cluster.center.x - RADIUS_HEX - 5, cluster.center.y - RADIUS_HEX * 4, RADIUS_HEX * 3, RADIUS_HEX * 6);
   _drawDices(ctx, cluster, {startI: dicesBefore}).then(() => {
     // _drawText(ctx, cluster);
   });
@@ -145,6 +142,7 @@ export function drawDices(cluster, dicesBefore) {
 async function _drawDices(ctx, cluster, {timeout = TIMEOUT_SM, startI = 0} = {}) {
   let x = cluster.center.x - xOffset;
   let y = cluster.center.y - RADIUS_HEX;
+  ctx.beginPath();
   for (let i = 0; i < cluster.dices; i++) {
     if (i === 4) {
       x += xOffsetIncr;
@@ -158,6 +156,7 @@ async function _drawDices(ctx, cluster, {timeout = TIMEOUT_SM, startI = 0} = {})
       }, timeout);
     });
   }
+  ctx.closePath();
 }
 
 // noinspection JSUnusedLocalSymbols

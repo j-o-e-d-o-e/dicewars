@@ -28,8 +28,8 @@ html, body {
 }
 
 h1 {
-  padding-top: 50px;
-  padding-bottom: 50px;
+  margin-top: 50px;
+  margin-bottom: 50px;
   color: var(--darkergreen);
   text-shadow: 2px 2px var(--orange);
 }
@@ -88,10 +88,6 @@ label > img {
   height: 45px;
 }
 
-input[type='radio']:before {
-  right: -5px;
-}
-
 input[type='radio']:after {
   width: 15px;
   height: 15px;
@@ -99,30 +95,23 @@ input[type='radio']:after {
   top: -2px;
   left: -1px;
   position: relative;
-  background-color: var(--lighter);
   content: '';
   display: inline-block;
   visibility: visible;
   border: 2px solid white;
+}
+
+input[type='radio']:after {
+  background-color: var(--lighter);
 }
 
 input[type='radio']:checked:after {
-  width: 15px;
-  height: 15px;
-  border-radius: 15px;
-  top: -2px;
-  left: -1px;
-  position: relative;
   background-color: var(--orange);
-  content: '';
-  display: inline-block;
-  visibility: visible;
-  border: 2px solid white;
 }
 
 #howto {
-  padding-top: 100px;
-  padding-bottom: 20px;
+  margin-top: 100px;
+  margin-bottom: 20px;
   font-size: .5em;
 }
 
@@ -256,8 +245,7 @@ ul > li::before {
 
 @media only screen and (max-height: 750px) {
   h1 {
-    padding-top: 0;
-    padding-bottom: 0;
+    margin-top: 0;
     margin-bottom: 0 !important;
   }
 
@@ -265,17 +253,43 @@ ul > li::before {
     padding: 1% 2% 1% 2%;
   }
 
+  #forms, #howto {
+    max-width: 80%;
+  }
+
+  #forms-1 > span, #forms-3 > span {
+    font-size: .4em;
+  }
+
+  input[type='radio']:after, input[type='radio']:checked:after {
+    width: 12px;
+    height: 12px;
+  }
+
+  form > label {
+    font-size: .4em;
+  }
+
+  label > img {
+    width: 40px;
+    height: 40px;
+  }
+
   #btn-launch, #btn-restart {
     margin-top: 0;
   }
 
   #howto {
-    padding-top: 15px;
-    padding-bottom: 5px;
+    margin-top: 15px;
+    margin-bottom: 5px;
     font-size: .4em;
   }
 
   #main-before > span, .dices-player > div > span {
     vertical-align: middle;
+  }
+
+  #main > * > button {
+    font-size: .4em;
   }
 }

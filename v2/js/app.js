@@ -3,7 +3,7 @@ import {createBoard} from './board.js';
 import {createClusters} from "./clusters.js";
 import {createPlayers} from "./players.js";
 import {
-  loadImages, setColor, setBackgroundCtx, setForegroundCtx,
+  loadImages, setColor, setBackgroundCtx, addDicesCtx,
   drawInit, drawCluster, drawDices, drawDicesNums, drawDicesBar,
 } from "./draw.js";
 import Stats from "./stats.js";
@@ -13,7 +13,7 @@ let btn, listenerDisabled = true;
 let clusters, players, human, playerIndex = 0;
 
 function main() {
-  registerServiceWorker();
+  // registerServiceWorker();
   setSizes(screen.height);
   [board, centerNode] = createBoard();
   loadImages().then(() => {
@@ -74,7 +74,7 @@ function init() {
     canvas.height = CANVAS_HEIGHT;
     div.appendChild(canvas);
     if (i === 0) setBackgroundCtx(canvas);
-    else setForegroundCtx(canvas);
+    else addDicesCtx(canvas);
   }
   canvas.addEventListener("click", async event => {
     event.stopPropagation();
