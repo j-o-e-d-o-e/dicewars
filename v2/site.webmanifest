@@ -10,6 +10,6 @@
     "sizes": "192x192"
   }],
   "start_url": "/dicewars/",
-  "background_color": "rgba(51, 51, 51, 1)",
+  "background_color": "#333333",
   "theme_color": "#04aa6d"
 }
