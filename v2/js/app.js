@@ -23,9 +23,8 @@ function main() {
 
 // noinspection JSUnusedLocalSymbols
 function testDisplay() {
-  toggleHidden(["launch", "main", "main-play"]);
-  init();
   createGame();
+  toggleHidden(["launch", "main", "main-play"]);
   // end(false).then(() => toggleHidden(["launch", "main"]));
 }
 
