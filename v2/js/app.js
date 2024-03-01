@@ -13,7 +13,6 @@ let btn, listenerDisabled = true;
 let clusters, players, human, playerIndex = 0;
 
 function main() {
-  registerServiceWorker();
   setSizes(screen.height);
   [board, centerNode] = createBoard();
   loadImages().then(() => {
@@ -150,18 +149,6 @@ function end(won) {
 
 function toggleHidden(ids) {
   for (let id of ids) document.getElementById(id).classList.toggle("hidden");
-}
-
-function registerServiceWorker() {
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', async () => {
-      try {
-        await navigator.serviceWorker.register('/dicewars/service-worker.js');
-      } catch (err) {
-        console.log('😥 Service worker registration failed: ', err);
-      }
-    });
-  }
 }
 
 main();
