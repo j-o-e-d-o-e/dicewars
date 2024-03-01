@@ -109,9 +109,9 @@ function _drawBoard(board) {
 function _drawClusters(clusters) {
   for (let cluster of clusters) {
     _drawCluster(cluster.corners, "black", lineWidth, COLORS[cluster.playerId].color);
-    // noinspection JSIgnoredPromiseFromCall
-    _drawDices(ctxDices[cluster.id], cluster);
-    // _drawText(ctxDices[cluster.id], cluster);
+    _drawDices(ctxDices[cluster.id], cluster).then(() => {
+      // _drawText(ctxDices[cluster.id], cluster);
+    });
   }
 }
 
