@@ -1,6 +1,6 @@
 module.exports = {
   roots: ['<rootDir>/specs'],
-  testEnvironment: 'node', // alternatively, jsdom
+  testEnvironment: 'jsdom',
   testRegex: '/*.test.js$',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   transform: {
