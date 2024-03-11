@@ -4,52 +4,59 @@ import Stats from "./stats.js";
 
 export class Human extends Player {
 
-    constructor(id) {
-        super(id);
-        this.clickableClusters = undefined;
-        this.clickedCluster = undefined;
-    }
+  constructor(id) {
+    super(id);
+    this.clickableClusters = undefined;
+    this.clickedCluster = undefined;
+  }
 
-    click(point) {
-        if (this.clickedCluster === undefined) {
-            let clicked = this.clickableClusters.find(c => c.containsPoint(point));
-            if (clicked === undefined) return;
-            this.clickedCluster = clicked;
-            console.log(`selected=${this.clickedCluster.id} (dices: ${this.clickedCluster.dices})`);
-            drawCluster(this.clickedCluster.corners);
-        } else if (this.clickedCluster.containsPoint(point)) {
-            // console.log(`undo=${this.clickedCluster.id} (dices: ${this.clickedCluster.dices})`);
-            drawCluster(this.clickedCluster.corners, this.id);
-            this.clickedCluster = undefined;
-        } else {
-            let candidates = this.clickedCluster.adjacentClustersFromCluster().filter(c => c.playerId !== this.id);
-            let target = candidates.find(c => c.containsPoint(point));
-            if (target === undefined) return;
-            let sumPlayer = Player.roleDice(this.clickedCluster.dices);
-            let sumOther = Player.roleDice(target.dices);
-            console.log(`attacks ${target.playerId}: ${this.clickedCluster.id} vs ${target.id} -> thrown dices: ${sumPlayer} vs ${sumOther}`);
-            let dicesPlayerBefore = this.clickedCluster.dices;
-            this.clickedCluster.dices = 1;
-            drawCluster(this.clickedCluster.corners, this.id);
-            drawDices(this.clickedCluster);
-            if (sumPlayer > sumOther) {
-                Stats.set.successfulAttacks();
-                let otherPlayerId = target.playerId;
-                target.playerId = this.id;
-                target.dices = dicesPlayerBefore - 1;
-                drawCluster(target.corners, this.id);
-                drawDices(target);
-                this.clickedCluster = undefined;
-                return otherPlayerId;
-            }
-            Stats.set.unsuccessfulAttacks()
-            let i = this.clickableClusters.findIndex(c => c.id === this.clickedCluster.id);
-            this.clickableClusters.splice(i, 1);
-            this.clickedCluster = undefined;
-        }
+  click(point) {
+    if (this.clickedCluster === undefined) this.selectCluster(point);
+    else if (this.clickedCluster.containsPoint(point)) this.undoSelection();
+    else return this.selectTarget(point);
+  }
+
+  selectCluster(point) {
+    let clicked = this.clickableClusters.find(c => c.containsPoint(point));
+    if (clicked === undefined) return;
+    this.clickedCluster = clicked;
+    drawCluster(this.clickedCluster.corners);
+    console.log(`selected=${this.clickedCluster.id} (dices: ${this.clickedCluster.dices})`);
+  }
+
+  undoSelection() {
+    drawCluster(this.clickedCluster.corners, this.id);
+    this.clickedCluster = undefined;
+    // console.log(`undo=${this.clickedCluster.id} (dices: ${this.clickedCluster.dices})`);
+  }
+
+  selectTarget(point) {
+    let candidates = this.clickedCluster.adjacentClustersFromCluster().filter(c => c.playerId !== this.id);
+    let target = candidates.find(c => c.containsPoint(point));
+    if (target === undefined) return;
+    return this.attack(target);
+  }
+
+  attack(target) {
+    let {sumPlayer, sumOther} = super.attacking(this.clickedCluster, target);
+    let dicesPlayerBefore = this.clickedCluster.dices;
+    this.clickedCluster.dices = 1;
+    drawCluster(this.clickedCluster.corners, this.id);
+    drawDices(this.clickedCluster);
+    if (sumPlayer > sumOther) {
+      Stats.set.successfulAttacks();
+      this.clickedCluster = undefined;
+      return super.successfulAttack(dicesPlayerBefore, target);
+    } else {
+      Stats.set.unsuccessfulAttacks()
+      let i = this.clickableClusters.findIndex(c => c.id === this.clickedCluster.id);
+      this.clickableClusters.splice(i, 1);
+      this.clickedCluster = undefined;
     }
-    setClickables(clusters){
-        this.clickableClusters = clusters.filter(c => c.playerId === this.id && c.dices > 1
-            && c.adjacentClustersFromCluster().some(c => c.playerId !== this.id));
-    }
+  }
+
+  setClickables(clusters) {
+    this.clickableClusters = clusters.filter(c => c.playerId === this.id && c.dices > 1
+      && c.adjacentClustersFromCluster().some(c => c.playerId !== this.id));
+  }
 }

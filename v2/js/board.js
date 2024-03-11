@@ -1,15 +1,21 @@
 import {CANVAS_WIDTH, CANVAS_HEIGHT, RADIUS_HEX} from './info.js';
 import {Node} from './node.js';
 
+const calculateYSpacing = () => RADIUS_HEX * 3 / 2;
+const calculateXSpacing = () => RADIUS_HEX * Math.sqrt(3);
+const calculateXOffset = (z) => z % 2 === 0 ? 0 : RADIUS_HEX - 1;
+const isWithinCanvas = (x, y) => x + RADIUS_HEX <= CANVAS_WIDTH && y + RADIUS_HEX <= CANVAS_HEIGHT;
+
 export function createBoard() {
-    const ySpacing = RADIUS_HEX * 3 / 2, topPadding = ySpacing * 2;
-    const xSpacing = RADIUS_HEX * Math.sqrt(3);
+    const ySpacing = calculateYSpacing();
+    const topPadding = ySpacing * 2;
+    const xSpacing = calculateXSpacing();
     let board = [];
     let index = 0, row = 0, col = 0;
-    for (let y = topPadding, z = 0; y + RADIUS_HEX <= CANVAS_HEIGHT; y += ySpacing, z++) {
-        let xOffset = z % 2 === 0 ? 0 : RADIUS_HEX - 1;
+    for (let y = topPadding, z = 0; isWithinCanvas(xSpacing + calculateXOffset(z), y); y += ySpacing, z++) {
+        let xOffset = calculateXOffset(z);
         col = 0;
-        for (let x = xSpacing + xOffset; x + RADIUS_HEX <= CANVAS_WIDTH; x += xSpacing) {
+        for (let x = xSpacing + xOffset; isWithinCanvas(x, y); x += xSpacing) {
             let hex = createHexagon(x, y);
             board.push(new Node(index++, row, col, hex));
             col++;

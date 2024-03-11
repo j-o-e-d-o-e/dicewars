@@ -25,47 +25,22 @@ function main() {
 function testDisplay() {
   createGame();
   toggleHidden(["launch", "main", "main-play"]);
-  // end(false).then(() => toggleHidden(["launch", "main"]));
+  // end(false).then(()=> toggleHidden(["launch", "main"]));
 }
 
 function init() {
-  console.log("init");
-  document.getElementById("btn-launch").addEventListener("click", () => {
-    let players = document.forms["form-players"].getElementsByTagName("input");
-    for (let player of players) {
-      if (player.checked) {
-        setPlayers(player.value);
-        break;
-      }
-    }
-
-    let colors = document.forms["form-colors"].getElementsByTagName("input");
-    for (let color of colors) {
-      if (color.checked) {
-        createGame(color.value);
-        break;
-      }
-    }
-    document.getElementById("launch").remove();
-    toggleHidden(["main", "main-before"]);
-  });
-
-  toggleHidden(["main", "main-before", "main-play"]);
-  document.getElementById("btn-yes").addEventListener("click", () => {
-    toggleHidden(["main-before", "main-play"]);
-    playerIndex = 0;
-    Stats.reset();
-    nextTurn(players[0]);
-  });
+  document.getElementById("btn-launch").addEventListener("click", handleLaunchClick);
+  document.getElementById("btn-yes").addEventListener("click", handleYesClick);
   document.getElementById("btn-no").addEventListener("click", () => createGame());
   btn = document.getElementById("btn-turn");
-  btn.addEventListener("click", async () => {
-    listenerDisabled = true;
-    btn.disabled = true;
-    if (human.clickedCluster !== undefined) drawCluster(human.clickedCluster.corners, human.id);
-    await afterTurn(human);
-  });
+  btn.addEventListener("click", handleTurnClick);
   btn.disabled = true;
+  const foregroundCanvas = stageCanvases();
+  foregroundCanvas.addEventListener("click", event => handleCanvasClick(event), false);
+  document.getElementById("btn-restart").addEventListener("click", handleRestartClick);
+}
+
+function stageCanvases() {
   let div = document.getElementById("stage"), canvas;
   for (let i = 0; i <= CLUSTERS_MAX; i++) {
     canvas = document.createElement("canvas");
@@ -75,25 +50,60 @@ function init() {
     if (i === 0) setBackgroundCtx(canvas);
     else addDicesCtx(canvas);
   }
-  canvas.addEventListener("click", async event => {
-    event.stopPropagation();
-    if (listenerDisabled) return;
-    let rect = canvas.getBoundingClientRect();
-    let otherId = human.click({x: event.clientX - rect.left, y: event.clientY - rect.top});
-    if (otherId !== undefined) {
-      if (human.afterSuccessfulMove(clusters, players, otherId)) {
-        await end(true);
-        return;
-      }
-      human.setClickables(clusters);
-    }
-  }, false);
+  return canvas;
+}
 
-  toggleHidden(["end"]);
-  document.getElementById("btn-restart").addEventListener("click", () => {
-    createGame();
-    toggleHidden(["end", "main", "main-before"])
-  });
+function handleLaunchClick() {
+  let players = document.forms["form-players"].getElementsByTagName("input");
+  for (let player of players) {
+    if (player.checked) {
+      setPlayers(player.value);
+      break;
+    }
+  }
+  let colors = document.forms["form-colors"].getElementsByTagName("input");
+  for (let color of colors) {
+    if (color.checked) {
+      createGame(color.value);
+      break;
+    }
+  }
+  document.getElementById("launch").remove();
+  toggleHidden(["main", "main-before"]);
+}
+
+function handleYesClick() {
+  toggleHidden(["main-before", "main-play"]);
+  playerIndex = 0;
+  Stats.reset();
+  nextTurn(players[0]);
+}
+
+async function handleCanvasClick(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  if (listenerDisabled) return;
+  let rect = event.target.getBoundingClientRect();
+  let otherId = human.click({x: event.clientX - rect.left, y: event.clientY - rect.top});
+  if (otherId !== undefined) {
+    if (human.afterSuccessfulAttack(clusters, players, otherId)) {
+      await end(true);
+      return;
+    }
+    human.setClickables(clusters);
+  }
+}
+
+async function handleTurnClick() {
+  listenerDisabled = true;
+  btn.disabled = true;
+  if (human.clickedCluster !== undefined) drawCluster(human.clickedCluster.corners, human.id);
+  await afterTurn(human);
+}
+
+function handleRestartClick() {
+  createGame();
+  toggleHidden(["end", "main", "main-before"])
 }
 
 function createGame(colorI = 0) {

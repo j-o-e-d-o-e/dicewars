@@ -4,13 +4,13 @@ const CLUSTER_MIN_SIZE = 10;
 
 export class Cluster {
 
-  constructor(id, start, test) {
+  constructor(id, start, testMode) {
     this.id = id;
-    this.playerId = test ? test.playerId : undefined;
-    this.dices = test ? test.dices : Math.floor(Math.random() * 6) + 1;
+    this.playerId = testMode ? testMode.playerId : undefined;
+    this.dices = testMode ? testMode.dices : Math.floor(Math.random() * 6) + 1;
     this.nodes = [];
     this.addNodeAndItsNeighbours(start)
-    if (!test) this.expand();
+    if (!testMode) this.expand();
     this.corners = this.cornersPos();
     this.center = this.centerPos();
     this.adjacentClusters = undefined;
