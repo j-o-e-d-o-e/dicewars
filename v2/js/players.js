@@ -3,14 +3,14 @@ import {Human} from "./player-human.js";
 import {Comp} from "./player-comp.js";
 
 export function createPlayers(clusters) {
-    Comp.thresholds(clusters);
-    let {players, playerIndex} = _createPlayers();
-    assignPlayersToClusters(players, clusters);
-    for (let player of players) player.setDices(clusters);
-    let human = players[playerIndex];
-    human.clickableClusters = clusters.filter(c => c.playerId === human.id && c.dices > 1);
-    log(players, clusters);
-    return [players, human];
+  Comp.thresholds(clusters);
+  let {players, playerIndex} = _createPlayers();
+  assignPlayersToClusters(players, clusters);
+  for (let player of players) player.setDices(clusters);
+  let human = players[playerIndex];
+  human.clickableClusters = clusters.filter(c => c.playerId === human.id && c.dices > 1);
+  log(players, clusters);
+  return [players, human];
 }
 
 function _createPlayers() {
@@ -21,7 +21,7 @@ function _createPlayers() {
       players.push(new Human(i));
       playerIndex = i;
     } else {
-      players.push(new Comp(i));
+      players.push(new Comp(i, Math.random() > 0.6));
       playerProb += 0.1;
     }
   }
@@ -37,10 +37,18 @@ function assignPlayersToClusters(players, clusters) {
 }
 
 function log(players, clusters) {
-    console.log(`${players.length} players created:
-    ${players.map(p => `- ${p instanceof Human ? "Human" : "Comp"} with ${JSON.stringify({
-        dices: p.dices,
-        clusters: clusters.reduce((acc, c) => c.playerId === p.id ? ++acc : acc, 0),
-        allDices: clusters.reduce((acc, c) => c.playerId === p.id ? acc + c.dices : acc, 0)
-    })}`).join("\n\t")}`);
+  console.log(`${players.length} players created:
+    ${players.map(p => `- ${p instanceof Human ?
+    `Human with ${JSON.stringify({
+      dices: p.dices,
+      clusters: clusters.reduce((acc, c) => c.playerId === p.id ? ++acc : acc, 0),
+      allDices: clusters.reduce((acc, c) => c.playerId === p.id ? acc + c.dices : acc, 0)
+    })}` :
+    `Comp with ${JSON.stringify({
+      dices: p.dices,
+      clusters: clusters.reduce((acc, c) => c.playerId === p.id ? ++acc : acc, 0),
+      allDices: clusters.reduce((acc, c) => c.playerId === p.id ? acc + c.dices : acc, 0),
+      cautious: p.cautious
+    })}`
+  }`).join("\n\t")}`);
 }

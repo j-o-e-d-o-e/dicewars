@@ -11,8 +11,9 @@ export class Comp extends Player {
     Comp.thresholdVeryMighty = Math.ceil(clusters.length / 2);
   }
 
-  constructor(id) {
+  constructor(id, cautious = false) {
     super(id);
+    this.cautious = cautious;
   }
 
   async turn(clusters, players, afterTurn, end) {
@@ -87,28 +88,57 @@ export class Comp extends Player {
     return players.filter(p => p.id !== this.id && p.dices > Comp.thresholdMighty).sort((a, b) => b.dices - a.dices);
   }
 
+  filterTargetsByMightyOthers(targets, mighties) {
+    let tmp;
+    for (const mighty of mighties) {
+      tmp = targets.filter(c => c.playerId === mighty.id);
+      if (tmp.length > 0) break;
+    }
+    return tmp;
+  }
+
   target(cluster, mighties) {
     let targets = cluster.adjacentClustersFromCluster().filter(c => c.playerId !== this.id);
     if (targets.length === 0) return;
-    if (mighties.length > 0) {
-      let tmp;
-      for (const mighty of mighties) {
-        tmp = targets.filter(c => c.playerId === mighty.id);
-        if (tmp.length > 0) break;
-      }
-      targets = tmp;
-    }
+    if (mighties.length > 0) targets = this.filterTargetsByMightyOthers(targets, mighties);
     targets = targets.filter(c => cluster.dices > c.dices - (cluster.dices === 8));
     if (targets.length === 0) return;
-    let grouped = targets.reduce((acc, current) => { // https://stackoverflow.com/a/34890276/9416041
+    let {groupedTargets, dices} = this.groupTargetsByDices(cluster, targets);
+    if (this.cautious && mighties.length === 0) return this.chooseTargetCautiously(groupedTargets, dices, cluster);
+    else return this.chooseTargetAggressively(groupedTargets, dices);
+  }
+
+  groupTargetsByDices(cluster, targets) {
+    let groupedTargets = targets.reduce((acc, current) => { // https://stackoverflow.com/a/34890276/9416041
       (acc[current['dices']] = acc[current['dices']] || []).push(current);
       return acc;
     }, {});
     let dices = [...Array(cluster.dices - 1).keys()].reverse();
     dices[dices.length - 1] = cluster.dices - 1;
     if (cluster.dices === 8) dices.push(8);
+    return {groupedTargets, dices};
+  }
+
+  chooseTargetAggressively(groupedTargets, dices) {
     for (let dice of dices) {
-      if (dice in grouped) return grouped[dice][Math.floor(Math.random() * grouped[dice].length)];
+      if (!(dice in groupedTargets)) continue;
+      return groupedTargets[dice][Math.floor(Math.random() * groupedTargets[dice].length)];
+    }
+  }
+
+  chooseTargetCautiously(groupedTargets, dices, cluster) {
+    if (this.additionalDices === 0 && cluster.dices > 2
+      && cluster.adjacentClusters.some(c => c.dices - cluster.dices > 2)) return;
+    for (let dice of dices) {
+      if (!(dice in groupedTargets)) continue;
+      let candidates = [];
+      for (let target of groupedTargets[dice]) {
+        if (target.adjacentClustersFromCluster()
+          .filter(c => c.playerId !== this.id)
+          .every(c => cluster.dices >= c.dices))
+          candidates.push(target);
+      }
+      if (candidates.length > 0) return candidates[Math.floor(Math.random() * candidates.length)];
     }
   }
 

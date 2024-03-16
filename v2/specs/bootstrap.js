@@ -6,7 +6,8 @@ const testClusters = [
     createTestClusters3,
     createTestClusters4,
     createTestClusters5,
-    createTestClusters6
+    createTestClusters6,
+    createTestClusters7
 ];
 
 export function createTestClusters(board, num) {
@@ -62,7 +63,7 @@ function createTestClusters3(board) {
     ];
 }
 
-// player-comp-path, player-comp-target
+// player-comp-path
 
 function createTestClusters4(board) {
     return [
@@ -143,4 +144,30 @@ function createTestClusters6(board) {
         new Cluster(idCount++, board[727], {playerId: playerCount, dices: 1}),
         new Cluster(idCount++, board[730], {playerId: playerCount, dices: 1}),
     ];
+}
+
+// player-comp-target
+
+function createTestClusters7(board) {
+  return [
+    new Cluster(0, board[505], {playerId: 0, dices: 8}),
+    new Cluster(1, board[400], {playerId: 0, dices: 8}),
+    new Cluster(2, board[508], {playerId: 1, dices: 8}),
+    new Cluster(3, board[295], {playerId: 1, dices: 1}),
+    new Cluster(4, board[403], {playerId: 2, dices: 1}),
+    new Cluster(5, board[149], {playerId: 0, dices: 5}),
+    new Cluster(6, board[222], {playerId: 1, dices: 4}),
+    new Cluster(7, board[116], {playerId: 2, dices: 5}),
+    new Cluster(8, board[298], {playerId: 1, dices: 1}),
+    new Cluster(9, board[193], {playerId: 2, dices: 1}),
+    new Cluster(10, board[301], {playerId: 1, dices: 4}),
+    new Cluster(11, board[409], {playerId: 2, dices: 3}),
+    new Cluster(12, board[196], {playerId: 1, dices: 1}),
+    new Cluster(13, board[304], {playerId: 2, dices: 4}),
+    new Cluster(14, board[199], {playerId: 1, dices: 1}),
+    new Cluster(15, board[307], {playerId: 0, dices: 2}),
+    new Cluster(16, board[415], {playerId: 0, dices: 3}),
+    new Cluster(17, board[130], {playerId: 0, dices: 3}),
+    new Cluster(18, board[90], {playerId: 0, dices: 3}),
+  ];
 }
