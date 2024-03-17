@@ -127,7 +127,7 @@ export class Comp extends Player {
   }
 
   chooseTargetCautiously(groupedTargets, dices, cluster) {
-    if (this.additionalDices === 0 && cluster.dices > 2
+    if (this.additionalDices === 0 && cluster.dices > 2 && cluster.dices < 8
       && cluster.adjacentClusters.some(c => c.dices - cluster.dices > 2)) return;
     for (let dice of dices) {
       if (!(dice in groupedTargets)) continue;
